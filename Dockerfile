@@ -1,7 +1,11 @@
-FROM alpine:3.12 as ligo-builder
+#ARG VARIANT="buster"
+#FROM mcr.microsoft.com/vscode/devcontainers/base:0-${VARIANT}
 
 # Install native deps needed for Tezos (etc?)
 # Adapted from https://github.com/asbjornenge/tezos-docker
+#RUN apt-get update && export DEBIAN_FRONTEND=noninteractive && apt-get -y install --no-install-recommends \
+FROM alpine:3.12 as ligo-builder
+
 RUN apk update && apk upgrade && apk --no-cache add \
   build-base snappy-dev alpine-sdk \
   bash ncurses-dev xz m4 git pkgconfig \
@@ -34,15 +38,15 @@ COPY vendors/ligo-utils/tezos-utils/tezos-utils.opam /ligo/vendors/ligo-utils/te
 COPY vendors/ligo-utils/memory-proto-alpha/tezos-memory-proto-alpha.opam /ligo/vendors/ligo-utils/memory-proto-alpha/tezos-memory-proto-alpha.opam
 COPY vendors/ligo-utils/simple-utils/simple-utils.opam /ligo/vendors/ligo-utils/simple-utils/simple-utils.opam
 COPY vendors/ligo-utils/ligo_008_PtEdo2Zk_test_helpers/ligo-008-PtEdo2Zk-test-helpers.opam /ligo/vendors/ligo-utils/ligo_008_PtEdo2Zk_test_helpers/ligo-008-PtEdo2Zk-test-helpers.opam
-# RUN opam update && sh scripts/install_opam_deps.sh
+RUN opam update && sh scripts/install_opam_deps.sh
 
 # Now install vendor libs
-# COPY vendors /ligo/vendors
-# COPY scripts/install_vendors_deps.sh /ligo/scripts/install_vendors_deps.sh
-# COPY ligo.opam /ligo
-# COPY ligo.opam.locked /ligo
-# WORKDIR /ligo
-# RUN sh scripts/install_vendors_deps.sh
+COPY vendors /ligo/vendors
+COPY scripts/install_vendors_deps.sh /ligo/scripts/install_vendors_deps.sh
+COPY ligo.opam /ligo
+COPY ligo.opam.locked /ligo
+WORKDIR /ligo
+RUN sh scripts/install_vendors_deps.sh
 
 # Install LIGO
 # COPY src /ligo/src
