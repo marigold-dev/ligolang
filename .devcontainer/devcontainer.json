@@ -14,8 +14,8 @@
 		"editor.tabSize": 2,
 		"git.autofetch": true,
 		"ocaml.sandbox": {
-			"kind": "esy",
-			"root": "${workspaceFolder:sidechain}"
+			"kind": "opam",
+			"switch": "${workspaceFolder:ligo}"
 		},
 		"indentRainbow.ignoreErrorLanguages": [
 			"*"
