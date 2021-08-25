@@ -8,4 +8,5 @@ set -x
 
 # Install local dependencies
 export PATH=~/.cargo/bin:$PATH
+opam install -y ocaml-lsp-server
 opam install -y --deps-only --with-test --locked=locked ./ligo.opam $(find vendors -name \*.opam)

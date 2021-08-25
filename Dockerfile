@@ -34,7 +34,7 @@ COPY vendors/ligo-utils/tezos-utils/tezos-utils.opam /ligo/vendors/ligo-utils/te
 COPY vendors/ligo-utils/memory-proto-alpha/tezos-memory-proto-alpha.opam /ligo/vendors/ligo-utils/memory-proto-alpha/tezos-memory-proto-alpha.opam
 COPY vendors/ligo-utils/simple-utils/simple-utils.opam /ligo/vendors/ligo-utils/simple-utils/simple-utils.opam
 COPY vendors/ligo-utils/ligo_008_PtEdo2Zk_test_helpers/ligo-008-PtEdo2Zk-test-helpers.opam /ligo/vendors/ligo-utils/ligo_008_PtEdo2Zk_test_helpers/ligo-008-PtEdo2Zk-test-helpers.opam
-RUN opam update && opam install ocaml-lsp-server && sh scripts/install_opam_deps.sh
+RUN opam update && sh scripts/install_opam_deps.sh
 
 # Now install vendor libs
 COPY vendors /ligo/vendors
