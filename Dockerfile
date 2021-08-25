@@ -1,11 +1,7 @@
-#ARG VARIANT="buster"
-#FROM mcr.microsoft.com/vscode/devcontainers/base:0-${VARIANT}
+FROM alpine:3.12 as ligo-builder
 
 # Install native deps needed for Tezos (etc?)
 # Adapted from https://github.com/asbjornenge/tezos-docker
-#RUN apt-get update && export DEBIAN_FRONTEND=noninteractive && apt-get -y install --no-install-recommends \
-FROM alpine:3.12 as ligo-builder
-
 RUN apk update && apk upgrade && apk --no-cache add \
   build-base snappy-dev alpine-sdk \
   bash ncurses-dev xz m4 git pkgconfig \

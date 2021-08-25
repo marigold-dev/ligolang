@@ -7,9 +7,33 @@
 	// Update the 'dockerFile' prorperty if you aren't using the standard 'Dockerfile' filename.
 	"dockerFile": "../Dockerfile",
 	// Set *default* container specific settings.json values on container create.
-	"settings": {},
+	"settings": {
+		"files.autoSave": "onFocusChange",
+		"editor.formatOnSave": true,
+		"editor.formatOnPaste": true,
+		"editor.tabSize": 2,
+		"git.autofetch": true,
+		"ocaml.sandbox": {
+			"kind": "esy",
+			"root": "${workspaceFolder:sidechain}"
+		},
+		"indentRainbow.ignoreErrorLanguages": [
+			"*"
+		],
+		"files.insertFinalNewline": true,
+		"terminal.integrated.commandsToSkipShell": [
+			"-workbench.action.toggleSidebarVisibility"
+		]
+	},
 	// Add the IDs of extensions you want installed when the container is created.
-	"extensions": [],
+	"extensions": [
+		"dbaeumer.vscode-eslint",
+		"oderwat.indent-rainbow",
+		"ocamllabs.ocaml-platform",
+		"mhutchie.git-graph",
+		"github.vscode-pull-request-github",
+		"ms-vsliveshare.vsliveshare-pack"
+	],
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
 	// Uncomment the next line to run commands after the container is created - for example installing curl.
