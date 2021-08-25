@@ -30,6 +30,11 @@ let to_mini_c ~raise ~add_warning ~options f stx env =
   let mini_c     = Of_typed.compile ~raise typed in
   mini_c
 
+let to_zinc ~raise ~add_warning ~options f stx env =
+  let typed,_  = type_file ~raise ~add_warning ~options f stx env in
+  let zinc     = Zinc_of_typed.compile ~raise typed in
+  zinc
+
 let compile_file ~raise ~add_warning ~options f stx ep =
   let typed,_    = type_file ~raise ~add_warning ~options f stx @@ Contract ep in
   let mini_c     = Of_typed.compile ~raise typed in

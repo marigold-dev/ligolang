@@ -9,7 +9,7 @@ RUN apk update && apk upgrade && apk --no-cache add \
   libffi-dev \
   opam cargo
 
-RUN opam init --disable-sandboxing --bare -y
+RUN opam init --disable-sandboxing --barelig
 
 # make bls12-381 build ???
 ENV RUSTFLAGS='--codegen target-feature=-crt-static'

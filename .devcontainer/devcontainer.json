@@ -15,7 +15,7 @@
 		"git.autofetch": true,
 		"ocaml.sandbox": {
 			"kind": "opam",
-			"switch": "${workspaceFolder:ligo}"
+			"switch": "/ligo"
 		},
 		"indentRainbow.ignoreErrorLanguages": [
 			"*"
