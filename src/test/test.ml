@@ -16,6 +16,7 @@ let () =
     Db_index_tests.main ;
     Typer_tests.main ;
     Integration_tests.main ;
+    Zinc_tests.main ;
     Spilling_tests.main ;
     Coase_tests.main ;
     Vote_tests.main ;
