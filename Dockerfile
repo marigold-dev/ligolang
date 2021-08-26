@@ -9,13 +9,14 @@ RUN apk update && apk upgrade && apk --no-cache add \
   libffi-dev \
   opam cargo
 
-RUN opam init --disable-sandboxing --barelig
+RUN opam init --disable-sandboxing --bare
 
 # make bls12-381 build ???
 ENV RUSTFLAGS='--codegen target-feature=-crt-static'
 
 # Install opam switch & deps
 WORKDIR /ligo
+COPY scripts/setup_switch.sh /ligo/scripts/setup_switch.sh
 COPY scripts/setup_dev_switch.sh /ligo/scripts/setup_dev_switch.sh
 RUN opam update && sh scripts/setup_dev_switch.sh
 COPY scripts/install_opam_deps.sh /ligo/scripts/install_opam_deps.sh
