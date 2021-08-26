@@ -16,8 +16,8 @@ ENV RUSTFLAGS='--codegen target-feature=-crt-static'
 
 # Install opam switch & deps
 WORKDIR /ligo
-COPY scripts/setup_switch.sh /ligo/scripts/setup_switch.sh
-RUN opam update && sh scripts/setup_switch.sh
+COPY scripts/setup_dev_switch.sh /ligo/scripts/setup_dev_switch.sh
+RUN opam update && sh scripts/setup_dev_switch.sh
 COPY scripts/install_opam_deps.sh /ligo/scripts/install_opam_deps.sh
 COPY ligo.opam /ligo
 COPY ligo.opam.locked /ligo
