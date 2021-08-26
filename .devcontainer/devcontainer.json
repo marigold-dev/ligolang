@@ -4,8 +4,8 @@
 	"name": "Existing Dockerfile",
 	// Sets the run context to one level up instead of the .devcontainer folder.
 	"context": "..",
-	// Update the 'dockerFile' prorperty if you aren't using the standard 'Dockerfile' filename.
-	"dockerFile": "../Dockerfile",
+	// The location of the Dockerfile that defines the contents of the container. The path is relative to this folder.
+	"dockerFile": "Dockerfile",
 	// Set *default* container specific settings.json values on container create.
 	"settings": {
 		"files.autoSave": "onFocusChange",
@@ -15,7 +15,7 @@
 		"git.autofetch": true,
 		"ocaml.sandbox": {
 			"kind": "opam",
-			"switch": "/ligo"
+			"switch": "${localWorkspaceFolder}"
 		},
 		"indentRainbow.ignoreErrorLanguages": [
 			"*"
@@ -37,13 +37,14 @@
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
 	// Uncomment the next line to run commands after the container is created - for example installing curl.
-	// "postCreateCommand": "apt-get update && apt-get install -y curl",
+	"postCreateCommand": "./.devcontainer/setup_dev_env.sh",
 	// Uncomment when using a ptrace-based debugger like C++, Go, and Rust
 	// "runArgs": [ "--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined" ],
 	// Uncomment to use the Docker CLI from inside the container. See https://aka.ms/vscode-remote/samples/docker-from-docker.
 	"mounts": [
 		"source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
 	],
+	"postStartCommand": ""
 	// Uncomment to connect as a non-root user if you've added one. See https://aka.ms/vscode-remote/containers/non-root.
 	// "remoteUser": "vscode"
 }

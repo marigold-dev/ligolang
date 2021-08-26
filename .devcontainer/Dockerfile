@@ -1,5 +1,11 @@
 FROM alpine:3.12 as ligo-builder
 
+
+#COPY scripts/*.sh /tmp/scripts/
+#COPY vendors/ /tmp/vendors/
+#COPY ligo.opam /tmp/
+#COPY ligo.opam.locked /tmp/
+
 # Install native deps needed for Tezos (etc?)
 # Adapted from https://github.com/asbjornenge/tezos-docker
 RUN apk update && apk upgrade && apk --no-cache add \
@@ -9,19 +15,19 @@ RUN apk update && apk upgrade && apk --no-cache add \
   libffi-dev \
   opam cargo
 
-RUN opam init --disable-sandboxing --bare
-
 # make bls12-381 build ???
 ENV RUSTFLAGS='--codegen target-feature=-crt-static'
 
-# Install opam switch & deps
-WORKDIR /workspaces/ligolang
-# COPY scripts/setup_switch.sh /ligo/scripts/setup_switch.sh
-# COPY scripts/setup_dev_switch.sh /ligo/scripts/setup_dev_switch.sh
-RUN opam update && sh scripts/setup_dev_switch.sh
-# COPY scripts/install_opam_deps.sh /ligo/scripts/install_opam_deps.sh
-# COPY ligo.opam /ligo
-# COPY ligo.opam.locked /ligo
+#!!! RUN opam init --disable-sandboxing --bare -y
+
+
+
+# COPY /tmp/scripts/setup_switch.sh /tmp/scripts/setup_switch.sh
+# COPY /tmp/scripts/setup_dev_switch.sh /tmp/scripts/setup_dev_switch.sh
+#!!! RUN opam update && echo "Current directory: $(pwd), ls: $(ls)" && sh /tmp/scripts/setup_dev_switch.sh
+# COPY /tmp/scripts/install_opam_deps.sh /tmp/scripts/install_opam_deps.sh
+# COPY ligo.opam /tmp/
+# COPY ligo.opam.locked /tmp/
 # copy all vendor .opams... this lets us install all transitive deps,
 # but devs can change vendored code without invalidating the cache
 # COPY vendors/ParserLib/ParserLib.opam /ligo/vendors/ParserLib/ParserLib.opam
@@ -35,20 +41,20 @@ RUN opam update && sh scripts/setup_dev_switch.sh
 # COPY vendors/ligo-utils/memory-proto-alpha/tezos-memory-proto-alpha.opam /ligo/vendors/ligo-utils/memory-proto-alpha/tezos-memory-proto-alpha.opam
 # COPY vendors/ligo-utils/simple-utils/simple-utils.opam /ligo/vendors/ligo-utils/simple-utils/simple-utils.opam
 # COPY vendors/ligo-utils/ligo_008_PtEdo2Zk_test_helpers/ligo-008-PtEdo2Zk-test-helpers.opam /ligo/vendors/ligo-utils/ligo_008_PtEdo2Zk_test_helpers/ligo-008-PtEdo2Zk-test-helpers.opam
-RUN opam update && sh scripts/install_opam_deps.sh
+
+#!!! RUN opam update && echo "Current directory: $(pwd), ls: $(ls)" && sh /tmp/scripts/install_opam_deps.sh
 
 # Now install vendor libs
 # COPY vendors /ligo/vendors
-# COPY scripts/install_vendors_deps.sh /ligo/scripts/install_vendors_deps.sh
 # COPY ligo.opam /ligo
 # COPY ligo.opam.locked /ligo
-WORKDIR /ligo
-RUN sh scripts/install_vendors_deps.sh
+
+#!!! RUN echo "Current directory: $(pwd), ls: $(ls)" && sh /tmp/scripts/install_vendors_deps.sh
 
 # Install LIGO
 # COPY src /ligo/src
 # COPY dune-project /ligo/dune-project
-# COPY scripts/version.sh /ligo/scripts/version.sh
+# COPY /tmp/scripts/version.sh /tmp/scripts/version.sh
 # WORKDIR /ligo
 # Version info and changelog
 # ARG ci_commit_tag
@@ -59,7 +65,7 @@ RUN sh scripts/install_vendors_deps.sh
 # ENV CI_COMMIT_TIMESTAMP=$ci_commit_timestamp
 # COPY changelog.txt /ligo/changelog.txt
 # ENV CHANGELOG_PATH=/ligo/changelog.txt
-# RUN eval $(opam env) && LIGO_VERSION=$(/ligo/scripts/version.sh) dune build -p ligo --profile static
+# RUN eval $(opam env) && LIGO_VERSION=$(/tmp/scripts/version.sh) dune build -p ligo --profile static
 
 # Copy binary now to avoid problems with BISECT_ENABLE below
 # RUN cp /ligo/_build/install/default/bin/ligo /tmp/ligo
