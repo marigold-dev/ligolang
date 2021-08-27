@@ -6,10 +6,6 @@ FROM mcr.microsoft.com/vscode/devcontainers/base:0-${VARIANT}
 
 ARG USERNAME="vscode"
 
-# ** [Optional] Uncomment this section to install additional packages. **
-# RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-#     && apt-get -y install --no-install-recommends <your-package-list-here>
-
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     opam make pkg-config cargo libhidapi-dev libev-dev libgmp-dev libffi-dev
 
