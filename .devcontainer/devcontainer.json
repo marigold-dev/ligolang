@@ -5,7 +5,7 @@
 	// Sets the run context to one level up instead of the .devcontainer folder.
 	"context": "..",
 	// The location of the Dockerfile that defines the contents of the container. The path is relative to this folder.
-	"dockerFile": "Dockerfile",
+	"dockerFile": "../Dockerfile",
 	// Set *default* container specific settings.json values on container create.
 	"settings": {
 		"files.autoSave": "onFocusChange",
@@ -15,7 +15,7 @@
 		"git.autofetch": true,
 		"ocaml.sandbox": {
 			"kind": "opam",
-			"switch": "${containerWorkspaceFolder}"
+			"switch": "/ligo"
 		},
 		"indentRainbow.ignoreErrorLanguages": [
 			"*"
@@ -40,7 +40,7 @@
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
 	// Uncomment the next line to run commands after the container is created - for example installing curl.
-	"postCreateCommand": "./.devcontainer/setup_dev_env.sh",
+	// "postCreateCommand": "./.devcontainer/setup_dev_env.sh",
 	// Uncomment when using a ptrace-based debugger like C++, Go, and Rust
 	// "runArgs": [ "--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined" ],
 	// Uncomment to use the Docker CLI from inside the container. See https://aka.ms/vscode-remote/samples/docker-from-docker.
