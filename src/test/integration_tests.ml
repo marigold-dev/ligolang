@@ -3320,7 +3320,7 @@ let loop_bugs_ligo ~raise ~add_warning () : unit =
     let expected = e_string "toto" in
     expect_eq ~raise program "shadowing_assigned_in_body" input expected in
   ()
-
+ 
 let main = test_suite "Integration (End to End)"
   [
     test_w "simple1" simple1 ;

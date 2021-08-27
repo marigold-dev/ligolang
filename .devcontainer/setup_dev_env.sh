@@ -1,8 +1,15 @@
 opam init --disable-sandboxing --bare -y 
 
+echo "Setting up dev switch"
 opam update 
-sh ../scripts/setup_dev_switch.sh 
+./scripts/setup_dev_switch.sh 
+
+
+echo "Installing opam dependencies"
 opam update 
-sh ../scripts/install_opam_deps.sh 
+./scripts/install_opam_deps.sh 
+
+
+echo "Installing vendor dependencies"
 opam update 
-sh ../scripts/install_vendors_deps.sh
+./scripts/install_vendors_deps.sh

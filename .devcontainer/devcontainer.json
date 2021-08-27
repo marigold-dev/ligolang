@@ -15,7 +15,7 @@
 		"git.autofetch": true,
 		"ocaml.sandbox": {
 			"kind": "opam",
-			"switch": "${localWorkspaceFolder}"
+			"switch": "${containerWorkspaceFolder}"
 		},
 		"indentRainbow.ignoreErrorLanguages": [
 			"*"
@@ -23,7 +23,10 @@
 		"files.insertFinalNewline": true,
 		"terminal.integrated.commandsToSkipShell": [
 			"-workbench.action.toggleSidebarVisibility"
-		]
+		],
+		"files.watcherExclude": {
+			"_opam/**": true
+		}
 	},
 	// Add the IDs of extensions you want installed when the container is created.
 	"extensions": [
