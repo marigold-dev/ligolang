@@ -13,3 +13,7 @@ opam update
 echo "Installing vendor dependencies"
 opam update 
 ./scripts/install_vendors_deps.sh
+
+
+setup_opam="eval \`opam config env\` "
+echo $setup_opam >> ~/.bashrc
