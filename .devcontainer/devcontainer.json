@@ -5,7 +5,7 @@
 	// Sets the run context to one level up instead of the .devcontainer folder.
 	"context": "..",
 	// The location of the Dockerfile that defines the contents of the container. The path is relative to this folder.
-	"dockerFile": "../Dockerfile",
+	"dockerFile": "Dockerfile",
 	// Set *default* container specific settings.json values on container create.
 	"settings": {
 		"files.autoSave": "onFocusChange",
