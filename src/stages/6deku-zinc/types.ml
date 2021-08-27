@@ -6,9 +6,12 @@ type 'a zinc_instruction =
   | Access of int
   | Closure of 'a zinc
   | EndLet
+  (* zinc extensions *)
+  | Num of Z.t
   | Succ
-  | Num of int
+  (* named references *)
   | Ref of 'a
+
 and 'a zinc = 'a zinc_instruction list
 
-type program = (string * string zinc_instruction) list
+type program = (string * string zinc) list

@@ -6,5 +6,6 @@ module Of_typed = Of_typed
 module Of_imperative = Of_imperative
 module Of_michelson = Of_michelson
 module Of_mini_c = Of_mini_c
+module Zinc_of_typed = Zinc_of_typed
 module Utils = Utils
 module Helpers = Helpers
