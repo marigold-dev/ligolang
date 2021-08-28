@@ -5,17 +5,19 @@ let init_env = Environment.default Environment.Protocols.current
 
 let type_file f = type_file f Env options
 
-let simple1 ~raise ~add_warning () : unit =
-  let should_be = 42 in
-  let typed = type_file ~raise ~add_warning "./contracts/simple1.ligo" in
+let simple1 ~raise ~add_warning i v () : unit =
+  let contract = Printf.sprintf "./contracts/simple%d.ligo" i in
+  let typed = type_file ~raise ~add_warning contract in
   let zinc = Ligo_compile.Zinc_of_typed.compile ~raise (typed |> fst) in
   match zinc with
-  | [ ("i", [ Num x ]) ] when x = Z.of_int should_be -> ()
-  | [ ("i", [ Num x ]) ] ->
-      failwith
-        (Printf.sprintf
-           "zinc compilation seems a little wrong - got %s instead of %d"
-           (Z.to_string x) should_be)
-  | _ -> failwith "zinc compilation seems totally wrong"
+  | [ ("i", [ x ]) ] when x = v -> ()
+  | _ -> failwith (Printf.sprintf "zinc compilation of %s seems wrong" contract)
 
-let main = test_suite "Zinc tests" [ test_w "simple1" simple1 ]
+let main =
+  test_suite "Zinc tests"
+    [
+      test_w "simple1" (simple1 1 (Num (Z.of_int 42)));
+      test_w "simple2" (simple1 2 (Num (Z.of_int 42)));
+      test_w "simple3" (simple1 3 (Num (Z.of_int 42)));
+      test_w "simple4" (simple1 4 (Num (Z.of_int 42)));
+    ]

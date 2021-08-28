@@ -1,4 +1,8 @@
 type 'a zinc_instruction =
+  (* ====================
+     zinc core operations
+     ====================
+  *)
   | Grab
   | Return
   | PushRetAddr of 'a zinc
@@ -6,12 +10,38 @@ type 'a zinc_instruction =
   | Access of int
   | Closure of 'a zinc
   | EndLet
-  (* zinc extensions *)
+  (*
+     ===============
+     zinc extensions 
+     ===============
+  *)
+  (* math *)
   | Num of Z.t
   | Succ
-  (* named references *)
+  (* tezos_specific ops *)
+  | Address of string
+  (*
+     ================
+     named references
+     ================
+  *)
   | Ref of 'a
 
-and 'a zinc = 'a zinc_instruction list
+(* Need to set up ppx_import (https://github.com/ocaml-ppx/ppx_import#usage) to import `Z` with `pp` 
 
-type program = (string * string zinc) list
+[@@deriving show] 
+*)
+
+and 'a zinc = 'a zinc_instruction list 
+
+type program = (string * string zinc) list 
+
+module M = struct
+  type 'a myfpclass =
+    | FP_normal
+    | FP_subnormal
+    | FP_zero
+    | FP_infinite
+    | FP_nan
+  [@@deriving show]
+end

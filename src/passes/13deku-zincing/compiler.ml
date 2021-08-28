@@ -6,6 +6,7 @@ let compile_expression : AST.expression -> 'a Zinc.Types.zinc =
   | E_literal _literal -> (
       match _literal with
       | Literal_int x -> Zinc.Types.[ Num x ]
+      | Literal_address s -> Zinc.Types.[ Address s ]
       | _ -> failwith "literal type not supported")
   | E_constant _constant ->
       failwith "E_constant unimplemented"
