@@ -16,7 +16,7 @@ type 'a zinc_instruction =
      ===============
   *)
   (* math *)
-  | Num of Z.t
+  | Num of Z.t [@printer fun fmt v -> fprintf fmt "%s" (Z.to_string v)]
   | Succ
   (* tezos_specific ops *)
   | Address of string
@@ -26,15 +26,16 @@ type 'a zinc_instruction =
      ================
   *)
   | Ref of 'a
+[@@deriving show { with_path = false }, eq]
 
 (* Need to set up ppx_import (https://github.com/ocaml-ppx/ppx_import#usage) to import `Z` with `pp` 
 
-[@@deriving show] 
+
 *)
+and 'a zinc = 'a zinc_instruction list [@@deriving show { with_path = false }, eq]
 
-and 'a zinc = 'a zinc_instruction list 
-
-type program = (string * string zinc) list 
+type program = (string * string zinc) list
+[@@deriving show { with_path = false }, eq]
 
 module M = struct
   type 'a myfpclass =

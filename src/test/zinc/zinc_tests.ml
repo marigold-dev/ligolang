@@ -1,9 +1,21 @@
 open Test_helpers
-(* open Ast_imperative.Combinators *)
 
+(* Helpers *)
+
+(* Compiling *)
 let init_env = Environment.default Environment.Protocols.current
 
 let type_file f = type_file f Env options
+
+(* Alcotest setup *)
+(*
+let zinc_testable =
+  Alcotest.testable
+    (fun ppf zinc -> Fmt.pf ppf "%s" ((assert false) zinc))
+    (fun a b -> assert false)
+*)
+(* ================ *)
+(* Tests *)
 
 let simple1 ~raise ~add_warning i v () : unit =
   let contract = Printf.sprintf "./contracts/simple%d.ligo" i in
