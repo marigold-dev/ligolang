@@ -1,12 +1,7 @@
 (ocamllex md)
 
 (executables
- (names
-  test
-  doc_test
-  repl_test
-  parser_negative_tests
-  mydebugplease)
+ (names test doc_test repl_test parser_negative_tests mydebugplease)
  (libraries
   simple-utils
   tezos-memory-proto-alpha
@@ -71,3 +66,14 @@
   (run ./manual_test.exe))
  (deps
   (glob_files contracts/*)))
+
+(rule
+ (alias zinctest)
+ (action
+  (run ./test.exe test ".*Zinc.*"))
+ (deps
+  (glob_files contracts/*)
+  (:pos
+   (glob_files contracts/positive/*))
+  (glob_files contracts/negative/*)
+  (glob_files preprocessor/*)))

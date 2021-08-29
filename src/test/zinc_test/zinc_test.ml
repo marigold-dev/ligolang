@@ -1,3 +1,5 @@
+(* Use `dune build -w @zinctest --no-buffer` to run just the zinc tests! *)
+
 open Test_helpers
 
 (* Helpers *)
@@ -24,15 +26,15 @@ let program_testable =
 
 let expect_program = Alcotest.(check program_testable)
 
-let expect_compile_to ~raise ~add_warning contract_file output () =
+let expect_simple_compile_to ~raise ~add_warning contract_file output () =
   let to_zinc = to_zinc ~raise ~add_warning in
 
   let contract = Printf.sprintf "./contracts/%s.ligo" contract_file in
   let zinc = to_zinc contract in
   expect_program
     (Printf.sprintf "compiling %s" contract_file)
-    zinc
     [ ("i", [ output ]) ]
+    zinc
 
 (* ================ *)
 (* Tests *)
@@ -42,13 +44,13 @@ let expect_compile_to ~raise ~add_warning contract_file output () =
   | when x = v -> ()
   | _ -> failwith (Printf.sprintf "zinc compilation of %s seems wrong" contract)*)
 
-let simple_1 = expect_compile_to "simple1" (Num (Z.of_int 42))
+let simple_1 = expect_simple_compile_to "simple1" (Num (Z.of_int 42))
 
-let simple_2 = expect_compile_to "simple2" (Num (Z.of_int 42))
+let simple_2 = expect_simple_compile_to "simple2" (Num (Z.of_int 42))
 
-let simple_3 = expect_compile_to "simple3" (Num (Z.of_int 42))
+let simple_3 = expect_simple_compile_to "simple3" (Num (Z.of_int 42))
 
-let simple_4 = expect_compile_to "simple4" (Num (Z.of_int 42))
+let simple_4 = expect_simple_compile_to "simple4" (Num (Z.of_int 42))
 
 let main =
   test_suite "Zinc tests"
@@ -58,5 +60,3 @@ let main =
       test_w "simple3" simple_3;
       test_w "simple4" simple_4;
     ]
-
-
