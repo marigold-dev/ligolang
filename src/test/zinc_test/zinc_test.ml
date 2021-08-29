@@ -52,9 +52,17 @@ let simple_3 =
   expect_simple_compile_to "simple3"
     [ ("my_address", [ Address "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx" ]) ]
 
-(* let simple_4 =
+let simple_4 =
   expect_simple_compile_to "simple4"
-    [ ("my_option_string", [ Num (Z.of_int 42) ]) ] *)
+    [ ("my_option_string", [ Num (Z.of_int 42) ]) ]
+
+let chain_id =
+  expect_simple_compile_to "chain_id"
+    [ ("my_address", [ Address "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx" ]) ]
+
+let check_hash_key =
+  expect_simple_compile_to "check_hash_key"
+    [ ("my_address", [ Address "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx" ]) ]
 
 let main =
   test_suite "Zinc tests"
@@ -62,5 +70,7 @@ let main =
       test_w "simple1" simple_1;
       test_w "simple2" simple_2;
       test_w "simple3" simple_3;
-      (* test_w "simple4" simple_4; *)
+      test_w "simple4" simple_4;
+      test_w "chain_id" chain_id;
+      test_w "check_hash_key" check_hash_key;
     ]
