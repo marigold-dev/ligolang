@@ -1,16 +1,28 @@
 module AST = Ast_typed
 
-let compile_expression : AST.expression -> 'a Zinc.Types.zinc =
- fun expr ->
+let compile_expression : AST.expression -> AST.environment -> 'a Zinc.Types.zinc =
+ fun expr environment ->
   match expr.expression_content with
-  | E_literal _literal -> (
-      match _literal with
+  | E_literal literal -> (
+      match literal with
       | Literal_int x -> Zinc.Types.[ Num x ]
       | Literal_address s -> Zinc.Types.[ Address s ]
       | _ -> failwith "literal type not supported")
-  | E_constant _constant ->
-      failwith "E_constant unimplemented"
-      (* For language constants, like (Cons hd tl) or (plus i j) *)
+  | E_constant constant -> (
+      match constant.cons_name with
+      | C_BYTES_UNPACK ->
+        (* Need to get the type, convert it into some standard representation, then store it in the function call to be consumed by the interpreter. 
+           But I don't feel like doing this until the interpreter is integrated to some extent so it'll have to wait *)
+        let _ = environment.type_environment in 
+          failwith
+            (Printf.sprintf
+               "C_BYTES_UNPACK not supported. (Was provided %d arguments. Type \
+                was %s)" 
+               (List.length constant.arguments)
+               (Format.asprintf "%a" AST.PP.type_expression expr.type_expression))
+      | _ ->
+          failwith "Consant type not supported"
+          (* For language constants, like (Cons hd tl) or (plus i j) *))
   | E_variable _expression_variable -> failwith "E_variable unimplemented"
   | E_application _application -> failwith "E_application unimplemented"
   | E_lambda _lambda -> failwith "E_lambda unimplemented"
@@ -32,8 +44,8 @@ let compile_expression : AST.expression -> 'a Zinc.Types.zinc =
   | E_module_accessor _module_access ->
       failwith "E_module_accessor unimplemented"
 
-let compile_declaration : AST.declaration' -> string * 'a Zinc.Types.zinc =
- fun declaration ->
+let compile_declaration : AST.declaration' -> AST.environment -> string * 'a Zinc.Types.zinc =
+ fun declaration environment ->
   match declaration with
   | Declaration_constant declaration_constant ->
       let name =
@@ -41,13 +53,14 @@ let compile_declaration : AST.declaration' -> string * 'a Zinc.Types.zinc =
         | Some name -> name
         | None -> failwith "declaration with no name?"
       in
-      (name, compile_expression declaration_constant.expr)
+      (name, compile_expression declaration_constant.expr environment)
   | Declaration_type _declaration_type -> failwith "types not implemented yet"
   | Declaration_module _declaration_module ->
       failwith "modules not implemented yet"
   | Module_alias _module_alias -> failwith "module aliases not implemented yet"
 
-let compile_module : AST.module_fully_typed -> Zinc.Types.program =
- fun ast ->
-  let ast = match ast with Module_Fully_Typed a -> a in
-  List.map ast ~f:(fun wrapped -> compile_declaration wrapped.wrap_content)
+let compile_module :
+    AST.module_fully_typed * Ast_typed.environment -> Zinc.Types.program =
+ fun modul ->
+  let Module_Fully_Typed ast, env = modul in
+  List.map ast ~f:(fun wrapped -> compile_declaration wrapped.wrap_content env)

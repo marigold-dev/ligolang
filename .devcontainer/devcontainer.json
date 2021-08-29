@@ -27,7 +27,10 @@
 			"-workbench.action.toggleSidebarVisibility"
 		],
 		"files.watcherExclude": {
-			"_opam/**": true
+			"**/_opam/**": true,
+			"**/_build/**": true,
+			"**/changelog/**": true,
+			"**/gitlab-pages/**": true,
 		}
 	},
 	// Add the IDs of extensions you want installed when the container is created.
