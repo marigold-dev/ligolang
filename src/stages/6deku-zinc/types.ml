@@ -24,7 +24,8 @@ type 'a zinc_instruction =
   (* serialization *)
   | Pack
   | Unpack of Mini_c.Types.type_content
-      [@printer Mini_c.PP.type_content] [@equal fun a b -> a = b] (* @equal doesn't actually work here, the syntax seems to be totally ignored, no idea why *)
+      [@printer fun fmt v -> fprintf fmt "Unpack (%a)" Mini_c.PP.type_content v]
+      [@equal fun a b -> a = b] (* @equal doesn't actually work here, the syntax seems to be totally ignored, no idea why *)
   (* tezos_specific operations *)
   | Address of string
   (*

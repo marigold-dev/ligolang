@@ -3,6 +3,9 @@ module AST = Ast_typed
 
 (* Types defined in ../../stages/6deku-zinc/types.ml *)
 
+let compile_type ~raise t =
+  t |> Spilling.compile_type ~raise |> fun x -> x.type_content
+
 let tail_compile_expression :
     raise:Errors.zincing_error raise -> AST.expression -> 'a Zinc.Types.zinc =
  fun ~raise expr ->
@@ -13,25 +16,22 @@ let tail_compile_expression :
       | Literal_address s -> [ Address s ]
       | _ -> failwith "literal type not supported")
   | E_constant constant -> (
-      let type_expression = expr.type_expression in
-      let _x = Spilling.compile_type ~raise type_expression in
-      match (constant.cons_name, constant.arguments) with
-      (* | C_BYTES_UNPACK, [] -> [ Unpack ] *)
-      | C_BYTES_UNPACK, [ _argument ] ->
-          failwith
-            (Printf.sprintf
-               "C_BYTES_UNPACK not supported. (Was provided %d arguments. Type \
-                was `%s`)"
-               (List.length constant.arguments)
-               (Format.asprintf "%a" AST.PP.type_expression expr.type_expression))
-      | C_BYTES_UNPACK, args ->
-          failwith
-            (Printf.sprintf
-               "C_BYTES_UNPACK should take zero or one arguments, was provided \
-                %d. "
-               (List.length args))
-      | _ -> failwith "Consant type not supported"
-      (* For language constants, like (Cons hd tl) or (plus i j) *))
+      match constant.cons_name with
+      | C_BYTES_UNPACK -> (
+          match expr.type_expression.type_content with
+          | T_constant
+              { injection = Verbatim "option"; parameters = [ unpacking_type ] }
+            -> (
+              let compiled_type = compile_type ~raise unpacking_type in
+              match constant.arguments with
+              | [] ->
+                  [ Unpack compiled_type ]
+                  (* actually I think this is wrong, need to return to the sacred texts *)
+              | _ -> [ Unpack compiled_type ])
+          | _ ->
+              failwith
+                "Incomprehensible type when processing an unpack expression!")
+      | _ -> failwith "Consant type not supported")
   | E_variable _expression_variable -> failwith "E_variable unimplemented"
   | E_application _application -> failwith "E_application unimplemented"
   | E_lambda _lambda -> failwith "E_lambda unimplemented"
