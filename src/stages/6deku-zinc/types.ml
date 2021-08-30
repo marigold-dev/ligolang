@@ -15,7 +15,7 @@ type 'a zinc_instruction =
   | EndLet
   (*
      ===============
-     zinc extensions 
+     zinc extensions
      ===============
   *)
   (* math *)

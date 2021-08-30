@@ -27,7 +27,7 @@ let tail_compile_expression :
               | [] ->
                   [ Unpack compiled_type ]
                   (* actually I think this is wrong, need to return to the sacred texts *)
-              | _ -> [ Unpack compiled_type ])
+              | _ -> failwith "just need to remember how lambdas work again")
           | _ ->
               failwith
                 "Incomprehensible type when processing an unpack expression!")
