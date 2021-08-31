@@ -43,18 +43,25 @@ let expect_simple_compile_to ~raise ~add_warning contract_file
   | _ -> failwith (Printf.sprintf "zinc compilation of %s seems wrong" contract)*)
 
 let simple_1 =
-  expect_simple_compile_to "simple1" [ ("i", [ Num (Z.of_int 42) ]) ]
+  expect_simple_compile_to "simple1" [ ("i", [ Num (Z.of_int 42); Return ]) ]
 
 let simple_2 =
-  expect_simple_compile_to "simple2" [ ("i", [ Num (Z.of_int 42) ]) ]
+  expect_simple_compile_to "simple2" [ ("i", [ Num (Z.of_int 42); Return ]) ]
 
 let simple_3 =
   expect_simple_compile_to "simple3"
-    [ ("my_address", [ Address "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx" ]) ]
+    [
+      ("my_address", [ Address "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx"; Return ]);
+    ]
 
 let simple_4 =
   expect_simple_compile_to "simple4"
-    [ ("my_option_string", [ Num (Z.of_int 42) ]) ]
+    [
+      ( "my_option_string",
+        [
+          Bytes (Bytes.of_string "\202\254\186\190"); Unpack (T_base TB_string);
+        ] );
+    ]
 
 let chain_id =
   expect_simple_compile_to "chain_id"

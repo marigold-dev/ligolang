@@ -6,32 +6,48 @@ module AST = Ast_typed
 let compile_type ~raise t =
   t |> Spilling.compile_type ~raise |> fun x -> x.type_content
 
-let tail_compile_expression :
+let rec tail_compile :
     raise:Errors.zincing_error raise -> AST.expression -> 'a Zinc.Types.zinc =
  fun ~raise expr ->
+  let compile_function tail_compiled_func args =
+    let rec comp l =
+      match l with
+      | [] -> tail_compiled_func
+      | arg :: args -> other_compile ~raise ~k:(comp args) arg
+    in
+    args |> List.rev |> comp
+  in
+
   match expr.expression_content with
-  | E_literal literal -> (
-      match literal with
-      | Literal_int x -> [ Num x ]
-      | Literal_address s -> [ Address s ]
-      | _ -> failwith "literal type not supported")
   | E_constant constant -> (
       match constant.cons_name with
       | C_BYTES_UNPACK -> (
           match expr.type_expression.type_content with
           | T_constant
               { injection = Verbatim "option"; parameters = [ unpacking_type ] }
-            -> (
+            ->
               let compiled_type = compile_type ~raise unpacking_type in
-              match constant.arguments with
-              | [] ->
-                  [ Unpack compiled_type ]
-                  (* actually I think this is wrong, need to return to the sacred texts *)
-              | _ -> failwith "just need to remember how lambdas work again")
+              compile_function [ Unpack compiled_type ] constant.arguments
           | _ ->
               failwith
                 "Incomprehensible type when processing an unpack expression!")
       | _ -> failwith "Consant type not supported")
+  | _ -> other_compile ~raise ~k:[ Return ] expr
+
+and other_compile :
+    raise:Errors.zincing_error raise ->
+    AST.expression ->
+    k:'a Zinc.Types.zinc ->
+    'a Zinc.Types.zinc =
+ fun ~raise:_ expr ~k ->
+  match expr.expression_content with
+  | E_literal literal -> (
+      match literal with
+      | Literal_int x -> Num x :: k
+      | Literal_address s -> Address s :: k
+      | Literal_bytes b -> Bytes b :: k
+      | _ -> failwith "literal type not supported")
+  | E_constant _constant -> failwith "E_constant unimplemented"
   | E_variable _expression_variable -> failwith "E_variable unimplemented"
   | E_application _application -> failwith "E_application unimplemented"
   | E_lambda _lambda -> failwith "E_lambda unimplemented"
@@ -53,11 +69,6 @@ let tail_compile_expression :
   | E_module_accessor _module_access ->
       failwith "E_module_accessor unimplemented"
 
-and other_compile_expression :
-    raise:Errors.zincing_error raise -> AST.expression -> 'a Zinc.Types.zinc =
- fun ~raise:_ _expr ->
-  failwith "compiling non-tail calls is currently unimplemented"
-
 let compile_declaration :
     raise:Errors.zincing_error raise ->
     AST.declaration' ->
@@ -70,7 +81,7 @@ let compile_declaration :
         | Some name -> name
         | None -> failwith "declaration with no name?"
       in
-      (name, tail_compile_expression ~raise declaration_constant.expr)
+      (name, tail_compile ~raise declaration_constant.expr)
   | Declaration_type _declaration_type -> failwith "types not implemented yet"
   | Declaration_module _declaration_module ->
       failwith "modules not implemented yet"

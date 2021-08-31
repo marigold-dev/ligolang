@@ -22,6 +22,7 @@ type 'a zinc_instruction =
   | Num of Z.t [@printer fun fmt v -> fprintf fmt "%s" (Z.to_string v)]
   | Succ
   (* serialization *)
+  | Bytes of bytes
   | Pack
   | Unpack of Mini_c.Types.type_content
       [@printer fun fmt v -> fprintf fmt "Unpack (%a)" Mini_c.PP.type_content v]

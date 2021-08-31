@@ -138,4 +138,4 @@ and anon_function = { binder : expression_variable; body : expression }
 
 and program = toplevel_statement list
 
-let equal_type_content a b = a = b (* Sorry, ugly hack to make ppx_deriving work in ../6deku-zinc/types.ml *)
+let equal_type_content a b = a = b (* Sorry, ugly hack to make ppx_deriving work in ../6deku-zinc/types.ml details here https://tezos-dev.slack.com/archives/G01EW205H1A/p1630364669036900 *)
