@@ -21,20 +21,11 @@ let rec tail_compile :
   in
 
   match expr.expression_content with
-  | E_constant constant -> (
-      match constant.cons_name with
-      | C_BYTES_UNPACK -> (
-          match expr.type_expression.type_content with
-          | T_constant
-              { injection = Verbatim "option"; parameters = [ unpacking_type ] }
-            ->
-              let compiled_type = compile_type ~raise unpacking_type in
-              compile_function ~return:true [ Unpack compiled_type ]
-                constant.arguments
-          | _ ->
-              failwith
-                "Incomprehensible type when processing an unpack expression!")
-      | _ -> failwith "Consant type not supported")
+  | E_constant constant ->
+      let compiled_constant =
+        compile_constant ~raise constant expr.type_expression
+      in
+      compile_function ~return:true [ compiled_constant ] constant.arguments
   | _ -> other_compile ~raise ~k:[ Return ] expr
 
 and other_compile :
@@ -71,6 +62,24 @@ and other_compile :
   | E_record_update _record_update -> failwith "E_record_update unimplemented"
   | E_module_accessor _module_access ->
       failwith "E_module_accessor unimplemented"
+
+and compile_constant :
+    raise:Errors.zincing_error raise ->
+    AST.constant ->
+    AST.type_expression ->
+    'a Zinc.Types.zinc_instruction =
+ fun ~raise constant type_expression ->
+  match constant.cons_name with
+  | C_BYTES_UNPACK -> (
+      match type_expression.type_content with
+      | T_constant
+          { injection = Verbatim "option"; parameters = [ unpacking_type ] } ->
+          let compiled_type = compile_type ~raise unpacking_type in
+          Unpack compiled_type
+      | _ ->
+          failwith "Incomprehensible type when processing an unpack expression!"
+      )
+  | _ -> failwith "Consant type not supported"
 
 let compile_declaration :
     raise:Errors.zincing_error raise ->
