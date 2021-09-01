@@ -14,7 +14,7 @@ let empty_environment = { top_level_lets = (); binders = [] }
 let add_binder x = function
   | { top_level_lets; binders } -> { top_level_lets; binders = x :: binders }
 
-let compile_type ~raise t =
+let compile_type ~(raise : Errors.zincing_error raise) t =
   t |> Spilling.compile_type ~raise |> fun x -> x.type_content
 
 let rec tail_compile :
@@ -26,25 +26,16 @@ let rec tail_compile :
   let tail_compile = tail_compile ~raise in
   let other_compile = other_compile ~raise in
   (* Helper function for compiling function applications *)
-  let compile_function_application ?return:(ret = false) tail_compiled_func args
-      =
+  let _compile_function_application tail_compiled_func args =
     let rec comp l =
       match l with
-      | [] ->
-          if ret then List.append tail_compiled_func Zinc.Types.[ Return ]
-          else tail_compiled_func
+      | [] -> tail_compiled_func
       | arg :: args -> other_compile environment ~k:(comp args) arg
     in
     args |> List.rev |> comp
   in
 
   match expr.expression_content with
-  | E_constant constant ->
-      let compiled_constant =
-        compile_constant ~raise constant expr.type_expression
-      in
-      compile_function_application ~return:true [ compiled_constant ]
-        constant.arguments
   | E_lambda lambda ->
       Grab
       ::
@@ -66,7 +57,17 @@ and other_compile :
     AST.expression ->
     k:'a Zinc.Types.zinc ->
     'a Zinc.Types.zinc =
- fun ~raise:_ _environment expr ~k ->
+ fun ~raise environment expr ~k ->
+  let other_compile = other_compile ~raise in
+  let _compile_pattern_matching = compile_pattern_matching ~raise in
+  let compile_function_application compiled_func args =
+    let rec comp l =
+      match l with
+      | [] -> compiled_func
+      | arg :: args -> other_compile environment ~k:(comp args) arg
+    in
+    args |> List.rev |> comp
+  in
   match expr.expression_content with
   | E_literal literal -> (
       match literal with
@@ -74,7 +75,11 @@ and other_compile :
       | Literal_address s -> Address s :: k
       | Literal_bytes b -> Bytes b :: k
       | _ -> failwith "literal type not supported")
-  | E_constant _constant -> failwith "E_constant unimplemented"
+  | E_constant constant ->
+      let compiled_constant =
+        compile_constant ~raise constant expr.type_expression
+      in
+      compile_function_application (compiled_constant :: k) constant.arguments
   | E_variable _expression_variable -> failwith "E_variable unimplemented"
   | E_application _application -> failwith "E_application unimplemented"
   | E_lambda _lambda -> failwith "E_lambda unimplemented"
@@ -87,7 +92,8 @@ and other_compile :
   (* Variant *)
   | E_constructor _constructor ->
       failwith "E_constructor unimplemented" (* For user defined constructors *)
-  | E_matching _matching -> failwith "E_matching unimplemented"
+  | E_matching _matching -> failwith "working on pattern matching!"
+  (* compile_pattern_matching matching *)
   (* Record *)
   | E_record _expression_label_map -> failwith "E_record unimplemented"
   | E_record_accessor _record_accessor ->
@@ -116,6 +122,26 @@ and compile_constant :
   | name ->
       failwith
         (Format.asprintf "Unsupported constant: %a" AST.PP.constant' name)
+
+and compile_pattern_matching :
+    raise:Errors.zincing_error raise ->
+    compile_function_application:
+      (AST.expression ->
+      AST.expression list ->
+      'a Zinc.Types.zinc_instruction list) ->
+    AST.matching ->
+    'a Zinc.Types.zinc =
+ fun ~raise ~compile_function_application:_ to_match ->
+  let compile_type = compile_type ~raise in
+  let compiled_type = compile_type to_match.matchee.type_expression in
+  match (compiled_type, to_match.cases) with
+  (* | T_tuple t, Match_record matching_content_record -> compile_function_application to_match.matchee to_match *)
+  | _ ->
+      failwith
+        (Format.asprintf
+           "E_matching unimplemented. Need to implement matching for %a"
+           Mini_c.PP.type_content
+           (compile_type to_match.matchee.type_expression))
 
 let compile_declaration :
     raise:Errors.zincing_error raise ->
