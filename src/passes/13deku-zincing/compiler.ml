@@ -58,16 +58,9 @@ and other_compile :
     k:'a Zinc.Types.zinc ->
     'a Zinc.Types.zinc =
  fun ~raise environment expr ~k ->
-  let other_compile = other_compile ~raise in
+  let _other_compile = other_compile ~raise in
   let _compile_pattern_matching = compile_pattern_matching ~raise in
-  let compile_function_application compiled_func args =
-    let rec comp l =
-      match l with
-      | [] -> compiled_func
-      | arg :: args -> other_compile environment ~k:(comp args) arg
-    in
-    args |> List.rev |> comp
-  in
+  let compile_function_application = compile_function_application ~raise in
   match expr.expression_content with
   | E_literal literal -> (
       match literal with
@@ -76,10 +69,11 @@ and other_compile :
       | Literal_bytes b -> Bytes b :: k
       | _ -> failwith "literal type not supported")
   | E_constant constant ->
-      let compiled_constant =
-        compile_constant ~raise constant expr.type_expression
+      let compile_constant c =
+        compile_constant ~raise expr.type_expression c :: k
       in
-      compile_function_application (compiled_constant :: k) constant.arguments
+      compile_function_application ~function_compiler:compile_constant
+        environment constant constant.arguments
   | E_variable _expression_variable -> failwith "E_variable unimplemented"
   | E_application _application -> failwith "E_application unimplemented"
   | E_lambda _lambda -> failwith "E_lambda unimplemented"
@@ -104,10 +98,10 @@ and other_compile :
 
 and compile_constant :
     raise:Errors.zincing_error raise ->
-    AST.constant ->
     AST.type_expression ->
+    AST.constant ->
     'a Zinc.Types.zinc_instruction =
- fun ~raise constant type_expression ->
+ fun ~raise type_expression constant ->
   match constant.cons_name with
   | C_BYTES_UNPACK -> (
       match type_expression.type_content with
@@ -122,6 +116,21 @@ and compile_constant :
   | name ->
       failwith
         (Format.asprintf "Unsupported constant: %a" AST.PP.constant' name)
+
+and compile_function_application :
+    raise:Errors.zincing_error raise ->
+    function_compiler:('f -> 'a Zinc.Types.zinc) ->
+    environment ->
+    'f ->
+    AST.expression list ->
+    'a Zinc.Types.zinc_instruction list =
+ fun ~raise ~function_compiler environment compiled_func args ->
+  let rec comp l =
+    match l with
+    | [] -> function_compiler compiled_func
+    | arg :: args -> other_compile ~raise environment ~k:(comp args) arg
+  in
+  args |> List.rev |> comp
 
 and compile_pattern_matching :
     raise:Errors.zincing_error raise ->
