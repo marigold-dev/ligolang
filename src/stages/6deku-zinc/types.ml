@@ -29,6 +29,7 @@ type 'a zinc_instruction =
       [@equal fun a b -> a = b] (* @equal doesn't actually work here, the syntax seems to be totally ignored, no idea why *)
   (* tezos_specific operations *)
   | Address of string
+  | Chain_ID
   (*
      ================
      named references
@@ -42,13 +43,3 @@ and 'a zinc = 'a zinc_instruction list
 
 type program = (string * string zinc) list
 [@@deriving show { with_path = false }, eq]
-
-module M = struct
-  type 'a myfpclass =
-    | FP_normal
-    | FP_subnormal
-    | FP_zero
-    | FP_infinite
-    | FP_nan
-  [@@deriving show]
-end

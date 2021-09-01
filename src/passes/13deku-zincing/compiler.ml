@@ -3,19 +3,37 @@ module AST = Ast_typed
 
 (* Types defined in ../../stages/6deku-zinc/types.ml *)
 
+type environment = {
+  top_level_lets : unit;
+  (* not implemented yet, so this is just a placeholder *)
+  binders : AST.expression_ Var.t list;
+}
+
+let empty_environment = { top_level_lets = (); binders = [] }
+
+let add_binder x = function
+  | { top_level_lets; binders } -> { top_level_lets; binders = x :: binders }
+
 let compile_type ~raise t =
   t |> Spilling.compile_type ~raise |> fun x -> x.type_content
 
 let rec tail_compile :
-    raise:Errors.zincing_error raise -> AST.expression -> 'a Zinc.Types.zinc =
- fun ~raise expr ->
-  let compile_function ?return:(ret = false) tail_compiled_func args =
+    raise:Errors.zincing_error raise ->
+    environment ->
+    AST.expression ->
+    'a Zinc.Types.zinc =
+ fun ~raise environment expr ->
+  let tail_compile = tail_compile ~raise in
+  let other_compile = other_compile ~raise in
+  (* Helper function for compiling function applications *)
+  let compile_function_application ?return:(ret = false) tail_compiled_func args
+      =
     let rec comp l =
       match l with
       | [] ->
           if ret then List.append tail_compiled_func Zinc.Types.[ Return ]
           else tail_compiled_func
-      | arg :: args -> other_compile ~raise ~k:(comp args) arg
+      | arg :: args -> other_compile environment ~k:(comp args) arg
     in
     args |> List.rev |> comp
   in
@@ -25,15 +43,30 @@ let rec tail_compile :
       let compiled_constant =
         compile_constant ~raise constant expr.type_expression
       in
-      compile_function ~return:true [ compiled_constant ] constant.arguments
-  | _ -> other_compile ~raise ~k:[ Return ] expr
+      compile_function_application ~return:true [ compiled_constant ]
+        constant.arguments
+  | E_lambda lambda ->
+      Grab
+      ::
+      tail_compile
+        (environment |> add_binder lambda.binder.wrap_content)
+        lambda.result
+  | E_let_in let_in ->
+      let result_compiled =
+        tail_compile
+          (environment |> add_binder let_in.let_binder.wrap_content)
+          let_in.let_result
+      in
+      other_compile environment ~k:(Grab :: result_compiled) let_in.rhs
+  | _ -> other_compile environment ~k:[ Return ] expr
 
 and other_compile :
     raise:Errors.zincing_error raise ->
+    environment ->
     AST.expression ->
     k:'a Zinc.Types.zinc ->
     'a Zinc.Types.zinc =
- fun ~raise:_ expr ~k ->
+ fun ~raise:_ _environment expr ~k ->
   match expr.expression_content with
   | E_literal literal -> (
       match literal with
@@ -79,13 +112,20 @@ and compile_constant :
       | _ ->
           failwith "Incomprehensible type when processing an unpack expression!"
       )
-  | _ -> failwith "Consant type not supported"
+  | C_CHAIN_ID -> Chain_ID
+  | name ->
+      failwith
+        (Format.asprintf "Unsupported constant: %a" AST.PP.constant' name)
 
 let compile_declaration :
     raise:Errors.zincing_error raise ->
     AST.declaration' ->
     string * 'a Zinc.Types.zinc =
  fun ~raise declaration ->
+  let () =
+    Printf.printf "\nConverting declaration:\n%s\n"
+      (Format.asprintf "%a" Ast_typed.PP.declaration declaration)
+  in
   match declaration with
   | Declaration_constant declaration_constant ->
       let name =
@@ -93,7 +133,7 @@ let compile_declaration :
         | Some name -> name
         | None -> failwith "declaration with no name?"
       in
-      (name, tail_compile ~raise declaration_constant.expr)
+      (name, tail_compile empty_environment ~raise declaration_constant.expr)
   | Declaration_type _declaration_type -> failwith "types not implemented yet"
   | Declaration_module _declaration_module ->
       failwith "modules not implemented yet"

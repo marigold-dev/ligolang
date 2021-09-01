@@ -2939,7 +2939,7 @@ let simple4 ~raise ~add_warning () : unit =
   expect_eq_evaluate ~raise program "my_string_option" (e_string "hello")
 
 let chain_id ~raise ~add_warning () : unit =
-  let program = type_file ~raise ~add_warning "./contracts/chain_id.ligo" in
+  let program = type_file ~raise ~add_warning "./contracts/chain_id_func.ligo" in
   let pouet = Tezos_crypto.Base58.simple_encode
     Tezos_base__TzPervasives.Chain_id.b58check_encoding
     Tezos_base__TzPervasives.Chain_id.zero in
