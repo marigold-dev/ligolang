@@ -59,7 +59,9 @@ let simple_4 =
     [
       ( "my_option_string",
         [
-          Bytes (Bytes.of_string "\202\254\186\190"); Unpack (T_base TB_string);
+          Bytes (Bytes.of_string "\202\254\186\190");
+          Unpack (T_base TB_string);
+          Return;
         ] );
     ]
 

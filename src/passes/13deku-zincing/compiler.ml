@@ -9,10 +9,12 @@ let compile_type ~raise t =
 let rec tail_compile :
     raise:Errors.zincing_error raise -> AST.expression -> 'a Zinc.Types.zinc =
  fun ~raise expr ->
-  let compile_function tail_compiled_func args =
+  let compile_function ?return:(ret = false) tail_compiled_func args =
     let rec comp l =
       match l with
-      | [] -> tail_compiled_func
+      | [] ->
+          if ret then List.append tail_compiled_func Zinc.Types.[ Return ]
+          else tail_compiled_func
       | arg :: args -> other_compile ~raise ~k:(comp args) arg
     in
     args |> List.rev |> comp
@@ -27,7 +29,8 @@ let rec tail_compile :
               { injection = Verbatim "option"; parameters = [ unpacking_type ] }
             ->
               let compiled_type = compile_type ~raise unpacking_type in
-              compile_function [ Unpack compiled_type ] constant.arguments
+              compile_function ~return:true [ Unpack compiled_type ]
+                constant.arguments
           | _ ->
               failwith
                 "Incomprehensible type when processing an unpack expression!")
