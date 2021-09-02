@@ -1,4 +1,5 @@
 open Trace
+open Zinc.Types
 module AST = Ast_typed
 
 (* Types defined in ../../stages/6deku-zinc/types.ml *)
@@ -18,24 +19,12 @@ let compile_type ~(raise : Errors.zincing_error raise) t =
   t |> Spilling.compile_type ~raise |> fun x -> x.type_content
 
 let rec tail_compile :
-    raise:Errors.zincing_error raise ->
-    environment ->
-    AST.expression ->
-    'a Zinc.Types.zinc =
+    raise:Errors.zincing_error raise -> environment -> AST.expression -> 'a zinc
+    =
  fun ~raise environment expr ->
-  let () = print_endline (Format.asprintf "%a" AST.PP.expression expr) in
+  let () = print_endline (Format.asprintf "tail compile: %a" AST.PP.expression expr) in
   let tail_compile = tail_compile ~raise in
   let other_compile = other_compile ~raise in
-  (* Helper function for compiling function applications *)
-  let _compile_function_application tail_compiled_func args =
-    let rec comp l =
-      match l with
-      | [] -> tail_compiled_func
-      | arg :: args -> other_compile environment ~k:(comp args) arg
-    in
-    args |> List.rev |> comp
-  in
-
   match expr.expression_content with
   | E_lambda lambda ->
       Grab
@@ -56,10 +45,11 @@ and other_compile :
     raise:Errors.zincing_error raise ->
     environment ->
     AST.expression ->
-    k:'a Zinc.Types.zinc ->
-    'a Zinc.Types.zinc =
+    k:'a zinc ->
+    'a zinc =
  fun ~raise environment expr ~k ->
-  let () = print_endline (Format.asprintf "%a" AST.PP.expression expr) in
+  let open AST.Types in
+  let () = print_endline (Format.asprintf "other compile: %a" AST.PP.expression expr) in
   let _other_compile = other_compile ~raise in
   let _compile_pattern_matching = compile_pattern_matching ~raise in
   let compile_type = compile_type ~raise in
@@ -77,7 +67,10 @@ and other_compile :
       in
       compile_function_application ~raise ~function_compiler:compile_constant
         environment constant constant.arguments
-  | E_variable _expression_variable -> failwith "E_variable unimplemented"
+  | E_variable { wrap_content = var } -> (
+      match Utils.find_index var environment.binders with
+      | None -> failwith "variable not found in binder!"
+      | Some index -> Access index :: k)
   | E_application _application -> failwith "E_application unimplemented"
   | E_lambda _lambda -> failwith "E_lambda unimplemented"
   | E_recursive _recursive -> failwith "E_recursive unimplemented"
@@ -113,7 +106,7 @@ and compile_constant :
     raise:Errors.zincing_error raise ->
     AST.type_expression ->
     AST.constant ->
-    'a Zinc.Types.zinc_instruction =
+    'a zinc_instruction =
  fun ~raise type_expression constant ->
   match constant.cons_name with
   | C_BYTES_UNPACK -> (
@@ -133,11 +126,11 @@ and compile_constant :
 and compile_function_application :
       'f.
       raise:Errors.zincing_error raise ->
-      function_compiler:('f -> 'a Zinc.Types.zinc) ->
+      function_compiler:('f -> 'a zinc) ->
       environment ->
       'f ->
       AST.expression list ->
-      'a Zinc.Types.zinc_instruction list =
+      'a zinc_instruction list =
  fun ~raise ~function_compiler environment compiled_func args ->
   let rec comp l =
     match l with
@@ -149,11 +142,9 @@ and compile_function_application :
 and compile_pattern_matching :
     raise:Errors.zincing_error raise ->
     compile_function_application:
-      (AST.expression ->
-      AST.expression list ->
-      'a Zinc.Types.zinc_instruction list) ->
+      (AST.expression -> AST.expression list -> 'a zinc_instruction list) ->
     AST.matching ->
-    'a Zinc.Types.zinc =
+    'a zinc =
  fun ~raise ~compile_function_application:_ to_match ->
   let compile_type = compile_type ~raise in
   let compiled_type = compile_type to_match.matchee.type_expression in
@@ -167,9 +158,7 @@ and compile_pattern_matching :
            (compile_type to_match.matchee.type_expression))
 
 let compile_declaration :
-    raise:Errors.zincing_error raise ->
-    AST.declaration' ->
-    string * 'a Zinc.Types.zinc =
+    raise:Errors.zincing_error raise -> AST.declaration' -> string * 'a zinc =
  fun ~raise declaration ->
   let () =
     Printf.printf "\nConverting declaration:\n%s\n"
@@ -189,9 +178,7 @@ let compile_declaration :
   | Module_alias _module_alias -> failwith "module aliases not implemented yet"
 
 let compile_module :
-    raise:Errors.zincing_error raise ->
-    AST.module_fully_typed ->
-    Zinc.Types.program =
+    raise:Errors.zincing_error raise -> AST.module_fully_typed -> program =
  fun ~raise modul ->
   let (Module_Fully_Typed ast) = modul in
   List.map ast ~f:(fun wrapped ->

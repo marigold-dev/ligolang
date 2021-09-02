@@ -66,7 +66,7 @@ let simple_4 =
     ]
 
 let id =
-  expect_simple_compile_to "id_func" [ ("id_func", [ Grab; Access 0; Return ]) ]
+  expect_simple_compile_to "id_func" [ ("id", [ Grab; Access 0; Return ]) ]
 
 let chain_id =
   expect_simple_compile_to "chain_id" [ ("chain_id", [ Chain_ID; Return ]) ]
@@ -77,7 +77,8 @@ let chain_id_func =
 
 let tuple_creation =
   expect_simple_compile_to "tuple_creation"
-    [ ("dup", [ Grab; Chain_ID; Return ]) ]
+    [ ("dup", [Grab; (Access 0); (Access 0); (MakeRecord Stage_common.Types.[(Label "0", (T_base TB_int)); (Label "1", (T_base TB_int))]);
+    Return]) ]
 
 let check_hash_key =
   expect_simple_compile_to "key_hash"
@@ -93,6 +94,6 @@ let main =
       test_w "id" id;
       test_w "chain_id" chain_id;
       test_w "chain_id_func" chain_id_func;
-      (*test_w "tuple_creation" tuple_creation;
-      test_w "check_hash_key" check_hash_key;*)
+      test_w "tuple_creation" tuple_creation;
+      (*test_w "check_hash_key" check_hash_key;*)
     ]
