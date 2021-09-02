@@ -72,6 +72,10 @@ let chain_id_func =
   expect_simple_compile_to "chain_id_func"
     [ ("chain_id", [ Grab; Chain_ID; Return ]) ]
 
+let tuple_creation =
+  expect_simple_compile_to "tuple_creation"
+    [ ("dup", [ Grab; Chain_ID; Return ]) ]
+
 let check_hash_key =
   expect_simple_compile_to "key_hash"
     [ ("my_address", [ Address "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx" ]) ]
@@ -85,5 +89,6 @@ let main =
       test_w "simple4" simple_4;
       test_w "chain_id" chain_id;
       test_w "chain_id_func" chain_id_func;
-      test_w "check_hash_key" check_hash_key;
+      test_w "tuple_creation" tuple_creation;
+      (*test_w "check_hash_key" check_hash_key;*)
     ]

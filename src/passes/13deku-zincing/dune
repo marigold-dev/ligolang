@@ -3,7 +3,7 @@
  (public_name ligo.zincing)
  (instrumentation
   (backend bisect_ppx))
- (libraries zinc ast_typed spilling)
+ (libraries zinc ast_typed spilling stage_common simple-utils)
  (inline_tests)
  (preprocess
   (pps ppx_expect))

@@ -89,7 +89,13 @@ and other_compile :
   | E_matching _matching -> failwith "working on pattern matching!"
   (* compile_pattern_matching matching *)
   (* Record *)
-  | E_record _expression_label_map -> failwith "E_record unimplemented"
+  | E_record _expression_label_map -> failwith "E_record unimplemented"(*
+      let open Zinc.Types in
+      let open Stage_common.Types.LMap in
+      let keys =
+        fold (fun key value acc -> (key, value) :: acc) expression_label_map []
+      in
+      List.concat [ [ Grab ]; compile_function_application ~function_compiler:(failwith "whatever") environment (failwith "whatever") (failwith "whatever"); k ] *)
   | E_record_accessor _record_accessor ->
       failwith "E_record_accessor unimplemented"
   | E_record_update _record_update -> failwith "E_record_update unimplemented"
