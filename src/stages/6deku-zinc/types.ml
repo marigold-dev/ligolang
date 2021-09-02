@@ -20,21 +20,26 @@ type 'a zinc_instruction =
   *)
   (* ASTs *)
   | MakeRecord of
-      (Mini_c.Types.type_content Stage_common.Types.label_map
-      [@equal Stage_common.Types.LMap.equal (fun a b -> a = b)])
-      [@printer
-        fun fmt ->
-          fprintf fmt "%a"
-            (Stage_common.PP.record_sep_expr Mini_c.PP.type_content
-               (Simple_utils.PP_helpers.const ""))]
+      ((Stage_common.Types.label
+       [@equal
+         fun (Stage_common.Types.Label a) (Stage_common.Types.Label b) ->
+           String.equal a b]
+       [@printer
+         fun fmt -> function Stage_common.Types.Label s -> fprintf fmt "%s" s])
+      * (Mini_c.Types.type_content
+        [@equal fun a b -> a = b]
+        [@printer fun fmt -> fprintf fmt "(%a)" Mini_c.PP.type_content]))
+      list
   (* math *)
   | Num of Z.t [@printer fun fmt v -> fprintf fmt "%s" (Z.to_string v)]
   | Succ
   (* serialization *)
   | Bytes of bytes
   | Pack
-  | Unpack of (Mini_c.Types.type_content[@equal fun a b -> a = b])
-      [@printer fun fmt -> fprintf fmt "Unpack (%a)" Mini_c.PP.type_content]
+  | Unpack of
+      (Mini_c.Types.type_content
+      [@equal fun a b -> a = b]
+      [@printer fun fmt -> fprintf fmt "(%a)" Mini_c.PP.type_content])
   (* tezos_specific operations *)
   | Address of string
   | Chain_ID

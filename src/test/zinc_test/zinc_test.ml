@@ -65,6 +65,9 @@ let simple_4 =
         ] );
     ]
 
+let id =
+  expect_simple_compile_to "id_func" [ ("id_func", [ Grab; Access 0; Return ]) ]
+
 let chain_id =
   expect_simple_compile_to "chain_id" [ ("chain_id", [ Chain_ID; Return ]) ]
 
@@ -87,8 +90,9 @@ let main =
       test_w "simple2" simple_2;
       test_w "simple3" simple_3;
       test_w "simple4" simple_4;
+      test_w "id" id;
       test_w "chain_id" chain_id;
       test_w "chain_id_func" chain_id_func;
-      test_w "tuple_creation" tuple_creation;
-      (*test_w "check_hash_key" check_hash_key;*)
+      (*test_w "tuple_creation" tuple_creation;
+      test_w "check_hash_key" check_hash_key;*)
     ]

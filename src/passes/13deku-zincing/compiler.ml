@@ -23,6 +23,7 @@ let rec tail_compile :
     AST.expression ->
     'a Zinc.Types.zinc =
  fun ~raise environment expr ->
+  let () = print_endline (Format.asprintf "%a" AST.PP.expression expr) in
   let tail_compile = tail_compile ~raise in
   let other_compile = other_compile ~raise in
   (* Helper function for compiling function applications *)
@@ -58,9 +59,11 @@ and other_compile :
     k:'a Zinc.Types.zinc ->
     'a Zinc.Types.zinc =
  fun ~raise environment expr ~k ->
+  let () = print_endline (Format.asprintf "%a" AST.PP.expression expr) in
   let _other_compile = other_compile ~raise in
   let _compile_pattern_matching = compile_pattern_matching ~raise in
-  let compile_function_application = compile_function_application ~raise in
+  let compile_type = compile_type ~raise in
+  (* let compile_function_application = compile_function_application ~raise in *)
   match expr.expression_content with
   | E_literal literal -> (
       match literal with
@@ -72,7 +75,7 @@ and other_compile :
       let compile_constant c =
         compile_constant ~raise expr.type_expression c :: k
       in
-      compile_function_application ~function_compiler:compile_constant
+      compile_function_application ~raise ~function_compiler:compile_constant
         environment constant constant.arguments
   | E_variable _expression_variable -> failwith "E_variable unimplemented"
   | E_application _application -> failwith "E_application unimplemented"
@@ -89,13 +92,17 @@ and other_compile :
   | E_matching _matching -> failwith "working on pattern matching!"
   (* compile_pattern_matching matching *)
   (* Record *)
-  | E_record _expression_label_map -> failwith "E_record unimplemented"(*
+  | E_record expression_label_map ->
       let open Zinc.Types in
-      let open Stage_common.Types.LMap in
-      let keys =
-        fold (fun key value acc -> (key, value) :: acc) expression_label_map []
-      in
-      List.concat [ [ Grab ]; compile_function_application ~function_compiler:(failwith "whatever") environment (failwith "whatever") (failwith "whatever"); k ] *)
+      let open Stage_common.Types in
+      let bindings = LMap.bindings expression_label_map in
+      compile_function_application ~raise
+        ~function_compiler:(fun z -> MakeRecord z :: k)
+        environment
+        (List.map
+           ~f:(fun (k, value) -> (k, compile_type value.type_expression))
+           bindings)
+        (List.map ~f:(fun (_, value) -> value) bindings)
   | E_record_accessor _record_accessor ->
       failwith "E_record_accessor unimplemented"
   | E_record_update _record_update -> failwith "E_record_update unimplemented"
@@ -124,12 +131,13 @@ and compile_constant :
         (Format.asprintf "Unsupported constant: %a" AST.PP.constant' name)
 
 and compile_function_application :
-    raise:Errors.zincing_error raise ->
-    function_compiler:('f -> 'a Zinc.Types.zinc) ->
-    environment ->
-    'f ->
-    AST.expression list ->
-    'a Zinc.Types.zinc_instruction list =
+      'f.
+      raise:Errors.zincing_error raise ->
+      function_compiler:('f -> 'a Zinc.Types.zinc) ->
+      environment ->
+      'f ->
+      AST.expression list ->
+      'a Zinc.Types.zinc_instruction list =
  fun ~raise ~function_compiler environment compiled_func args ->
   let rec comp l =
     match l with
@@ -165,7 +173,7 @@ let compile_declaration :
  fun ~raise declaration ->
   let () =
     Printf.printf "\nConverting declaration:\n%s\n"
-      (Format.asprintf "%a" Ast_typed.PP.declaration declaration)
+      (Format.asprintf "%a" AST.PP.declaration declaration)
   in
   match declaration with
   | Declaration_constant declaration_constant ->
