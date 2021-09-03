@@ -49,6 +49,9 @@ type 'a zinc_instruction =
   (* math *)
   | Num of Z.t [@printer fun fmt v -> fprintf fmt "%s" (Z.to_string v)]
   | Succ
+  | Eq
+  (* Crypto *)
+  | HashKey
   (* serialization *)
   | Bytes of bytes
   | Pack
@@ -58,7 +61,7 @@ type 'a zinc_instruction =
       [@printer fun fmt -> fprintf fmt "(%a)" Mini_c.PP.type_content])
   (* tezos_specific operations *)
   | Address of string
-  | Chain_ID
+  | ChainID
   (*
      ================
      named references

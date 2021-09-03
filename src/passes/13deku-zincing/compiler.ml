@@ -33,8 +33,8 @@ let rec tail_compile :
   let tail_compile = tail_compile ~raise in
   let other_compile = other_compile ~raise in
   let compile_let environment ~let':name ~equal:value ~in':expression =
-    let result_compiled = tail_compile environment value in
-    other_compile (environment |> add_binder name)  ~k:(Grab :: result_compiled) expression
+    let result_compiled = tail_compile (environment |> add_binder name)  expression in
+    other_compile environment ~k:(Grab :: result_compiled) value
   in
   match expr.expression_content with
   | E_lambda lambda ->
@@ -67,9 +67,9 @@ and other_compile :
   let compile_type = compile_type ~raise in
   let compile_let environment ~let':name ~equal:value ~in':expression =
     let result_compiled =
-      other_compile environment value ~k:(EndLet :: k)
+      other_compile (environment |> add_binder name) expression  ~k:(EndLet :: k)
     in
-    other_compile (environment |> add_binder name) ~k:(Grab :: result_compiled) expression
+    other_compile environment ~k:(Grab :: result_compiled) value
   in
   (* let compile_function_application = compile_function_application ~raise in *)
   match expr.expression_content with
@@ -144,7 +144,9 @@ and compile_constant :
       | _ ->
           failwith "Incomprehensible type when processing an unpack expression!"
       )
-  | C_CHAIN_ID -> Chain_ID
+  | C_CHAIN_ID -> ChainID
+  | C_HASH_KEY -> HashKey
+  | C_EQ -> Eq
   | name ->
       failwith
         (Format.asprintf "Unsupported constant: %a" AST.PP.constant' name)

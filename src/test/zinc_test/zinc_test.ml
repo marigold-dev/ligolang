@@ -69,20 +69,58 @@ let id =
   expect_simple_compile_to "id_func" [ ("id", [ Grab; Access 0; Return ]) ]
 
 let chain_id =
-  expect_simple_compile_to "chain_id" [ ("chain_id", [ Chain_ID; Return ]) ]
+  expect_simple_compile_to "chain_id" [ ("chain_id", [ ChainID; Return ]) ]
 
 let chain_id_func =
   expect_simple_compile_to "chain_id_func"
-    [ ("chain_id", [ Grab; Chain_ID; Return ]) ]
+    [ ("chain_id", [ Grab; ChainID; Return ]) ]
 
 let tuple_creation =
   expect_simple_compile_to "tuple_creation"
-    [ ("dup", [Grab; (Access 0); (Access 0); (MakeRecord Stage_common.Types.[(Label "0", (T_base TB_int)); (Label "1", (T_base TB_int))]);
-    Return]) ]
+    [
+      ( "dup",
+        [
+          Grab;
+          Access 0;
+          Access 0;
+          MakeRecord
+            Stage_common.Types.
+              [ (Label "0", T_base TB_int); (Label "1", T_base TB_int) ];
+          Return;
+        ] );
+    ]
 
 let check_hash_key =
   expect_simple_compile_to "key_hash"
-    [ ("my_address", [ Address "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx" ]) ]
+    [
+      ( "check_hash_key",
+        [
+          Grab;
+          Access 0;
+          Grab;
+          Access 0;
+          Grab;
+          Access 0;
+          RecordAccess (Label "1");
+          Grab;
+          Access 1;
+          RecordAccess (Label "0");
+          Grab;
+          Access 1;
+          HashKey;
+          Grab;
+          Access 0;
+          Access 0;
+          Access 1;
+          Eq;
+          MakeRecord [ (Label "0", T_base TB_bool); (Label "1", T_base TB_key_hash) ];
+          EndLet;
+          EndLet;
+          EndLet;
+          EndLet;
+          Return;
+        ] );
+    ]
 
 let main =
   test_suite "Zinc tests"
