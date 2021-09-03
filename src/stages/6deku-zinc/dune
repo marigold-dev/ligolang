@@ -3,7 +3,7 @@
  (public_name ligo.zinc)
  (instrumentation
   (backend bisect_ppx))
- (libraries simple-utils tezos-utils stage_common mini_c)
+ (libraries simple-utils tezos-utils stage_common ast_typed mini_c)
  (inline_tests)
  (preprocess
   (pps ppx_expect ppx_deriving.show ppx_deriving.ord ppx_deriving.eq))

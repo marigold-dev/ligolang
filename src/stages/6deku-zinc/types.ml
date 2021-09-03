@@ -20,7 +20,6 @@ let pp_type_content
       'a) fmt =
   fprintf fmt "(%a)" Mini_c.PP.type_content
 
-
 type 'a zinc_instruction =
   (* ====================
      zinc core operations
@@ -48,7 +47,7 @@ type 'a zinc_instruction =
   | RecordAccess of
       (Stage_common.Types.label[@equal equal_label] [@printer pp_label fprintf])
   (* math *)
-  | Num of (Z.t [@printer fun fmt v -> fprintf fmt "%s" (Z.to_string v)])
+  | Num of (Z.t[@printer fun fmt v -> fprintf fmt "%s" (Z.to_string v)])
   | Succ
   | Eq
   (* Crypto *)
@@ -80,5 +79,10 @@ type 'a zinc_instruction =
 and 'a zinc = 'a zinc_instruction list
 [@@deriving show { with_path = false }, eq]
 
-type program = (string * string zinc) list
+type zinc_m_instruction = string zinc_instruction
+[@@deriving show { with_path = false }, eq]
+
+type zinc_m = string zinc [@@deriving show { with_path = false }, eq]
+
+type program = (string * zinc_m) list
 [@@deriving show { with_path = false }, eq]

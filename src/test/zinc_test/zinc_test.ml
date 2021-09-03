@@ -127,7 +127,12 @@ let check_hash_key =
     ]
 
 let basic_function_application =
-  expect_simple_compile_to ~reason:true "basic_function_application" [ ("a", [(Num (Z.of_int 3)); Grab; (Access 0); Return])]
+  expect_simple_compile_to ~reason:true "basic_function_application"
+    [ ("a", [ Num (Z.of_int 3); Grab; Access 0; Return ]) ]
+
+let basic_link =
+  expect_simple_compile_to ~reason:true "basic_link"
+    [ ("a", [(Num (Z.of_int 1)); Return]); ("b", [(Link "a")])]
 
 let main =
   test_suite "Zinc tests"
@@ -142,4 +147,5 @@ let main =
       test_w "tuple_creation" tuple_creation;
       test_w "check_hash_key" check_hash_key;
       test_w "basic_function_application" basic_function_application;
+      test_w "basic_link" basic_link;
     ]

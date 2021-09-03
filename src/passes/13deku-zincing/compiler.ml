@@ -6,17 +6,23 @@ open Ast_typed.Types
 (* Types defined in ../../stages/6deku-zinc/types.ml *)
 
 type environment = {
-  top_level_lets : unit;
+  top_level_lets : AST.module_variable list;
   (* not implemented yet, so this is just a placeholder *)
   binders : AST.expression_ Var.t list;
 }
 
-let empty_environment = { top_level_lets = (); binders = [] }
+let empty_environment = { top_level_lets = []; binders = [] }
 
 (*** Adds a binder to the environment. 
      For example, in `let a=b in c`, `a` is a binder and it needs to be added to the environment when compiling `c` *)
 let add_binder x = function
   | { top_level_lets; binders } -> { top_level_lets; binders = x :: binders }
+
+(*** Adds a declaration name to the environment. 
+     For example, in `let a=b; let c=d;`, `a` is a declaration name and it needs to be added to the environment when compiling `d` *)
+let add_declaration_name x = function
+  | { top_level_lets; binders } ->
+      { top_level_lets = x :: top_level_lets; binders }
 
 (*** Compiles a type from the ast_typed representation to mini-c's, which is substantially simpler and more useful for us *)
 let compile_type ~(raise : Errors.zincing_error raise) t =
@@ -25,7 +31,7 @@ let compile_type ~(raise : Errors.zincing_error raise) t =
 (*** For optimization purposes, we have one function for compiling expressions in the "tail position" and another for 
      compiling everything else. *)
 let rec tail_compile :
-    raise:Errors.zincing_error raise -> environment -> AST.expression -> 'a zinc
+    raise:Errors.zincing_error raise -> environment -> AST.expression -> zinc_m
     =
  fun ~raise environment expr ->
   let () =
@@ -74,8 +80,8 @@ and other_compile :
     raise:Errors.zincing_error raise ->
     environment ->
     AST.expression ->
-    k:'a zinc ->
-    'a zinc =
+    k:zinc_m ->
+    zinc_m =
  fun ~raise environment expr ~k ->
   let () =
     print_endline
@@ -118,12 +124,16 @@ and other_compile :
       compile_known_function_application environment
         (compile_constant constant :: k)
         constant.arguments
-  | E_variable variable -> (
-      match Utils.find_index variable.wrap_content environment.binders with
-      | None ->
-          failwith
-            (Format.asprintf "binder %a not found in environment!"
-               AST.PP.expression_variable variable)
+  | E_variable ({ wrap_content = variable; location = _ } as binder) -> (
+      match Utils.find_index variable environment.binders with
+      | None -> (
+          let name = Simple_utils.Var.to_name variable in
+          match Utils.find_index name environment.top_level_lets with
+          | Some _ -> [ Link name ]
+          | _ ->
+              failwith
+                (Format.asprintf "binder %a not found in environment!"
+                   AST.PP.expression_variable binder))
       | Some index -> Access index :: k)
   (* TODO: function applications are disagregated in typed_ast, this defeats the whole purpose of using zinc, need to fix this *)
   | E_application { lamb; args } ->
@@ -169,7 +179,7 @@ and compile_constant :
     raise:Errors.zincing_error raise ->
     AST.type_expression ->
     AST.constant ->
-    'a zinc_instruction =
+    zinc_m_instruction =
  fun ~raise type_expression constant ->
   match constant.cons_name with
   | C_BYTES_UNPACK -> (
@@ -196,9 +206,9 @@ and compile_constant :
 and compile_known_function_application :
     raise:Errors.zincing_error raise ->
     environment ->
-    'a zinc ->
+    zinc_m ->
     AST.expression list ->
-    'a zinc_instruction list =
+    zinc_m =
  fun ~raise environment compiled_func args ->
   let rec comp l =
     match l with
@@ -209,9 +219,9 @@ and compile_known_function_application :
 
 and compile_pattern_matching :
     raise:Errors.zincing_error raise ->
-    compile_expression:(AST.expression -> 'a zinc_instruction list) ->
+    compile_expression:(AST.expression -> zinc_m) ->
     AST.matching ->
-    'a zinc =
+    zinc_m =
  fun ~raise ~compile_expression to_match ->
   let compile_type = compile_type ~raise in
   let compiled_type = compile_type to_match.matchee.type_expression in
@@ -283,8 +293,11 @@ and compile_pattern_matching :
            (compile_type to_match.matchee.type_expression))
 
 let compile_declaration :
-    raise:Errors.zincing_error raise -> AST.declaration' -> string * 'a zinc =
- fun ~raise declaration ->
+    raise:Errors.zincing_error raise ->
+    environment ->
+    AST.declaration' ->
+    string * zinc_m =
+ fun ~raise environment declaration ->
   let () =
     Printf.printf "\nConverting declaration:\n%s\n"
       (Format.asprintf "%a" AST.PP.declaration declaration)
@@ -296,7 +309,7 @@ let compile_declaration :
         | Some name -> name
         | None -> failwith "declaration with no name?"
       in
-      (name, tail_compile empty_environment ~raise declaration_constant.expr)
+      (name, tail_compile environment ~raise declaration_constant.expr)
   | Declaration_type _declaration_type -> failwith "types not implemented yet"
   | Declaration_module _declaration_module ->
       failwith "modules not implemented yet"
@@ -306,5 +319,13 @@ let compile_module :
     raise:Errors.zincing_error raise -> AST.module_fully_typed -> program =
  fun ~raise modul ->
   let (Module_Fully_Typed ast) = modul in
-  List.map ast ~f:(fun wrapped ->
-      compile_declaration ~raise wrapped.wrap_content)
+  let _, compiled =
+    List.fold ~init:(empty_environment, [])
+      ~f:(fun (environment, declarations) wrapped ->
+        let ((name, _) as compiled) =
+          compile_declaration ~raise environment wrapped.wrap_content
+        in
+        (environment |> add_declaration_name name, compiled :: declarations))
+      ast
+  in
+  compiled |> List.rev
