@@ -10,7 +10,7 @@
 		}
 	},
 	"settings": {
-		"files.autoSave": "onFocusChange",
+		"files.autoSave": "afterDelay",
 		"editor.formatOnSave": true,
 		"editor.formatOnPaste": true,
 		"editor.tabSize": 2,
