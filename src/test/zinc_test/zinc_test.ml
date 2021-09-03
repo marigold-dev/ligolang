@@ -127,7 +127,7 @@ let check_hash_key =
     ]
 
 let basic_function_application =
-  expect_simple_compile_to ~reason:true "basic_function_application" [ ("a", []) ]
+  expect_simple_compile_to ~reason:true "basic_function_application" [ ("a", [(Num (Z.of_int 3)); Grab; (Access 0); Return])]
 
 let main =
   test_suite "Zinc tests"

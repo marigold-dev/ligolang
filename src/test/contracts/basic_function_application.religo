@@ -1,1 +1,1 @@
-let add = ((delta : int) => delta)(3);
+let a = ((delta : int) => delta)(3);

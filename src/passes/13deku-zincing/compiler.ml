@@ -13,12 +13,17 @@ type environment = {
 
 let empty_environment = { top_level_lets = (); binders = [] }
 
+(*** Adds a binder to the environment. 
+     For example, in `let a=b in c`, `a` is a binder and it needs to be added to the environment when compiling `c` *)
 let add_binder x = function
   | { top_level_lets; binders } -> { top_level_lets; binders = x :: binders }
 
+(*** Compiles a type from the ast_typed representation to mini-c's, which is substantially simpler and more useful for us *)
 let compile_type ~(raise : Errors.zincing_error raise) t =
   t |> Spilling.compile_type ~raise |> fun x -> x.type_content
 
+(*** For optimization purposes, we have one function for compiling expressions in the "tail position" and another for 
+     compiling everything else. *)
 let rec tail_compile :
     raise:Errors.zincing_error raise -> environment -> AST.expression -> 'a zinc
     =
@@ -38,12 +43,15 @@ let rec tail_compile :
     in
     other_compile environment ~k:(Grab :: result_compiled) value
   in
+  let compile_known_function_application =
+    compile_known_function_application ~raise
+  in
+  let compile_function_application ~function_compiler environment expr args =
+    compile_known_function_application environment
+      (function_compiler environment expr)
+      args
+  in
 
-  (*let compile_function_application ~function_compiler environment expr args =
-      compile_known_function_application ~raise environment
-        (function_compiler environment expr)
-        args
-    in*)
   match expr.expression_content with
   | E_lambda lambda ->
       Grab
@@ -54,8 +62,14 @@ let rec tail_compile :
   | E_let_in { let_binder; rhs; let_result } ->
       compile_let environment ~let':let_binder.wrap_content ~equal:rhs
         ~in':let_result
+  (* TODO: function applications are disagregated in typed_ast, this defeats the whole purpose of using zinc, need to fix this *)
+  | E_application { lamb; args } ->
+      compile_function_application ~function_compiler:tail_compile environment
+        lamb [ args ]
   | _ -> other_compile environment ~k:[ Return ] expr
 
+(*** For optimization purposes, we have one function for compiling expressions in the "tail position" and another for 
+     compiling everything else. *)
 and other_compile :
     raise:Errors.zincing_error raise ->
     environment ->
@@ -111,6 +125,7 @@ and other_compile :
             (Format.asprintf "binder %a not found in environment!"
                AST.PP.expression_variable variable)
       | Some index -> Access index :: k)
+  (* TODO: function applications are disagregated in typed_ast, this defeats the whole purpose of using zinc, need to fix this *)
   | E_application { lamb; args } ->
       compile_function_application ~function_compiler:other_compile environment
         lamb [ args ] ~k
@@ -173,6 +188,11 @@ and compile_constant :
       failwith
         (Format.asprintf "Unsupported constant: %a" AST.PP.constant' name)
 
+(*** This is for "known function"s, which is what we call functions whos definition is known at compile time. Compare to 
+     functions such as `f` in `List.map` - inside the function `List.map`, `f` could be anything. The important difference
+     is that we know how many arguments known functions take before doing any actual work. This function assumes that you've 
+     ensured that you've passed exactly that many arguments, and if you don't the generated code will be wrong. Since you can
+     only ensure that for known functions, it's called `compile_known_function_application`. *)
 and compile_known_function_application :
     raise:Errors.zincing_error raise ->
     environment ->
