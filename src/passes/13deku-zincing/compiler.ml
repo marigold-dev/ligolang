@@ -24,13 +24,17 @@ let rec tail_compile :
     =
  fun ~raise environment expr ->
   let () =
-    print_endline (Format.asprintf "tail compile: %a" AST.PP.expression expr)
+    print_endline
+      (Format.asprintf "tail compile: %a / %s" AST.PP.expression expr
+         (environment.binders
+         |> List.map ~f:(Format.asprintf "%a" Var.pp)
+         |> String.concat ","))
   in
   let tail_compile = tail_compile ~raise in
   let other_compile = other_compile ~raise in
   let compile_let environment ~let':name ~equal:value ~in':expression =
-    let result_compiled = tail_compile (environment |> add_binder name) value in
-    other_compile environment ~k:(Grab :: result_compiled) expression
+    let result_compiled = tail_compile environment value in
+    other_compile (environment |> add_binder name)  ~k:(Grab :: result_compiled) expression
   in
   match expr.expression_content with
   | E_lambda lambda ->
@@ -52,16 +56,20 @@ and other_compile :
     'a zinc =
  fun ~raise environment expr ~k ->
   let () =
-    print_endline (Format.asprintf "other compile: %a" AST.PP.expression expr)
+    print_endline
+      (Format.asprintf "other compile: %a / %s" AST.PP.expression expr
+         (environment.binders
+         |> List.map ~f:(Format.asprintf "%a" Var.pp)
+         |> String.concat ","))
   in
   let other_compile = other_compile ~raise in
   let compile_pattern_matching = compile_pattern_matching ~raise in
   let compile_type = compile_type ~raise in
   let compile_let environment ~let':name ~equal:value ~in':expression =
     let result_compiled =
-      other_compile (environment |> add_binder name) value ~k:(EndLet :: k)
+      other_compile environment value ~k:(EndLet :: k)
     in
-    other_compile environment ~k:(Grab :: result_compiled) expression
+    other_compile (environment |> add_binder name) ~k:(Grab :: result_compiled) expression
   in
   (* let compile_function_application = compile_function_application ~raise in *)
   match expr.expression_content with
@@ -77,9 +85,12 @@ and other_compile :
       in
       compile_function_application ~raise ~function_compiler:compile_constant
         environment constant constant.arguments
-  | E_variable { wrap_content = var } -> (
-      match Utils.find_index var environment.binders with
-      | None -> failwith "variable not found in binder!"
+  | E_variable variable -> (
+      match Utils.find_index variable.wrap_content environment.binders with
+      | None ->
+          failwith
+            (Format.asprintf "binder %a not found in environment!"
+               AST.PP.expression_variable variable)
       | Some index -> Access index :: k)
   | E_application _application -> failwith "E_application unimplemented"
   | E_lambda _lambda -> failwith "E_lambda unimplemented"
@@ -109,8 +120,10 @@ and other_compile :
            ~f:(fun (k, value) -> (k, compile_type value.type_expression))
            bindings)
         (List.map ~f:(fun (_, value) -> value) bindings)
-  | E_record_accessor _record_accessor ->
-      failwith "E_record_accessor unimplemented"
+  | E_record_accessor { record; path } ->
+      compile_function_application ~raise
+        ~function_compiler:(fun label -> RecordAccess label :: k)
+        environment path [ record ]
   | E_record_update _record_update -> failwith "E_record_update unimplemented"
   | E_module_accessor _module_access ->
       failwith "E_module_accessor unimplemented"
@@ -204,7 +217,22 @@ and compile_pattern_matching :
                  type_expression = to_match.matchee.type_expression;
                })
       in
-      compile_expression lettified
+      let lettified =
+        {
+          expression_content =
+            E_let_in
+              {
+                let_binder = { wrap_content = fresh; location = loc };
+                rhs = to_match.matchee;
+                let_result = lettified;
+                inline = false;
+              };
+          type_expression = to_match.matchee.type_expression;
+          location = loc;
+        }
+      in
+      let () = print_endline "constructed, recursing..." in
+      lettified |> compile_expression
   | _ ->
       failwith
         (Format.asprintf
