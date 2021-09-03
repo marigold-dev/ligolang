@@ -26,11 +26,14 @@ let program_testable =
 
 let expect_program = Alcotest.(check program_testable)
 
-let expect_simple_compile_to ~raise ~add_warning contract_file
-    (output : Zinc.Types.program) () =
+let expect_simple_compile_to ?reason:(enabled = false) ~raise ~add_warning
+    contract_file (output : Zinc.Types.program) () =
   let to_zinc = to_zinc ~raise ~add_warning in
 
-  let contract = Printf.sprintf "./contracts/%s.ligo" contract_file in
+  let contract =
+    Printf.sprintf "./contracts/%s.%s" contract_file
+      (if enabled then "religo" else "ligo")
+  in
   let zinc = to_zinc contract in
   expect_program (Printf.sprintf "compiling %s" contract_file) output zinc
 
@@ -113,7 +116,8 @@ let check_hash_key =
           Access 0;
           Access 1;
           Eq;
-          MakeRecord [ (Label "0", T_base TB_bool); (Label "1", T_base TB_key_hash) ];
+          MakeRecord
+            [ (Label "0", T_base TB_bool); (Label "1", T_base TB_key_hash) ];
           EndLet;
           EndLet;
           EndLet;
@@ -121,6 +125,9 @@ let check_hash_key =
           Return;
         ] );
     ]
+
+let basic_function_application =
+  expect_simple_compile_to ~reason:true "basic_function_application" [ ("a", []) ]
 
 let main =
   test_suite "Zinc tests"
@@ -134,4 +141,5 @@ let main =
       test_w "chain_id_func" chain_id_func;
       test_w "tuple_creation" tuple_creation;
       test_w "check_hash_key" check_hash_key;
+      test_w "basic_function_application" basic_function_application;
     ]

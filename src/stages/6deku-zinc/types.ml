@@ -20,6 +20,7 @@ let pp_type_content
       'a) fmt =
   fprintf fmt "(%a)" Mini_c.PP.type_content
 
+
 type 'a zinc_instruction =
   (* ====================
      zinc core operations
@@ -47,13 +48,19 @@ type 'a zinc_instruction =
   | RecordAccess of
       (Stage_common.Types.label[@equal equal_label] [@printer pp_label fprintf])
   (* math *)
-  | Num of Z.t [@printer fun fmt v -> fprintf fmt "%s" (Z.to_string v)]
+  | Num of (Z.t [@printer fun fmt v -> fprintf fmt "%s" (Z.to_string v)])
   | Succ
   | Eq
   (* Crypto *)
   | HashKey
   (* serialization *)
   | Bytes of bytes
+  (*
+  Thinking of replacing pack/unpack with this
+  | Ty of ty
+  | Set_global
+  | Get_global
+  *)
   | Pack
   | Unpack of
       (Mini_c.Types.type_content
@@ -67,7 +74,7 @@ type 'a zinc_instruction =
      named references
      ================
   *)
-  | Ref of 'a
+  | Link of 'a
 [@@deriving show { with_path = false }, eq]
 
 and 'a zinc = 'a zinc_instruction list

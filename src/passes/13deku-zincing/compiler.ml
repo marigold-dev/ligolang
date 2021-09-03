@@ -25,7 +25,7 @@ let rec tail_compile :
  fun ~raise environment expr ->
   let () =
     print_endline
-      (Format.asprintf "tail compile: %a / %s" AST.PP.expression expr
+      (Format.asprintf "tail compile: %a / env: %s" AST.PP.expression expr
          (environment.binders
          |> List.map ~f:(Format.asprintf "%a" Var.pp)
          |> String.concat ","))
@@ -33,9 +33,17 @@ let rec tail_compile :
   let tail_compile = tail_compile ~raise in
   let other_compile = other_compile ~raise in
   let compile_let environment ~let':name ~equal:value ~in':expression =
-    let result_compiled = tail_compile (environment |> add_binder name)  expression in
+    let result_compiled =
+      tail_compile (environment |> add_binder name) expression
+    in
     other_compile environment ~k:(Grab :: result_compiled) value
   in
+
+  (*let compile_function_application ~function_compiler environment expr args =
+      compile_known_function_application ~raise environment
+        (function_compiler environment expr)
+        args
+    in*)
   match expr.expression_content with
   | E_lambda lambda ->
       Grab
@@ -57,21 +65,33 @@ and other_compile :
  fun ~raise environment expr ~k ->
   let () =
     print_endline
-      (Format.asprintf "other compile: %a / %s" AST.PP.expression expr
+      (Format.asprintf "other compile: %a / ~k:%s / env: %s" AST.PP.expression
+         expr
+         (Zinc.Types.show_zinc (fun _ -> failwith "fix me!") k)
          (environment.binders
          |> List.map ~f:(Format.asprintf "%a" Var.pp)
          |> String.concat ","))
   in
+  let tail_compile = tail_compile ~raise in
   let other_compile = other_compile ~raise in
   let compile_pattern_matching = compile_pattern_matching ~raise in
   let compile_type = compile_type ~raise in
   let compile_let environment ~let':name ~equal:value ~in':expression =
     let result_compiled =
-      other_compile (environment |> add_binder name) expression  ~k:(EndLet :: k)
+      other_compile (environment |> add_binder name) expression ~k:(EndLet :: k)
     in
     other_compile environment ~k:(Grab :: result_compiled) value
   in
-  (* let compile_function_application = compile_function_application ~raise in *)
+  let compile_known_function_application =
+    compile_known_function_application ~raise
+  in
+  let compile_function_application ~function_compiler environment expr args ~k =
+    PushRetAddr k
+    ::
+    compile_known_function_application environment
+      (function_compiler environment expr ~k:[ Apply ])
+      args
+  in
   match expr.expression_content with
   | E_literal literal -> (
       match literal with
@@ -80,11 +100,10 @@ and other_compile :
       | Literal_bytes b -> Bytes b :: k
       | _ -> failwith "literal type not supported")
   | E_constant constant ->
-      let compile_constant c =
-        compile_constant ~raise expr.type_expression c :: k
-      in
-      compile_function_application ~raise ~function_compiler:compile_constant
-        environment constant constant.arguments
+      let compile_constant = compile_constant ~raise expr.type_expression in
+      compile_known_function_application environment
+        (compile_constant constant :: k)
+        constant.arguments
   | E_variable variable -> (
       match Utils.find_index variable.wrap_content environment.binders with
       | None ->
@@ -92,8 +111,12 @@ and other_compile :
             (Format.asprintf "binder %a not found in environment!"
                AST.PP.expression_variable variable)
       | Some index -> Access index :: k)
-  | E_application _application -> failwith "E_application unimplemented"
-  | E_lambda _lambda -> failwith "E_lambda unimplemented"
+  | E_application { lamb; args } ->
+      compile_function_application ~function_compiler:other_compile environment
+        lamb [ args ] ~k
+  | E_lambda { binder = { wrap_content = binder }; result } ->
+      Closure (Grab :: tail_compile (environment |> add_binder binder) result)
+      :: k
   | E_recursive _recursive -> failwith "E_recursive unimplemented"
   | E_let_in { let_binder; rhs; let_result } ->
       compile_let environment ~let':let_binder.wrap_content ~equal:rhs
@@ -113,17 +136,16 @@ and other_compile :
   | E_record expression_label_map ->
       let open Stage_common.Types in
       let bindings = LMap.bindings expression_label_map in
-      compile_function_application ~raise
-        ~function_compiler:(fun z -> MakeRecord z :: k)
-        environment
-        (List.map
-           ~f:(fun (k, value) -> (k, compile_type value.type_expression))
-           bindings)
+      compile_known_function_application environment
+        (MakeRecord
+           (List.map
+              ~f:(fun (k, value) -> (k, compile_type value.type_expression))
+              bindings)
+         :: k)
         (List.map ~f:(fun (_, value) -> value) bindings)
   | E_record_accessor { record; path } ->
-      compile_function_application ~raise
-        ~function_compiler:(fun label -> RecordAccess label :: k)
-        environment path [ record ]
+      compile_known_function_application environment (RecordAccess path :: k)
+        [ record ]
   | E_record_update _record_update -> failwith "E_record_update unimplemented"
   | E_module_accessor _module_access ->
       failwith "E_module_accessor unimplemented"
@@ -151,18 +173,16 @@ and compile_constant :
       failwith
         (Format.asprintf "Unsupported constant: %a" AST.PP.constant' name)
 
-and compile_function_application :
-      'f.
-      raise:Errors.zincing_error raise ->
-      function_compiler:('f -> 'a zinc) ->
-      environment ->
-      'f ->
-      AST.expression list ->
-      'a zinc_instruction list =
- fun ~raise ~function_compiler environment compiled_func args ->
+and compile_known_function_application :
+    raise:Errors.zincing_error raise ->
+    environment ->
+    'a zinc ->
+    AST.expression list ->
+    'a zinc_instruction list =
+ fun ~raise environment compiled_func args ->
   let rec comp l =
     match l with
-    | [] -> function_compiler compiled_func
+    | [] -> compiled_func
     | arg :: args -> other_compile ~raise environment ~k:(comp args) arg
   in
   args |> List.rev |> comp
