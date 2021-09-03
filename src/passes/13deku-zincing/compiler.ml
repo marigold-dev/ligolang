@@ -1,6 +1,7 @@
 open Trace
 open Zinc.Types
 module AST = Ast_typed
+open Ast_typed.Types
 
 (* Types defined in ../../stages/6deku-zinc/types.ml *)
 
@@ -22,9 +23,15 @@ let rec tail_compile :
     raise:Errors.zincing_error raise -> environment -> AST.expression -> 'a zinc
     =
  fun ~raise environment expr ->
-  let () = print_endline (Format.asprintf "tail compile: %a" AST.PP.expression expr) in
+  let () =
+    print_endline (Format.asprintf "tail compile: %a" AST.PP.expression expr)
+  in
   let tail_compile = tail_compile ~raise in
   let other_compile = other_compile ~raise in
+  let compile_let environment ~let':name ~equal:value ~in':expression =
+    let result_compiled = tail_compile (environment |> add_binder name) value in
+    other_compile environment ~k:(Grab :: result_compiled) expression
+  in
   match expr.expression_content with
   | E_lambda lambda ->
       Grab
@@ -32,13 +39,9 @@ let rec tail_compile :
       tail_compile
         (environment |> add_binder lambda.binder.wrap_content)
         lambda.result
-  | E_let_in let_in ->
-      let result_compiled =
-        tail_compile
-          (environment |> add_binder let_in.let_binder.wrap_content)
-          let_in.let_result
-      in
-      other_compile environment ~k:(Grab :: result_compiled) let_in.rhs
+  | E_let_in { let_binder; rhs; let_result } ->
+      compile_let environment ~let':let_binder.wrap_content ~equal:rhs
+        ~in':let_result
   | _ -> other_compile environment ~k:[ Return ] expr
 
 and other_compile :
@@ -48,11 +51,18 @@ and other_compile :
     k:'a zinc ->
     'a zinc =
  fun ~raise environment expr ~k ->
-  let open AST.Types in
-  let () = print_endline (Format.asprintf "other compile: %a" AST.PP.expression expr) in
-  let _other_compile = other_compile ~raise in
-  let _compile_pattern_matching = compile_pattern_matching ~raise in
+  let () =
+    print_endline (Format.asprintf "other compile: %a" AST.PP.expression expr)
+  in
+  let other_compile = other_compile ~raise in
+  let compile_pattern_matching = compile_pattern_matching ~raise in
   let compile_type = compile_type ~raise in
+  let compile_let environment ~let':name ~equal:value ~in':expression =
+    let result_compiled =
+      other_compile (environment |> add_binder name) value ~k:(EndLet :: k)
+    in
+    other_compile environment ~k:(Grab :: result_compiled) expression
+  in
   (* let compile_function_application = compile_function_application ~raise in *)
   match expr.expression_content with
   | E_literal literal -> (
@@ -74,7 +84,9 @@ and other_compile :
   | E_application _application -> failwith "E_application unimplemented"
   | E_lambda _lambda -> failwith "E_lambda unimplemented"
   | E_recursive _recursive -> failwith "E_recursive unimplemented"
-  | E_let_in _let_in -> failwith "E_let_in unimplemented"
+  | E_let_in { let_binder; rhs; let_result } ->
+      compile_let environment ~let':let_binder.wrap_content ~equal:rhs
+        ~in':let_result
   | E_type_in _type_in -> failwith "E_type_in unimplemented"
   | E_mod_in _mod_in -> failwith "E_mod_in unimplemented"
   | E_mod_alias _mod_alias -> failwith "E_mod_alias unimplemented"
@@ -82,11 +94,12 @@ and other_compile :
   (* Variant *)
   | E_constructor _constructor ->
       failwith "E_constructor unimplemented" (* For user defined constructors *)
-  | E_matching _matching -> failwith "working on pattern matching!"
-  (* compile_pattern_matching matching *)
+  | E_matching matching ->
+      compile_pattern_matching
+        ~compile_expression:(other_compile environment ~k)
+        matching
   (* Record *)
   | E_record expression_label_map ->
-      let open Zinc.Types in
       let open Stage_common.Types in
       let bindings = LMap.bindings expression_label_map in
       compile_function_application ~raise
@@ -141,15 +154,57 @@ and compile_function_application :
 
 and compile_pattern_matching :
     raise:Errors.zincing_error raise ->
-    compile_function_application:
-      (AST.expression -> AST.expression list -> 'a zinc_instruction list) ->
+    compile_expression:(AST.expression -> 'a zinc_instruction list) ->
     AST.matching ->
     'a zinc =
- fun ~raise ~compile_function_application:_ to_match ->
+ fun ~raise ~compile_expression to_match ->
   let compile_type = compile_type ~raise in
   let compiled_type = compile_type to_match.matchee.type_expression in
   match (compiled_type, to_match.cases) with
-  (* | T_tuple t, Match_record matching_content_record -> compile_function_application to_match.matchee to_match *)
+  | T_tuple _t, Match_record { fields = binders; body } ->
+      let open Stage_common.Types in
+      let fresh = Simple_utils.Var.fresh () in
+      let loc =
+        Simple_utils.Location.Virtual "generated let around match expression"
+      in
+      let lettified =
+        LMap.bindings binders
+        |> List.fold ~init:body
+             ~f:(fun result (label, (binder, type_expression)) ->
+               {
+                 expression_content =
+                   E_let_in
+                     {
+                       let_binder = binder;
+                       rhs =
+                         {
+                           expression_content =
+                             E_record_accessor
+                               {
+                                 record =
+                                   {
+                                     expression_content =
+                                       E_variable
+                                         {
+                                           wrap_content = fresh;
+                                           location = loc;
+                                         };
+                                     location = loc;
+                                     type_expression;
+                                   };
+                                 path = label;
+                               };
+                           location = loc;
+                           type_expression;
+                         };
+                       let_result = result;
+                       inline = false;
+                     };
+                 location = loc;
+                 type_expression = to_match.matchee.type_expression;
+               })
+      in
+      compile_expression lettified
   | _ ->
       failwith
         (Format.asprintf

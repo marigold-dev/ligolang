@@ -95,5 +95,5 @@ let main =
       test_w "chain_id" chain_id;
       test_w "chain_id_func" chain_id_func;
       test_w "tuple_creation" tuple_creation;
-      (*test_w "check_hash_key" check_hash_key;*)
+      test_w "check_hash_key" check_hash_key;
     ]
