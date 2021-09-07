@@ -73,7 +73,8 @@ type 'a zinc_instruction =
      named references
      ================
   *)
-  | Link of 'a
+  | Link_T of 'a
+  | Link_C of 'a
 [@@deriving show { with_path = false }, eq]
 
 and 'a zinc = 'a zinc_instruction list

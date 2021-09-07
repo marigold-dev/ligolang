@@ -72,17 +72,18 @@ let rec tail_compile :
   | E_application { lamb; args } ->
       compile_function_application ~function_compiler:tail_compile environment
         lamb [ args ]
-  | _ -> other_compile environment ~k:[ Return ] expr
+  | _ -> other_compile environment ~from_tail:true ~k:[ Return ] expr
 
 (*** For optimization purposes, we have one function for compiling expressions in the "tail position" and another for 
      compiling everything else. *)
 and other_compile :
     raise:Errors.zincing_error raise ->
+    ?from_tail:bool ->
     environment ->
     AST.expression ->
     k:zinc_m ->
     zinc_m =
- fun ~raise environment expr ~k ->
+ fun ~raise ?from_tail:(from_tail=false) environment expr ~k ->
   let () =
     print_endline
       (Format.asprintf "other compile: %a / ~k:%s / env: %s" AST.PP.expression
@@ -93,7 +94,7 @@ and other_compile :
          |> String.concat ","))
   in
   let tail_compile = tail_compile ~raise in
-  let other_compile = other_compile ~raise in
+  let other_compile = other_compile ~raise ~from_tail:false in
   let compile_pattern_matching = compile_pattern_matching ~raise in
   let compile_type = compile_type ~raise in
   let compile_let environment ~let':name ~equal:value ~in':expression =
@@ -129,7 +130,7 @@ and other_compile :
       | None -> (
           let name = Simple_utils.Var.to_name variable in
           match Utils.find_index name environment.top_level_lets with
-          | Some _ -> [ Link name ]
+          | Some _ -> (if from_tail then Link_T name else Link_C name ) :: k
           | _ ->
               failwith
                 (Format.asprintf "binder %a not found in environment!"
