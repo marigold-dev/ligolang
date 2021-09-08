@@ -40,7 +40,8 @@
 		"ocamllabs.ocaml-platform",
 		"mhutchie.git-graph",
 		"github.vscode-pull-request-github",
-		"ms-vsliveshare.vsliveshare-pack"
+		"ms-vsliveshare.vsliveshare-pack",
+		"wayou.vscode-todo-highlight"
 	],
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
