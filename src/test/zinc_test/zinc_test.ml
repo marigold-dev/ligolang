@@ -132,7 +132,10 @@ let basic_function_application =
 
 let basic_link =
   expect_simple_compile_to ~reason:true "basic_link"
-    [ ("a", [ Num (Z.of_int 1); Return ]); ("b", [ Link_T "a"; Return ]) ]
+    [
+      ("a", [ Num (Z.of_int 1); Return ]);
+      ("b", [ Num (Z.of_int 1); Grab; Access 0; Return ]);
+    ]
 
 let main =
   test_suite "Zinc tests"

@@ -3,11 +3,21 @@ open Zinc.Types
 module AST = Ast_typed
 open Ast_typed.Types
 
+(*
+  Optimizations to do:
+  1. Calls to known functions should be optimized. No need to 
+     check at runtime whether they've been given enough arguments 
+     because we can easily check that at compile time instead.
+  2. We convert top-level lets to let expressions in the definitions 
+     that come after them. We should only do this if the value is a 
+     transitive dependency.
+*)
+
 (* Types defined in ../../stages/6deku-zinc/types.ml *)
 
 type environment = {
-  top_level_lets : AST.module_variable list;
   (* not implemented yet, so this is just a placeholder *)
+  top_level_lets : AST.module_variable list;
   binders : AST.expression_ Var.t list;
 }
 
@@ -28,11 +38,11 @@ let add_declaration_name x = function
 let compile_type ~(raise : Errors.zincing_error raise) t =
   t |> Spilling.compile_type ~raise |> fun x -> x.type_content
 
-(*** For optimization purposes, we have one function for compiling expressions in the "tail position" and another for 
-     compiling everything else. *)
 let rec tail_compile :
     raise:Errors.zincing_error raise -> environment -> AST.expression -> zinc_m
     =
+ (*** For optimization purposes, we have one function for compiling expressions in the "tail position" and another for
+     compiling everything else. *)
  fun ~raise environment expr ->
   let () =
     print_endline
@@ -83,7 +93,7 @@ and other_compile :
     AST.expression ->
     k:zinc_m ->
     zinc_m =
- fun ~raise ?from_tail:(from_tail=false) environment expr ~k ->
+ fun ~raise ?(from_tail = false) environment expr ~k ->
   let () =
     print_endline
       (Format.asprintf "other compile: %a / ~k:%s / env: %s" AST.PP.expression
@@ -130,7 +140,7 @@ and other_compile :
       | None -> (
           let name = Simple_utils.Var.to_name variable in
           match Utils.find_index name environment.top_level_lets with
-          | Some _ -> (if from_tail then Link_T name else Link_C name ) :: k
+          | Some _ -> (if from_tail then Link_T name else Link_C name) :: k
           | _ ->
               failwith
                 (Format.asprintf "binder %a not found in environment!"
@@ -218,6 +228,28 @@ and compile_known_function_application :
   in
   args |> List.rev |> comp
 
+(*** used to convert `[("a", expr1)] result` to `let a = expr1 in result` *)
+and make_expression_with_dependencies :
+    (expression_variable * AST.expression) list ->
+    AST.expression ->
+    AST.expression =
+ fun dependencies expression ->
+  let loc = Simple_utils.Location.Virtual "generated let" in
+  dependencies
+  |> List.fold ~init:expression ~f:(fun result (binder, expression) ->
+         {
+           expression_content =
+             E_let_in
+               {
+                 let_binder = binder;
+                 rhs = expression;
+                 let_result = result;
+                 inline = false;
+               };
+           location = loc;
+           type_expression = expression.type_expression;
+         })
+
 and compile_pattern_matching :
     raise:Errors.zincing_error raise ->
     compile_expression:(AST.expression -> zinc_m) ->
@@ -233,43 +265,29 @@ and compile_pattern_matching :
       let loc =
         Simple_utils.Location.Virtual "generated let around match expression"
       in
-      let lettified =
+      let dependencies =
         LMap.bindings binders
-        |> List.fold ~init:body
-             ~f:(fun result (label, (binder, type_expression)) ->
-               {
-                 expression_content =
-                   E_let_in
-                     {
-                       let_binder = binder;
-                       rhs =
-                         {
-                           expression_content =
-                             E_record_accessor
-                               {
-                                 record =
-                                   {
-                                     expression_content =
-                                       E_variable
-                                         {
-                                           wrap_content = fresh;
-                                           location = loc;
-                                         };
-                                     location = loc;
-                                     type_expression;
-                                   };
-                                 path = label;
-                               };
-                           location = loc;
-                           type_expression;
-                         };
-                       let_result = result;
-                       inline = false;
-                     };
-                 location = loc;
-                 type_expression = to_match.matchee.type_expression;
-               })
+        |> List.map ~f:(fun (label, (binder, type_expression)) ->
+               ( binder,
+                 {
+                   expression_content =
+                     E_record_accessor
+                       {
+                         record =
+                           {
+                             expression_content =
+                               E_variable
+                                 { wrap_content = fresh; location = loc };
+                             location = loc;
+                             type_expression;
+                           };
+                         path = label;
+                       };
+                   location = loc;
+                   type_expression;
+                 } ))
       in
+      let lettified = make_expression_with_dependencies dependencies body in
       let lettified =
         {
           expression_content =
@@ -293,40 +311,50 @@ and compile_pattern_matching :
            Mini_c.PP.type_content
            (compile_type to_match.matchee.type_expression))
 
-let compile_declaration :
-    raise:Errors.zincing_error raise ->
-    environment ->
-    AST.declaration' ->
-    string * zinc_m =
- fun ~raise environment declaration ->
-  let () =
-    Printf.printf "\nConverting declaration:\n%s\n"
-      (Format.asprintf "%a" AST.PP.declaration declaration)
-  in
-  match declaration with
-  | Declaration_constant declaration_constant ->
-      let name =
-        match declaration_constant.name with
-        | Some name -> name
-        | None -> failwith "declaration with no name?"
-      in
-      (name, tail_compile environment ~raise declaration_constant.expr)
-  | Declaration_type _declaration_type -> failwith "types not implemented yet"
-  | Declaration_module _declaration_module ->
-      failwith "modules not implemented yet"
-  | Module_alias _module_alias -> failwith "module aliases not implemented yet"
-
 let compile_module :
     raise:Errors.zincing_error raise -> AST.module_fully_typed -> program =
  fun ~raise modul ->
   let (Module_Fully_Typed ast) = modul in
-  let _, compiled =
-    List.fold ~init:(empty_environment, [])
-      ~f:(fun (environment, declarations) wrapped ->
-        let ((name, _) as compiled) =
-          compile_declaration ~raise environment wrapped.wrap_content
+  let constant_declaration_extractor :
+      declaration_loc -> (module_variable * expression) option = function
+    | { wrap_content = Declaration_constant declaration_constant } ->
+        let name =
+          match declaration_constant.name with
+          | Some name -> name
+          | None -> failwith "declaration with no name?"
         in
-        (environment |> add_declaration_name name, compiled :: declarations))
-      ast
+        Some (name, declaration_constant.expr)
+    | _ -> None
+  in
+  let constants = List.filter_map ast ~f:constant_declaration_extractor in
+  let _, compiled =
+    List.fold ~init:(None, [])
+      ~f:(fun (let_wrapper, declarations) (name, expression) ->
+        let expr_var =
+          Simple_utils.Location.
+            {
+              wrap_content = Simple_utils.Var.of_name name;
+              location = Simple_utils.Location.Virtual "generated let";
+            }
+        in
+        let let_wrapper, declaration =
+          match let_wrapper with
+          | Some let_wrapper ->
+              let compiled =
+                tail_compile ~raise empty_environment (let_wrapper expression)
+              in
+              ( Some
+                  (fun a ->
+                    make_expression_with_dependencies [ (expr_var, expression) ]
+                      (let_wrapper a)),
+                compiled )
+          | None ->
+              let compiled = tail_compile ~raise empty_environment expression in
+              ( Some
+                  (make_expression_with_dependencies [ (expr_var, expression) ]),
+                compiled )
+        in
+        (let_wrapper, (name, declaration) :: declarations))
+      constants
   in
   compiled |> List.rev
