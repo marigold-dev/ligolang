@@ -68,13 +68,6 @@ type 'a zinc_instruction =
   (* tezos_specific operations *)
   | Address of string
   | ChainID
-  (*
-     ================
-     named references
-     ================
-  *)
-  | Link_T of 'a
-  | Link_C of 'a
 [@@deriving show { with_path = false }, eq]
 
 and 'a zinc = 'a zinc_instruction list

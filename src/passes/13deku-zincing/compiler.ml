@@ -82,18 +82,17 @@ let rec tail_compile :
   | E_application { lamb; args } ->
       compile_function_application ~function_compiler:tail_compile environment
         lamb [ args ]
-  | _ -> other_compile environment ~from_tail:true ~k:[ Return ] expr
+  | _ -> other_compile environment ~k:[ Return ] expr
 
 (*** For optimization purposes, we have one function for compiling expressions in the "tail position" and another for 
      compiling everything else. *)
 and other_compile :
     raise:Errors.zincing_error raise ->
-    ?from_tail:bool ->
     environment ->
     AST.expression ->
     k:zinc_m ->
     zinc_m =
- fun ~raise ?(from_tail = false) environment expr ~k ->
+ fun ~raise environment expr ~k ->
   let () =
     print_endline
       (Format.asprintf "other compile: %a / ~k:%s / env: %s" AST.PP.expression
@@ -104,7 +103,7 @@ and other_compile :
          |> String.concat ","))
   in
   let tail_compile = tail_compile ~raise in
-  let other_compile = other_compile ~raise ~from_tail:false in
+  let other_compile = other_compile ~raise in
   let compile_pattern_matching = compile_pattern_matching ~raise in
   let compile_type = compile_type ~raise in
   let compile_let environment ~let':name ~equal:value ~in':expression =
@@ -137,14 +136,10 @@ and other_compile :
         constant.arguments
   | E_variable ({ wrap_content = variable; location = _ } as binder) -> (
       match Utils.find_index variable environment.binders with
-      | None -> (
-          let name = Simple_utils.Var.to_name variable in
-          match Utils.find_index name environment.top_level_lets with
-          | Some _ -> (if from_tail then Link_T name else Link_C name) :: k
-          | _ ->
-              failwith
-                (Format.asprintf "binder %a not found in environment!"
-                   AST.PP.expression_variable binder))
+      | None ->
+          failwith
+            (Format.asprintf "binder %a not found in environment!"
+               AST.PP.expression_variable binder)
       | Some index -> Access index :: k)
   (* TODO: function applications are disagregated in typed_ast, this defeats the whole purpose of using zinc, need to fix this *)
   | E_application { lamb; args } ->
@@ -328,7 +323,8 @@ let compile_module :
   in
   let constants = List.filter_map ast ~f:constant_declaration_extractor in
   let _, compiled =
-    List.fold ~init:(None, [])
+    List.fold constants
+      ~init:((fun (a : AST.expression) -> a), [])
       ~f:(fun (let_wrapper, declarations) (name, expression) ->
         let expr_var =
           Simple_utils.Location.
@@ -338,23 +334,14 @@ let compile_module :
             }
         in
         let let_wrapper, declaration =
-          match let_wrapper with
-          | Some let_wrapper ->
-              let compiled =
-                tail_compile ~raise empty_environment (let_wrapper expression)
-              in
-              ( Some
-                  (fun a ->
-                    make_expression_with_dependencies [ (expr_var, expression) ]
-                      (let_wrapper a)),
-                compiled )
-          | None ->
-              let compiled = tail_compile ~raise empty_environment expression in
-              ( Some
-                  (make_expression_with_dependencies [ (expr_var, expression) ]),
-                compiled )
+          let compiled =
+            tail_compile ~raise empty_environment (let_wrapper expression)
+          in
+          ( (fun a ->
+              make_expression_with_dependencies [ (expr_var, expression) ]
+                (let_wrapper a)),
+            compiled )
         in
         (let_wrapper, (name, declaration) :: declarations))
-      constants
   in
   compiled |> List.rev
