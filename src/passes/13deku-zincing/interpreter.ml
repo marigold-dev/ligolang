@@ -54,7 +54,12 @@ let rec apply_zinc (instructions, env, stack) =
     (* Tezos specific *)
     | ChainID :: c, env, s -> Some (c, env, Z (Hash "chain id hash here!") :: s)
     (* should be unreachable except when program is done *)
-    | _ -> None
+    | Return :: _, _, _ -> None
+    | x :: _, _, _ ->
+        failwith (Format.asprintf "%a unimplemented!" pp_zinc_instruction x)
+    | _ ->
+        failwith
+          (Format.asprintf "ran out of instructions without hitting return!")
   in
   match apply_once instructions env stack with
   | None -> (instructions, env, stack)

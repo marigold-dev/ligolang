@@ -129,7 +129,7 @@ let chain_id =
 
 let chain_id_func =
   expect_simple_compile_to "chain_id_func"
-    [ ("chain_id", [ Grab; ChainID; Return ]) ]
+    [ ("chain_id", [ Grab; ChainID; Return ]) ] 
 
 let tuple_creation =
   expect_simple_compile_to "tuple_creation"
@@ -144,7 +144,7 @@ let tuple_creation =
               [ (Label "0", T_base TB_int); (Label "1", T_base TB_int) ];
           Return;
         ] );
-    ]
+    ] ~initial_stack:([Z (Num (Z.one))]) ~stack:([Z (Num (Z.one))])
 
 let check_hash_key =
   expect_simple_compile_to "key_hash"
