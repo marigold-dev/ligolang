@@ -42,8 +42,9 @@ let expect_stack =
          (fun ppf stack -> Fmt.pf ppf "%a" Zincing.Interpreter.pp_stack stack)
          Zincing.Interpreter.equal_stack))
 
-let expect_simple_compile_to ?reason:(enabled = false) ?index:(index=0) ?initial_stack:(initial_stack=[]) ?code ?env ?stack ~raise
-    ~add_warning contract_file (output : Zinc.Types.program) () =
+let expect_simple_compile_to ?reason:(enabled = false) ?(index = 0)
+    ?(initial_stack = []) ?code ?env ?stack ~raise ~add_warning contract_file
+    (output : Zinc.Types.program) () =
   let to_zinc = to_zinc ~raise ~add_warning in
   let contract =
     Printf.sprintf "./contracts/%s.%s" contract_file
@@ -54,7 +55,8 @@ let expect_simple_compile_to ?reason:(enabled = false) ?index:(index=0) ?initial
     expect_program (Printf.sprintf "compiling %s" contract_file) output zinc
   in
   let output_code, output_env, output_stack =
-    List.nth_exn zinc index |> snd |> Zincing.Interpreter.initial_state ~initial_stack:(initial_stack)
+    List.nth_exn zinc index |> snd
+    |> Zincing.Interpreter.initial_state ~initial_stack
     |> Zincing.Interpreter.apply_zinc
   in
   let () =
@@ -86,22 +88,22 @@ let expect_simple_compile_to ?reason:(enabled = false) ?index:(index=0) ?initial
 (* ================ *)
 (* Tests *)
 
-(*
-  match zinc with
-  | when x = v -> ()
-  | _ -> failwith (Printf.sprintf "zinc compilation of %s seems wrong" contract)*)
-
 let simple_1 =
-  expect_simple_compile_to "simple1" [ ("i", [ Num (Z.of_int 42); Return ]) ]
+  expect_simple_compile_to "simple1"
+    [ ("i", [ Num (Z.of_int 42); Return ]) ]
+    ~stack:[ Z (Num (Z.of_int 42)) ]
 
 let simple_2 =
-  expect_simple_compile_to "simple2" [ ("i", [ Num (Z.of_int 42); Return ]) ]
+  expect_simple_compile_to "simple2"
+    [ ("i", [ Num (Z.of_int 42); Return ]) ]
+    ~stack:[ Z (Num (Z.of_int 42)) ]
 
 let simple_3 =
   expect_simple_compile_to "simple3"
     [
       ("my_address", [ Address "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx"; Return ]);
     ]
+    ~stack:[ Z (Address "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx") ]
 
 let simple_4 =
   expect_simple_compile_to "simple4"
@@ -115,10 +117,15 @@ let simple_4 =
     ]
 
 let id =
-  expect_simple_compile_to "id_func" [ ("id", [ Grab; Access 0; Return ]) ]
+  expect_simple_compile_to "id_func"
+    [ ("id", [ Grab; Access 0; Return ]) ]
+    ~initial_stack:[ Z (Num (Z.of_int 42)) ]
+    ~stack:[ Z (Num (Z.of_int 42)) ]
 
 let chain_id =
-  expect_simple_compile_to "chain_id" [ ("chain_id", [ ChainID; Return ]) ]
+  expect_simple_compile_to "chain_id"
+    [ ("chain_id", [ ChainID; Return ]) ]
+    ~stack:[ Z (Hash "chain id hash here!") ]
 
 let chain_id_func =
   expect_simple_compile_to "chain_id_func"
@@ -174,14 +181,17 @@ let check_hash_key =
 
 let basic_function_application =
   expect_simple_compile_to ~reason:true "basic_function_application"
-    [ ("a", [ Num (Z.of_int 3); Grab; Access 0; Return ]) ] ~stack:([Z (Num (Z.of_int 3))])
+    [ ("a", [ Num (Z.of_int 3); Grab; Access 0; Return ]) ]
+    ~stack:[ Z (Num (Z.of_int 3)) ]
 
 let basic_link =
   expect_simple_compile_to ~reason:true "basic_link"
     [
       ("a", [ Num (Z.of_int 1); Return ]);
       ("b", [ Num (Z.of_int 1); Grab; Access 0; Return ]);
-    ] ~index:1 ~stack:([Z (Num (Z.of_int 1))])
+    ]
+    ~index:1
+    ~stack:[ Z (Num (Z.of_int 1)) ]
 
 let main =
   test_suite "Zinc tests"

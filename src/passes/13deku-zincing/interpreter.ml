@@ -23,7 +23,7 @@ let stack_to_env x =
   | Clos { code; env } -> ClosE { code; env }
   | Marker (_, _) -> failwith "tried to convert a marker to an environment item"
 
-let initial_state ?initial_stack:(stack = []) a = (a, stack, [])
+let initial_state ?initial_stack:(stack = []) a = (a, [], stack)
 
 let rec apply_zinc (instructions, env, stack) =
   let apply_once (instructions : zinc) (env : env_item list)
@@ -45,11 +45,15 @@ let rec apply_zinc (instructions, env, stack) =
         | None -> None)
     | Closure c' :: c, env, s -> Some (c, env, Clos { code = c'; env } :: s)
     | EndLet :: c, _ :: env, s -> Some (c, env, s)
-    (* math *)
-    | Num n :: c, env, s -> Some (c, env, Z (Num n) :: s)
+    (* zinc extensions *)
+    (* operations that jsut drop something on the stack haha *)
+    | ((Num _ | Address _) as v) :: c, env, s -> Some (c, env, Z v :: s)
+    (* Math *)
     | Succ :: c, env, Z (Num i) :: s ->
         Some (c, env, Z (Num (Z.add i Z.one)) :: s)
-    (* should be unreachable *)
+    (* Tezos specific *)
+    | ChainID :: c, env, s -> Some (c, env, Z (Hash "chain id hash here!") :: s)
+    (* should be unreachable except when program is done *)
     | _ -> None
   in
   match apply_once instructions env stack with

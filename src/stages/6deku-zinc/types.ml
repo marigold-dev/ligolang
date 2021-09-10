@@ -49,6 +49,7 @@ type zinc_instruction =
   | Eq
   (* Crypto *)
   | HashKey
+  | Hash of (* TODO: this should not be a string *) string 
   (* serialization *)
   | Bytes of bytes
   (*
