@@ -105,7 +105,7 @@ let simple_3 =
     ]
     ~stack:[ Z (Address "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx") ]
 
-let simple_4 =
+(*let simple_4 =
   expect_simple_compile_to "simple4"
     [
       ( "my_option_string",
@@ -114,7 +114,7 @@ let simple_4 =
           Unpack (T_base TB_string);
           Return;
         ] );
-    ]
+    ]*)
 
 let id =
   expect_simple_compile_to "id_func"
@@ -199,7 +199,7 @@ let main =
       test_w "simple1" simple_1;
       test_w "simple2" simple_2;
       test_w "simple3" simple_3;
-      test_w "simple4" simple_4;
+      (*test_w "simple4" simple_4;*)
       test_w "id" id;
       test_w "chain_id" chain_id;
       test_w "chain_id_func" chain_id_func;

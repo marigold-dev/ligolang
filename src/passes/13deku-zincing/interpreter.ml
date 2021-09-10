@@ -48,13 +48,28 @@ let rec apply_zinc (instructions, env, stack) =
     (* zinc extensions *)
     (* operations that jsut drop something on the stack haha *)
     | ((Num _ | Address _) as v) :: c, env, s -> Some (c, env, Z v :: s)
+    (* ADTs *)
+    | MakeRecord r :: c, env, s ->
+        let rec split n a =
+          match (n, a) with
+          | 0, a -> ([], a)
+          | n, x :: xs ->
+              let first, rest = split (n - 1) xs in
+              (x :: first, rest)
+          | _, _ ->
+              failwith
+                "can't split a list at a point greater than that list's length"
+        in
+        let _record_items, new_stack = split (List.length r) s in
+
+        Some (c, env, failwith "need to decide on a record representation" :: new_stack)
     (* Math *)
     | Succ :: c, env, Z (Num i) :: s ->
         Some (c, env, Z (Num (Z.add i Z.one)) :: s)
     (* Tezos specific *)
     | ChainID :: c, env, s -> Some (c, env, Z (Hash "chain id hash here!") :: s)
     (* should be unreachable except when program is done *)
-    | Return :: _, _, _ -> None
+    | (Return | Grab) :: _, _, _ -> None
     | x :: _, _, _ ->
         failwith (Format.asprintf "%a unimplemented!" pp_zinc_instruction x)
     | _ ->
