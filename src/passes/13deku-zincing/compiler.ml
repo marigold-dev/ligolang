@@ -39,8 +39,7 @@ let compile_type ~(raise : Errors.zincing_error raise) t =
   t |> Spilling.compile_type ~raise |> fun x -> x.type_content
 
 let rec tail_compile :
-    raise:Errors.zincing_error raise -> environment -> AST.expression -> zinc_m
-    =
+    raise:Errors.zincing_error raise -> environment -> AST.expression -> zinc =
  (*** For optimization purposes, we have one function for compiling expressions in the "tail position" and another for
      compiling everything else. *)
  fun ~raise environment expr ->
@@ -90,14 +89,13 @@ and other_compile :
     raise:Errors.zincing_error raise ->
     environment ->
     AST.expression ->
-    k:zinc_m ->
-    zinc_m =
+    k:zinc ->
+    zinc =
  fun ~raise environment expr ~k ->
   let () =
     print_endline
       (Format.asprintf "other compile: %a / ~k:%s / env: %s" AST.PP.expression
-         expr
-         (Zinc.Types.show_zinc (fun _ -> failwith "fix me!") k)
+         expr (Zinc.Types.show_zinc k)
          (environment.binders
          |> List.map ~f:(Format.asprintf "%a" Var.pp)
          |> String.concat ","))
@@ -185,7 +183,7 @@ and compile_constant :
     raise:Errors.zincing_error raise ->
     AST.type_expression ->
     AST.constant ->
-    zinc_m_instruction =
+    zinc_instruction =
  fun ~raise type_expression constant ->
   match constant.cons_name with
   | C_BYTES_UNPACK -> (
@@ -212,9 +210,9 @@ and compile_constant :
 and compile_known_function_application :
     raise:Errors.zincing_error raise ->
     environment ->
-    zinc_m ->
+    zinc ->
     AST.expression list ->
-    zinc_m =
+    zinc =
  fun ~raise environment compiled_func args ->
   let rec comp l =
     match l with
@@ -247,9 +245,9 @@ and make_expression_with_dependencies :
 
 and compile_pattern_matching :
     raise:Errors.zincing_error raise ->
-    compile_expression:(AST.expression -> zinc_m) ->
+    compile_expression:(AST.expression -> zinc) ->
     AST.matching ->
-    zinc_m =
+    zinc =
  fun ~raise ~compile_expression to_match ->
   let compile_type = compile_type ~raise in
   let compiled_type = compile_type to_match.matchee.type_expression in
@@ -327,11 +325,10 @@ let compile_module :
       ~init:((fun (a : AST.expression) -> a), [])
       ~f:(fun (let_wrapper, declarations) (name, expression) ->
         let expr_var =
-          Simple_utils.Location.
-            {
-              wrap_content = Simple_utils.Var.of_name name;
-              location = Simple_utils.Location.Virtual "generated let";
-            }
+          {
+            Simple_utils.Location.wrap_content = Simple_utils.Var.of_name name;
+            location = Simple_utils.Location.Virtual "generated let";
+          }
         in
         let let_wrapper, declaration =
           let compiled =

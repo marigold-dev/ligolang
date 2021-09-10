@@ -1,6 +1,3 @@
-type zinc_type = T_Void | T_Unit | T_Num | T_Pair | T_Either
-[@@deriving show { with_path = false }, eq]
-
 let equal_label (Stage_common.Types.Label a) (Stage_common.Types.Label b) =
   String.equal a b
 
@@ -20,17 +17,17 @@ let pp_type_content
       'a) fmt =
   fprintf fmt "(%a)" Mini_c.PP.type_content
 
-type 'a zinc_instruction =
+type zinc_instruction =
   (* ====================
      zinc core operations
      ====================
   *)
   | Grab
   | Return
-  | PushRetAddr of 'a zinc
+  | PushRetAddr of zinc
   | Apply
   | Access of int
-  | Closure of 'a zinc
+  | Closure of zinc
   | EndLet
   (*
      ===============
@@ -68,15 +65,10 @@ type 'a zinc_instruction =
   (* tezos_specific operations *)
   | Address of string
   | ChainID
+  (* Random handling stuff (need to find a better way to do that) *)
+  | Done
 [@@deriving show { with_path = false }, eq]
 
-and 'a zinc = 'a zinc_instruction list
-[@@deriving show { with_path = false }, eq]
+and zinc = zinc_instruction list [@@deriving show { with_path = false }, eq]
 
-type zinc_m_instruction = string zinc_instruction
-[@@deriving show { with_path = false }, eq]
-
-type zinc_m = string zinc [@@deriving show { with_path = false }, eq]
-
-type program = (string * zinc_m) list
-[@@deriving show { with_path = false }, eq]
+type program = (string * zinc) list [@@deriving show { with_path = false }, eq]

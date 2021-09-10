@@ -13,29 +13,75 @@ let blank_raise_and_warn f =
   f ~raise:Trace.{ raise = (fun _ -> assert false) } ~add_warning:(fun _ -> ())
 
 (* Alcotest setup *)
-let zinc_testable =
-  Alcotest.testable
-    (fun ppf zinc ->
-      Fmt.pf ppf "%s" ([%derive.show: string Zinc.Types.zinc] zinc))
-    [%derive.eq: string Zinc.Types.zinc]
 
-let program_testable =
-  Alcotest.testable
-    (fun ppf zinc -> Fmt.pf ppf "%s" ([%derive.show: Zinc.Types.program] zinc))
-    [%derive.eq: Zinc.Types.program]
+let expect_program =
+  Alcotest.(
+    check
+      (Alcotest.testable
+         (fun ppf program -> Fmt.pf ppf "%a" Zinc.Types.pp_program program)
+         Zinc.Types.equal_program))
 
-let expect_program = Alcotest.(check program_testable)
+let expect_code =
+  Alcotest.(
+    check
+      (Alcotest.testable
+         (fun ppf zinc -> Fmt.pf ppf "%a" Zinc.Types.pp_zinc zinc)
+         Zinc.Types.equal_zinc))
 
-let expect_simple_compile_to ?reason:(enabled = false) ~raise ~add_warning
-    contract_file (output : Zinc.Types.program) () =
+let expect_env =
+  Alcotest.(
+    check
+      (Alcotest.testable
+         (fun ppf env -> Fmt.pf ppf "%a" Zincing.Interpreter.pp_env env)
+         Zincing.Interpreter.equal_env))
+
+let expect_stack =
+  Alcotest.(
+    check
+      (Alcotest.testable
+         (fun ppf stack -> Fmt.pf ppf "%a" Zincing.Interpreter.pp_stack stack)
+         Zincing.Interpreter.equal_stack))
+
+let expect_simple_compile_to ?reason:(enabled = false) ?index:(index=0) ?initial_stack:(initial_stack=[]) ?code ?env ?stack ~raise
+    ~add_warning contract_file (output : Zinc.Types.program) () =
   let to_zinc = to_zinc ~raise ~add_warning in
-
   let contract =
     Printf.sprintf "./contracts/%s.%s" contract_file
       (if enabled then "religo" else "ligo")
   in
   let zinc = to_zinc contract in
-  expect_program (Printf.sprintf "compiling %s" contract_file) output zinc
+  let () =
+    expect_program (Printf.sprintf "compiling %s" contract_file) output zinc
+  in
+  let output_code, output_env, output_stack =
+    List.nth_exn zinc index |> snd |> Zincing.Interpreter.initial_state ~initial_stack:(initial_stack)
+    |> Zincing.Interpreter.apply_zinc
+  in
+  let () =
+    match code with
+    | Some code ->
+        expect_code
+          (Printf.sprintf "evaluating code for %s" contract_file)
+          output_code code
+    | None -> ()
+  in
+  let () =
+    match env with
+    | Some env ->
+        expect_env
+          (Printf.sprintf "evaluating env for %s" contract_file)
+          output_env env
+    | None -> ()
+  in
+  let () =
+    match stack with
+    | Some stack ->
+        expect_stack
+          (Printf.sprintf "evaluating stack for %s" contract_file)
+          output_stack stack
+    | None -> ()
+  in
+  ()
 
 (* ================ *)
 (* Tests *)
@@ -128,14 +174,14 @@ let check_hash_key =
 
 let basic_function_application =
   expect_simple_compile_to ~reason:true "basic_function_application"
-    [ ("a", [ Num (Z.of_int 3); Grab; Access 0; Return ]) ]
+    [ ("a", [ Num (Z.of_int 3); Grab; Access 0; Return ]) ] ~stack:([Z (Num (Z.of_int 3))])
 
 let basic_link =
   expect_simple_compile_to ~reason:true "basic_link"
     [
       ("a", [ Num (Z.of_int 1); Return ]);
       ("b", [ Num (Z.of_int 1); Grab; Access 0; Return ]);
-    ]
+    ] ~index:1 ~stack:([Z (Num (Z.of_int 1))])
 
 let main =
   test_suite "Zinc tests"
