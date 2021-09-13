@@ -38,6 +38,7 @@
 		"dbaeumer.vscode-eslint",
 		"oderwat.indent-rainbow",
 		"ocamllabs.ocaml-platform",
+		"ligolang-publish.ligo-vscode",
 		"mhutchie.git-graph",
 		"github.vscode-pull-request-github",
 		"ms-vsliveshare.vsliveshare-pack",
