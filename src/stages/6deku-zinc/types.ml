@@ -6,7 +6,7 @@ let pp_label
       Format.formatter ->
       ('a, Format.formatter, unit, unit, unit, unit) format6 ->
       'a) fmt = function
-  | Stage_common.Types.Label s -> fprintf fmt "%s" s
+  | Stage_common.Types.Label s -> fprintf fmt "(Label \"%s\")" s
 
 let equal_type_content a b = a = b
 
@@ -45,11 +45,12 @@ type zinc_instruction =
       (Stage_common.Types.label[@equal equal_label] [@printer pp_label fprintf])
   (* math *)
   | Num of (Z.t[@printer fun fmt v -> fprintf fmt "%s" (Z.to_string v)])
-  | Succ
+  | Add
+  (* boolean *)
   | Eq
   (* Crypto *)
   | HashKey
-  | Hash of (* TODO: this should not be a string *) string 
+  | Hash of (* TODO: this should not be a string *) string
   (* serialization *)
   | Bytes of bytes
   (*

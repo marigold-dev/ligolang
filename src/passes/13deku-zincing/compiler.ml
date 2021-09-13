@@ -198,6 +198,7 @@ and compile_constant :
   | C_CHAIN_ID -> ChainID
   | C_HASH_KEY -> HashKey
   | C_EQ -> Eq
+  | C_ADD -> Add
   | name ->
       failwith
         (Format.asprintf "Unsupported constant: %a" AST.PP.constant' name)

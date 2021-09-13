@@ -7,7 +7,7 @@ let label_map_printer
       'a) pp_stack_item fmt =
   fprintf fmt "{%a}"
     (Stage_common.PP.record_sep_expr pp_stack_item
-       (Simple_utils.PP_helpers.const ": "))
+       (Simple_utils.PP_helpers.const ", "))
 
 type env_item =
   [ `Z of zinc_instruction
@@ -43,11 +43,16 @@ let initial_state ?initial_stack:(stack = []) a = (a, [], stack)
 let rec apply_zinc (instructions, env, stack) =
   let apply_once (instructions : zinc) (env : env_item list)
       (stack : stack_item list) =
+    let () =
+      print_endline
+        (Format.asprintf "interpreting:\ncode:  %a\nenv:   %a\nstack: %a"
+           pp_zinc instructions pp_env env pp_stack stack)
+    in
     match (instructions, env, stack) with
-    | Grab :: c, env, `Z v :: s -> Some (c, `Z v :: env, s)
-    | Grab :: c, env, `Clos v :: s -> Some (c, `Clos v :: env, s)
+    | Grab :: c, env, (#env_item as v) :: s -> Some (c, v :: env, s)
     | Grab :: c, env, `Marker (c', e') :: s ->
         Some (c', e', `Clos { code = Grab :: c; env } :: s)
+    | Grab :: _, _, [] -> failwith "nothing to grab!"
     | Return :: _, _, `Z v :: `Marker (c', e') :: s -> Some (c', e', `Z v :: s)
     | Return :: _, _, `Clos { code = c'; env = e' } :: s -> Some (c', e', s)
     | PushRetAddr c' :: c, env, s -> Some (c, env, `Marker (c', env) :: s)
@@ -81,13 +86,16 @@ let rec apply_zinc (instructions, env, stack) =
         in
 
         Some (c, env, `Record record_contents :: new_stack)
+    | RecordAccess accessor :: c, env, `Record r :: s ->
+        let open Stage_common.Types.LMap in
+        Some (c, env, (r |> find accessor) :: s)
     (* Math *)
-    | Succ :: c, env, `Z (Num i) :: s ->
-        Some (c, env, `Z (Num (Z.add i Z.one)) :: s)
+    | Add :: c, env, `Z (Num a) :: `Z (Num b) :: s ->
+        Some (c, env, `Z (Num (Z.add a b)) :: s)
     (* Tezos specific *)
     | ChainID :: c, env, s -> Some (c, env, `Z (Hash "chain id hash here!") :: s)
     (* should be unreachable except when program is done *)
-    | (Return | Grab) :: _, _, _ -> None
+    | Return :: _, _, _ -> None
     | x :: _, _, _ ->
         failwith (Format.asprintf "%a unimplemented!" pp_zinc_instruction x)
     | _ ->
@@ -97,3 +105,7 @@ let rec apply_zinc (instructions, env, stack) =
   match apply_once instructions env stack with
   | None -> (instructions, env, stack)
   | Some (instructions, env, stack) -> apply_zinc (instructions, env, stack)
+
+module Utils = struct
+  let unit_record = `Record Stage_common.Types.LMap.empty
+end

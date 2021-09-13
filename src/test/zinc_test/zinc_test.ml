@@ -132,6 +132,7 @@ let chain_id =
 let chain_id_func =
   expect_simple_compile_to "chain_id_func"
     [ ("chain_id", [ Grab; ChainID; Return ]) ]
+    ~initial_stack:[ Zincing.Interpreter.Utils.unit_record ]
 
 let tuple_creation =
   let open Zinc.Types in
@@ -157,6 +158,40 @@ let tuple_creation =
             let one = `Z (Num Z.one) in
             empty |> add (Label "0") one |> add (Label "1") one);
       ]
+
+let check_record_destructure =
+  let open Zinc.Types in
+  expect_simple_compile_to "check_record_destructure"
+    [
+      ( "check_record_destructure",
+        [
+          Grab;
+          Access 0;
+          Grab;
+          Access 0;
+          Grab;
+          Access 0;
+          RecordAccess (Label "1");
+          Grab;
+          Access 1;
+          RecordAccess (Label "0");
+          Grab;
+          Access 1;
+          Access 0;
+          Add;
+          EndLet;
+          EndLet;
+          EndLet;
+          Return;
+        ] );
+    ]
+    ~initial_stack:
+      Stage_common.Types.LMap.
+        [
+          `Record
+            (let one = `Z (Num Z.one) in
+             empty |> add (Label "0") one |> add (Label "1") one);
+        ]
 
 let check_hash_key =
   let open Zinc.Types in
@@ -192,11 +227,12 @@ let check_hash_key =
         ] );
     ]
     ~initial_stack:
-      [
-        `Record
-          (let _ = `Z (Num Z.one) in
-           Stage_common.Types.LMap.empty);
-      ]
+      Stage_common.Types.LMap.
+        [
+          `Record
+            (let one = `Z (Num Z.one) in
+             empty |> add (Label "0") one |> add (Label "1") one);
+        ]
 
 let basic_function_application =
   expect_simple_compile_to ~reason:true "basic_function_application"
@@ -212,6 +248,23 @@ let basic_link =
     ~index:1
     ~stack:[ `Z (Num (Z.of_int 1)) ]
 
+let _main =
+  test_suite "Zinc tests"
+    [
+      test_w "simple1" simple_1;
+      test_w "simple2" simple_2;
+      test_w "simple3" simple_3;
+      (*test_w "simple4" simple_4;*)
+      test_w "id" id;
+      test_w "chain_id" chain_id;
+      test_w "chain_id_func" chain_id_func;
+      test_w "tuple_creation" tuple_creation;
+      test_w "check_record_destructure" check_record_destructure;
+      test_w "check_hash_key" check_hash_key;
+      test_w "basic_function_application" basic_function_application;
+      test_w "basic_link" basic_link;
+    ]
+
 let main =
   test_suite "Zinc tests"
     [
@@ -223,6 +276,7 @@ let main =
       test_w "chain_id" chain_id;
       test_w "chain_id_func" chain_id_func;
       test_w "tuple_creation" tuple_creation;
+      test_w "check_record_destructure" check_record_destructure;
       test_w "check_hash_key" check_hash_key;
       test_w "basic_function_application" basic_function_application;
       test_w "basic_link" basic_link;
