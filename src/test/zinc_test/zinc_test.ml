@@ -44,7 +44,7 @@ let expect_stack =
 
 let expect_simple_compile_to ?reason:(enabled = false) ?(index = 0)
     ?(initial_stack = []) ?code ?env ?stack ~raise ~add_warning contract_file
-    (output : Zinc.Types.program) () =
+    (expected_zinc : Zinc.Types.program) () =
   let to_zinc = to_zinc ~raise ~add_warning in
   let contract =
     Printf.sprintf "./contracts/%s.%s" contract_file
@@ -52,7 +52,9 @@ let expect_simple_compile_to ?reason:(enabled = false) ?(index = 0)
   in
   let zinc = to_zinc contract in
   let () =
-    expect_program (Printf.sprintf "compiling %s" contract_file) output zinc
+    expect_program
+      (Printf.sprintf "compiling %s" contract_file)
+      expected_zinc zinc
   in
   let output_code, output_env, output_stack =
     List.nth_exn zinc index |> snd
@@ -61,26 +63,26 @@ let expect_simple_compile_to ?reason:(enabled = false) ?(index = 0)
   in
   let () =
     match code with
-    | Some code ->
+    | Some expected_code ->
         expect_code
           (Printf.sprintf "evaluating code for %s" contract_file)
-          output_code code
+          expected_code output_code
     | None -> ()
   in
   let () =
     match env with
-    | Some env ->
+    | Some expected_zinc ->
         expect_env
           (Printf.sprintf "evaluating env for %s" contract_file)
-          output_env env
+          expected_zinc output_env
     | None -> ()
   in
   let () =
     match stack with
-    | Some stack ->
+    | Some expected_stack ->
         expect_stack
           (Printf.sprintf "evaluating stack for %s" contract_file)
-          output_stack stack
+          expected_stack output_stack
     | None -> ()
   in
   ()
@@ -91,19 +93,19 @@ let expect_simple_compile_to ?reason:(enabled = false) ?(index = 0)
 let simple_1 =
   expect_simple_compile_to "simple1"
     [ ("i", [ Num (Z.of_int 42); Return ]) ]
-    ~stack:[ Z (Num (Z.of_int 42)) ]
+    ~stack:[ `Z (Num (Z.of_int 42)) ]
 
 let simple_2 =
   expect_simple_compile_to "simple2"
     [ ("i", [ Num (Z.of_int 42); Return ]) ]
-    ~stack:[ Z (Num (Z.of_int 42)) ]
+    ~stack:[ `Z (Num (Z.of_int 42)) ]
 
 let simple_3 =
   expect_simple_compile_to "simple3"
     [
       ("my_address", [ Address "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx"; Return ]);
     ]
-    ~stack:[ Z (Address "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx") ]
+    ~stack:[ `Z (Address "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx") ]
 
 (*let simple_4 =
   expect_simple_compile_to "simple4"
@@ -119,17 +121,17 @@ let simple_3 =
 let id =
   expect_simple_compile_to "id_func"
     [ ("id", [ Grab; Access 0; Return ]) ]
-    ~initial_stack:[ Z (Num (Z.of_int 42)) ]
-    ~stack:[ Z (Num (Z.of_int 42)) ]
+    ~initial_stack:[ `Z (Num (Z.of_int 42)) ]
+    ~stack:[ `Z (Num (Z.of_int 42)) ]
 
 let chain_id =
   expect_simple_compile_to "chain_id"
     [ ("chain_id", [ ChainID; Return ]) ]
-    ~stack:[ Z (Hash "chain id hash here!") ]
+    ~stack:[ `Z (Hash "chain id hash here!") ]
 
 let chain_id_func =
   expect_simple_compile_to "chain_id_func"
-    [ ("chain_id", [ Grab; ChainID; Return ]) ] 
+    [ ("chain_id", [ Grab; ChainID; Return ]) ]
 
 let tuple_creation =
   expect_simple_compile_to "tuple_creation"
@@ -144,7 +146,9 @@ let tuple_creation =
               [ (Label "0", T_base TB_int); (Label "1", T_base TB_int) ];
           Return;
         ] );
-    ] ~initial_stack:([Z (Num (Z.one))]) ~stack:([Z (Num (Z.one))])
+    ]
+    ~initial_stack:[ `Z (Num Z.one) ]
+    ~stack:[ `Record [ `Z (Num Z.one); `Z (Num Z.one) ] ]
 
 let check_hash_key =
   expect_simple_compile_to "key_hash"
@@ -182,7 +186,7 @@ let check_hash_key =
 let basic_function_application =
   expect_simple_compile_to ~reason:true "basic_function_application"
     [ ("a", [ Num (Z.of_int 3); Grab; Access 0; Return ]) ]
-    ~stack:[ Z (Num (Z.of_int 3)) ]
+    ~stack:[ `Z (Num (Z.of_int 3)) ]
 
 let basic_link =
   expect_simple_compile_to ~reason:true "basic_link"
@@ -191,7 +195,7 @@ let basic_link =
       ("b", [ Num (Z.of_int 1); Grab; Access 0; Return ]);
     ]
     ~index:1
-    ~stack:[ Z (Num (Z.of_int 1)) ]
+    ~stack:[ `Z (Num (Z.of_int 1)) ]
 
 let main =
   test_suite "Zinc tests"
