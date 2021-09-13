@@ -127,7 +127,14 @@ let id =
 let chain_id =
   expect_simple_compile_to "chain_id"
     [ ("chain_id", [ ChainID; Return ]) ]
-    ~stack:[ `Z (Hash "chain id hash here!") ]
+    ~stack:
+      [
+        `Z
+          (let h =
+             Digestif.BLAKE2B.hmac_string ~key:"???" "chain id hash here!"
+           in
+           Zinc.Types.Hash h);
+      ]
 
 let chain_id_func =
   expect_simple_compile_to "chain_id_func"
@@ -230,8 +237,14 @@ let check_hash_key =
       Stage_common.Types.LMap.
         [
           `Record
-            (let one = `Z (Num Z.one) in
-             empty |> add (Label "0") one |> add (Label "1") one);
+            (empty
+            |> add (Label "0")
+                 (`Z
+                   (let h =
+                      Digestif.BLAKE2B.hmac_string ~key:"???" "hashy hash!"
+                    in
+                    Zinc.Types.Hash h))
+            |> add (Label "1") (`Z (Key "Hashy hash!")));
         ]
 
 let basic_function_application =

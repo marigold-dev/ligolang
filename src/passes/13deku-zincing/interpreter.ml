@@ -67,7 +67,7 @@ let rec apply_zinc (instructions, env, stack) =
     | EndLet :: c, _ :: env, s -> Some (c, env, s)
     (* zinc extensions *)
     (* operations that jsut drop something on the stack haha *)
-    | ((Num _ | Address _) as v) :: c, env, s -> Some (c, env, `Z v :: s)
+    | ((Num _ | Address _ | Key _ | Hash _ | Bool _) as v) :: c, env, s -> Some (c, env, `Z v :: s)
     (* ADTs *)
     | MakeRecord r :: c, env, s ->
         let open Stage_common.Types in
@@ -92,8 +92,26 @@ let rec apply_zinc (instructions, env, stack) =
     (* Math *)
     | Add :: c, env, `Z (Num a) :: `Z (Num b) :: s ->
         Some (c, env, `Z (Num (Z.add a b)) :: s)
+    (* Booleans *)
+    | Eq :: c, env, a :: b :: s ->
+        Some (c, env, `Z (Bool (equal_stack_item a b)) :: s)
+    (* Crypto *)
+    | HashKey :: c, env, `Z (Key key) :: s ->
+        let h = Digestif.BLAKE2B.hmac_string ~key:"???" key in
+        Some (c, env, `Z (Zinc.Types.Hash h) :: s)
     (* Tezos specific *)
-    | ChainID :: c, env, s -> Some (c, env, `Z (Hash "chain id hash here!") :: s)
+    | ChainID :: c, env, s ->
+        Some
+          ( c,
+            env,
+            `Z
+              (* TODO: fix this usage of Digestif.BLAKE2B.hmac_string - should use an effect system or smth.
+                 Also probably shouldn't use key like this. *)
+              (let h =
+                 Digestif.BLAKE2B.hmac_string ~key:"???" "chain id hash here!"
+               in
+               Hash h)
+            :: s )
     (* should be unreachable except when program is done *)
     | Return :: _, _, _ -> None
     | x :: _, _, _ ->

@@ -47,10 +47,12 @@ type zinc_instruction =
   | Num of (Z.t[@printer fun fmt v -> fprintf fmt "%s" (Z.to_string v)])
   | Add
   (* boolean *)
+  | Bool of bool
   | Eq
   (* Crypto *)
+  | Key of string
   | HashKey
-  | Hash of (* TODO: this should not be a string *) string
+  | Hash of Digestif.BLAKE2B.t
   (* serialization *)
   | Bytes of bytes
   (*
