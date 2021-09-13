@@ -134,6 +134,8 @@ let chain_id_func =
     [ ("chain_id", [ Grab; ChainID; Return ]) ]
 
 let tuple_creation =
+  let open Zinc.Types in
+  let open Stage_common.Types in
   expect_simple_compile_to "tuple_creation"
     [
       ( "dup",
@@ -148,9 +150,16 @@ let tuple_creation =
         ] );
     ]
     ~initial_stack:[ `Z (Num Z.one) ]
-    ~stack:[ `Record [ `Z (Num Z.one); `Z (Num Z.one) ] ]
+    ~stack:
+      [
+        `Record
+          LMap.(
+            let one = `Z (Num Z.one) in
+            empty |> add (Label "0") one |> add (Label "1") one);
+      ]
 
 let check_hash_key =
+  let open Zinc.Types in
   expect_simple_compile_to "key_hash"
     [
       ( "check_hash_key",
@@ -182,6 +191,12 @@ let check_hash_key =
           Return;
         ] );
     ]
+    ~initial_stack:
+      [
+        `Record
+          (let _ = `Z (Num Z.one) in
+           Stage_common.Types.LMap.empty);
+      ]
 
 let basic_function_application =
   expect_simple_compile_to ~reason:true "basic_function_application"

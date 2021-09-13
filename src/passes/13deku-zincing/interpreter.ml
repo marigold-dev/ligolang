@@ -1,14 +1,31 @@
 open Zinc.Types
 
+let label_map_printer
+    (fprintf :
+      Format.formatter ->
+      ('a, Format.formatter, unit, unit, unit, unit) format6 ->
+      'a) pp_stack_item fmt =
+  fprintf fmt "{%a}"
+    (Stage_common.PP.record_sep_expr pp_stack_item
+       (Simple_utils.PP_helpers.const ": "))
+
 type env_item =
-  [ `Z of zinc_instruction | `Clos of clos | `Record of stack_item list ]
+  [ `Z of zinc_instruction
+  | `Clos of clos
+  | `Record of
+    (stack_item Stage_common.Types.label_map
+    [@printer label_map_printer fprintf pp_stack_item]
+    [@equal Stage_common.Types.LMap.equal equal_stack_item]) ]
 [@@deriving show, eq]
 
 and stack_item =
   [ (* copied from env_item *)
     `Z of zinc_instruction
   | `Clos of clos
-  | `Record of stack_item list
+  | `Record of
+    (stack_item Stage_common.Types.label_map
+    [@printer label_map_printer fprintf pp_stack_item]
+    [@equal Stage_common.Types.LMap.equal equal_stack_item])
   | (* marker to note function calls *)
     `Marker of zinc * env_item list ]
 [@@deriving show, eq]
@@ -48,19 +65,22 @@ let rec apply_zinc (instructions, env, stack) =
     | ((Num _ | Address _) as v) :: c, env, s -> Some (c, env, `Z v :: s)
     (* ADTs *)
     | MakeRecord r :: c, env, s ->
-        let rec split n a =
-          match (n, a) with
-          | 0, a -> ([], a)
-          | n, x :: xs ->
-              let first, rest = split (n - 1) xs in
-              (x :: first, rest)
-          | _, _ ->
-              failwith
-                "can't split a list at a point greater than that list's length"
+        let open Stage_common.Types in
+        let rec zipExtra x y =
+          match (x, y) with
+          | x :: xs, y :: ys ->
+              let zipped, extra = zipExtra xs ys in
+              ((x, y) :: zipped, extra)
+          | [], y -> ([], y)
+          | _ -> failwith "more items in left list than in right"
         in
-        let record_items, new_stack = split (List.length r) s in
+        let record_contents, new_stack = zipExtra r s in
+        let record_contents =
+          List.fold record_contents ~init:LMap.empty
+            ~f:(fun acc ((label, _), value) -> acc |> LMap.add label value)
+        in
 
-        Some (c, env, `Record record_items :: new_stack)
+        Some (c, env, `Record record_contents :: new_stack)
     (* Math *)
     | Succ :: c, env, `Z (Num i) :: s ->
         Some (c, env, `Z (Num (Z.add i Z.one)) :: s)
