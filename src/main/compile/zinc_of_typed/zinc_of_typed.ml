@@ -1,12 +1,11 @@
 open Zincing
-open Main_errors
 module SMap = Map.Make (String)
 
 let compile_with_modules ~raise ?module_env:_ :
     Ast_typed.module_fully_typed -> Zinc.Types.program =
  fun p ->
   (* trace ~raise spilling_tracer @@ compile_module ~module_env:module_env p *)
-  Simple_utils.Trace.trace ~raise spilling_tracer @@ compile_module p
+  Simple_utils.Trace.trace ~raise (fun e -> `Main_spilling e) @@ compile_module p
 
 let compile ~raise ?(module_env = SMap.empty) :
     Ast_typed.module_fully_typed -> Zinc.Types.program =
@@ -14,4 +13,4 @@ let compile ~raise ?(module_env = SMap.empty) :
   (*let zinc,_ = compile_with_modules ~raise ~module_env:module_env p in
     zinc*)
   let zinc = compile_with_modules ~raise ~module_env p in
-  Testdune.id zinc
+  zinc

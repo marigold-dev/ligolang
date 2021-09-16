@@ -1,9 +1,9 @@
 (library
  (name zinc)
- (public_name ligo.zinc)
+ (public_name ligo_slim.zinc)
  (instrumentation
   (backend bisect_ppx))
- (libraries simple-utils tezos-utils stage_common ast_typed mini_c digestif)
+ (libraries simple-utils stage_common ast_typed mini_c digestif)
  (inline_tests)
  (preprocess
   (pps ppx_expect ppx_deriving.show ppx_deriving.ord ppx_deriving.eq))

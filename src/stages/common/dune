@@ -1,12 +1,11 @@
 (library
   (name stage_common)
-  (public_name ligo.stage_common)
+  (public_name ligo_slim.stage_common)
   (instrumentation (backend bisect_ppx))
   (libraries
     simple-utils
     zarith
     hex
-    tezos-utils
   )
   (inline_tests)
   (preprocess

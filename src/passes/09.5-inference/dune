@@ -8,7 +8,7 @@
     ast_typed
     predefined
     UnionFind
-    environment
+    ligo_slim.environment
     database_plugins
     type_variable_abstraction
     self_ast_core

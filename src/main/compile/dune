@@ -33,7 +33,7 @@
   stacking
   self_michelson
   compiler_options
-  zinc_of_typed)
+  ligo_slim.zinc_of_typed)
  (flags
   (:standard
    -w

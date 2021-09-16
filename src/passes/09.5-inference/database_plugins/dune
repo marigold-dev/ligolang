@@ -8,7 +8,7 @@
     ast_typed
     predefined
     UnionFind
-    environment
+    ligo_slim.environment
     type_variable_abstraction
     solver_types
   )

@@ -1,6 +1,6 @@
 (library
   (name self_mini_c)
-  (public_name ligo.self_mini_c)
+  (public_name ligo_slim.self_mini_c)
   (instrumentation (backend bisect_ppx))
   (libraries
     mini_c

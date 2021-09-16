@@ -8,7 +8,7 @@
     ast_core
     predefined
     UnionFind
-    environment
+    ligo_slim.environment
   )
   (flags (:standard -w +1..62-4-9-44-40-42-48-60-30@39@33 -open Simple_utils ))
 )

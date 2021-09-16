@@ -1,6 +1,6 @@
 (library
   (name typesystem)
-  (public_name ligo.typesystem)
+  (public_name ligo_slim.typesystem)
   (instrumentation (backend bisect_ppx))
   (libraries
     simple-utils

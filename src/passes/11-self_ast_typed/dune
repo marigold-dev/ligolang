@@ -1,6 +1,6 @@
 (library
   (name self_ast_typed)
-  (public_name ligo.self_ast_typed)
+  (public_name ligo_slim.self_ast_typed)
   (instrumentation (backend bisect_ppx))
   (libraries
     simple-utils

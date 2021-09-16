@@ -1,6 +1,6 @@
 (library
  (name zincing)
- (public_name ligo.zincing)
+ (public_name ligo_slim.zincing)
  (instrumentation
   (backend bisect_ppx))
  (libraries zinc ast_typed spilling stage_common simple-utils digestif)

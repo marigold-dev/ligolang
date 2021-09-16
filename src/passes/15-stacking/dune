@@ -8,7 +8,7 @@
     ligo_coq_ocaml
     predefined
     self_michelson
-    environment
+    ligo_slim.environment
   )
   (inline_tests)
   (preprocess

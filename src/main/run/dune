@@ -15,7 +15,7 @@
     ast_typed
     spilling
     mini_c
-    predefined
+    ligo_slim.predefined
     stacking
     ligo_compile
   )

@@ -1,6 +1,6 @@
 (library
   (name ast_imperative)
-  (public_name ligo.ast_impretative)
+  (public_name ligo_slim.ast_imperative)
   (instrumentation (backend bisect_ppx))
   (libraries
     simple-utils

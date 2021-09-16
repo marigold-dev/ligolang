@@ -1,10 +1,9 @@
 (library
   (name environment)
-  (public_name ligo.environment)
+  (public_name ligo_slim.environment)
   (instrumentation (backend bisect_ppx))
   (libraries
     simple-utils
-    tezos-utils
     ast_typed
     stage_common
     typesystem

@@ -5,6 +5,7 @@
  (public_name ligo_slim)
  (instrumentation
   (backend bisect_ppx))
+ (libraries)
  (modules ligo_slim))
 
 (library

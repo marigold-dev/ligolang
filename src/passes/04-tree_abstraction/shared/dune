@@ -4,7 +4,7 @@
   (instrumentation (backend bisect_ppx))
   (libraries
      simple-utils
-     ast_imperative)
+     ligo_slim.ast_imperative)
   (modules
      Helpers)
 )

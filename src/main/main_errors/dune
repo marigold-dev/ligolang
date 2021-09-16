@@ -19,7 +19,7 @@
     self_ast_typed
     ligo_interpreter
     spilling
-    self_mini_c
+    ligo_slim.self_mini_c
     stacking
     self_michelson
   )

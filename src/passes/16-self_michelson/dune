@@ -5,7 +5,7 @@
   (libraries
     simple-utils
     tezos-utils
-    environment
+    ligo_slim.environment
   )
   (preprocess
     (pps ppx_expect)
