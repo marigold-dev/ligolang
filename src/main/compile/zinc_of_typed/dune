@@ -1,0 +1,6 @@
+(library
+ (name zinc_of_typed)
+ (public_name ligo.zinc_of_typed)
+ (instrumentation
+  (backend bisect_ppx))
+ (libraries main_errors ast_typed zincing simple-utils ligo_slim.testdune))

@@ -1,13 +1,16 @@
 (dirs (:standard))
 
 (library
-  (name ligo)
-  (public_name ligo)
-  (instrumentation (backend bisect_ppx))
-  (libraries
-     Preprocessor
-     simple-utils
-     tezos-utils
-     tezos-micheline
-     ligo_main)
-)
+ (name ligo_slim)
+ (public_name ligo_slim)
+ (instrumentation
+  (backend bisect_ppx))
+ (modules ligo_slim))
+
+(library
+ (name ligo)
+ (public_name ligo)
+ (instrumentation
+  (backend bisect_ppx))
+ (libraries Preprocessor simple-utils tezos-utils tezos-micheline ligo_main)
+ (modules ligo))

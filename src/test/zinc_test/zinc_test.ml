@@ -261,23 +261,6 @@ let basic_link =
     ~index:1
     ~stack:[ `Z (Num (Z.of_int 1)) ]
 
-let _main =
-  test_suite "Zinc tests"
-    [
-      test_w "simple1" simple_1;
-      test_w "simple2" simple_2;
-      test_w "simple3" simple_3;
-      (*test_w "simple4" simple_4;*)
-      test_w "id" id;
-      test_w "chain_id" chain_id;
-      test_w "chain_id_func" chain_id_func;
-      test_w "tuple_creation" tuple_creation;
-      test_w "check_record_destructure" check_record_destructure;
-      test_w "check_hash_key" check_hash_key;
-      test_w "basic_function_application" basic_function_application;
-      test_w "basic_link" basic_link;
-    ]
-
 let main =
   test_suite "Zinc tests"
     [

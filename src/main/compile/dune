@@ -33,8 +33,7 @@
   stacking
   self_michelson
   compiler_options
-  zinc
-  zincing)
+  zinc_of_typed)
  (flags
   (:standard
    -w

@@ -1,0 +1,3 @@
+(library
+ (name testdune)
+ (public_name ligo_slim.testdune))

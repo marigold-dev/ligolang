@@ -1,0 +1,26 @@
+lib: [
+  "_build/install/default/lib/ligo_slim/META"
+  "_build/install/default/lib/ligo_slim/dune-package"
+  "_build/install/default/lib/ligo_slim/ligo_slim.a"
+  "_build/install/default/lib/ligo_slim/ligo_slim.cma"
+  "_build/install/default/lib/ligo_slim/ligo_slim.cmi"
+  "_build/install/default/lib/ligo_slim/ligo_slim.cmt"
+  "_build/install/default/lib/ligo_slim/ligo_slim.cmx"
+  "_build/install/default/lib/ligo_slim/ligo_slim.cmxa"
+  "_build/install/default/lib/ligo_slim/ligo_slim.ml"
+  "_build/install/default/lib/ligo_slim/opam"
+  "_build/install/default/lib/ligo_slim/testdune/testdune.a" {"testdune/testdune.a"}
+  "_build/install/default/lib/ligo_slim/testdune/testdune.cma" {"testdune/testdune.cma"}
+  "_build/install/default/lib/ligo_slim/testdune/testdune.cmi" {"testdune/testdune.cmi"}
+  "_build/install/default/lib/ligo_slim/testdune/testdune.cmt" {"testdune/testdune.cmt"}
+  "_build/install/default/lib/ligo_slim/testdune/testdune.cmx" {"testdune/testdune.cmx"}
+  "_build/install/default/lib/ligo_slim/testdune/testdune.cmxa" {"testdune/testdune.cmxa"}
+  "_build/install/default/lib/ligo_slim/testdune/testdune.ml" {"testdune/testdune.ml"}
+]
+libexec: [
+  "_build/install/default/lib/ligo_slim/ligo_slim.cmxs"
+  "_build/install/default/lib/ligo_slim/testdune/testdune.cmxs" {"testdune/testdune.cmxs"}
+]
+doc: [
+  "_build/install/default/doc/ligo_slim/LICENSE.md"
+]
