@@ -11,3 +11,4 @@
      tezos-micheline
      ligo_main)
 )
+(vendored_dirs vendors)
