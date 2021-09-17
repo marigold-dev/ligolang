@@ -2,7 +2,7 @@
 
 (library
   (name preprocessing_shared)
-  (public_name ligo.preprocessing.shared)
+  (public_name ligo_slim.preprocessing.shared)
   (libraries
      ;; Vendors
      Preprocessor)

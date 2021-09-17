@@ -10,7 +10,7 @@
      Preprocessor
      ParserLib
      ;; LIGO
-     lexing_shared
+     ligo_slim.lexing_shared
      ;; Third party
      terminal_size
      pprint)

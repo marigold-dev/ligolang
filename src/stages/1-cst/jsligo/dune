@@ -1,6 +1,6 @@
 (library
   (name cst_jsligo)
-  (public_name ligo.cst.jsligo)
+  (public_name ligo_slim.cst.jsligo)
   (instrumentation (backend bisect_ppx))
   (libraries
     ;; Vendors

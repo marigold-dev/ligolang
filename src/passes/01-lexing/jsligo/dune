@@ -2,7 +2,7 @@
 
 (library
   (name lexing_jsligo)
-  (public_name ligo.lexing.jsligo)
+  (public_name ligo_slim.lexing.jsligo)
   (modules Token Self_tokens Style)
   (libraries
     ;; LIGO

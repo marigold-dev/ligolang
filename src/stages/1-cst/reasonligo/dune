@@ -1,6 +1,6 @@
 (library
   (name cst_reasonligo)
-  (public_name ligo.cst.reasonligo)
+  (public_name ligo_slim.cst.reasonligo)
   (instrumentation (backend bisect_ppx))
   (libraries
     ;; Vendors

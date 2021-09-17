@@ -11,7 +11,7 @@
      parsing_shared
      parsing_pascaligo
      parsing_cameligo
-     parsing_reasonligo
+     ligo_slim.parsing_reasonligo
      parsing_jsligo
      preprocessing_cameligo
      preprocessing_reasonligo

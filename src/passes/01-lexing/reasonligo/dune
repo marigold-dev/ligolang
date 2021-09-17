@@ -2,7 +2,7 @@
 
 (library
   (name lexing_reasonligo)
-  (public_name ligo.lexing.reasonligo)
+  (public_name ligo_slim.lexing.reasonligo)
   (modules Token Self_tokens Style)
   (libraries
     ;; LIGO

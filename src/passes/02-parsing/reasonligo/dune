@@ -10,7 +10,7 @@
 
 (library
   (name parsing_reasonligo)
-  (public_name ligo.parsing.reasonligo)
+  (public_name ligo_slim.parsing.reasonligo)
   (instrumentation (backend bisect_ppx))
   (modules
     Parser ParErr Pretty)

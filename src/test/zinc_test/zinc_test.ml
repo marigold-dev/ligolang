@@ -261,6 +261,15 @@ let basic_link =
     ~index:1
     ~stack:[ `Z (Num (Z.of_int 1)) ]
 
+    (*
+let basic_compilation ~raise ~add_warning () =
+  let meta = Ligo_compile.Helpers.{ syntax=Ligo_compile.Helpers.CameLIGO; } in
+  let core = Ligo_compile.Utils.to_core ~raise ~add_warning ~options ~meta c_unit f in
+  let inferred = Ligo_compile.Of_core.infer ~raise ~options core in
+  let typed, e = Ligo_compile.Of_core.typecheck ~raise ~add_warning ~options form inferred in
+  assert false
+  *)
+
 let main =
   test_suite "Zinc tests"
     [

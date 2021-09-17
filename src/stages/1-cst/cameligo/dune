@@ -1,6 +1,6 @@
 (library
   (name cst_cameligo)
-  (public_name ligo.cst.cameligo)
+  (public_name ligo_slim.cst.cameligo)
   (instrumentation (backend bisect_ppx))
   (libraries
     ;; Vendors

@@ -1,6 +1,6 @@
 (library
   (name cst_pascaligo)
-  (public_name ligo.cst.pascaligo)
+  (public_name ligo_slim.cst.pascaligo)
   (instrumentation (backend bisect_ppx))
   (libraries
     ;; Vendors
