@@ -18,17 +18,11 @@ depends: [
   "ppx_deriving"
   "ppx_deriving_yojson"
   "ppx_expect"
-  "proto-alpha-utils"
-  "ligo-008-PtEdo2Zk-test-helpers"
   "yojson"
   "alcotest" { with-test & >= "1.0" & < "1.1" }
   "getopt"
   "terminal_size"
   "pprint"
-  "ParserLib"
-  "LexerLib"
-  "UnionFind"
-  "RedBlackTrees"
   "linenoise"
   "qcheck"
   # work around upstream in-place update
