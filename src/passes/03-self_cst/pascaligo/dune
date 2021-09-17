@@ -1,6 +1,6 @@
 (library
   (name self_cst_pascaligo)
-  (public_name ligo.self_cst.pascaligo)
+  (public_name ligo_slim.self_cst.pascaligo)
   (instrumentation (backend bisect_ppx))
   (libraries
     simple-utils

@@ -2,7 +2,7 @@
 
 (library
   (name preprocessing_cameligo)
-  (public_name ligo.preprocessing.cameligo)
+  (public_name ligo_slim.preprocessing.cameligo)
   (instrumentation (backend bisect_ppx))
   (libraries
      ;; Vendors

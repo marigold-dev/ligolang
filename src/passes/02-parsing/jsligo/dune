@@ -10,7 +10,7 @@
 
 (library
   (name parsing_jsligo)
-  (public_name ligo.parsing.jsligo)
+  (public_name ligo_slim.parsing.jsligo)
   (instrumentation (backend bisect_ppx))
   (modules
     Parser ParErr Pretty)

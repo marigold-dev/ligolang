@@ -2,7 +2,7 @@
 
 (library
   (name preprocessing_pascaligo)
-  (public_name ligo.preprocessing.pascaligo)
+  (public_name ligo_slim.preprocessing.pascaligo)
   (instrumentation (backend bisect_ppx))
   (libraries
      ;; Vendors

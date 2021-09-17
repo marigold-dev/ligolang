@@ -1,6 +1,6 @@
 (library
   (name reasonligo)
-  (public_name ligo.reasonligo)
+  (public_name ligo_slim.reasonligo)
   (instrumentation (backend bisect_ppx))
   (libraries
     tree_abstraction_shared

@@ -2,7 +2,7 @@
 
 (library
   (name preprocessing)
-  (public_name ligo.preprocessing)
+  (public_name ligo_slim.preprocessing)
   (instrumentation (backend bisect_ppx))
   (libraries
     ;; Vendors

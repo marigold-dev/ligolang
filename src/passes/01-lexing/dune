@@ -2,7 +2,7 @@
 
 (library
   (name lexing)
-  (public_name ligo.lexing)
+  (public_name ligo_slim.lexing)
   (instrumentation (backend bisect_ppx))
   (libraries
      ;; Vendors

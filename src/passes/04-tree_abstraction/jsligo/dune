@@ -1,6 +1,6 @@
 (library
   (name jsligo)
-  (public_name ligo.jsligo)
+  (public_name ligo_slim.jsligo)
   (instrumentation (backend bisect_ppx))
   (libraries
     simple-utils

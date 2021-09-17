@@ -1,6 +1,6 @@
 (library
   (name tree_abstraction)
-  (public_name ligo.tree_abstraction)
+  (public_name ligo_slim.tree_abstraction)
   (instrumentation (backend bisect_ppx))
   (libraries
     tree_abstraction_shared

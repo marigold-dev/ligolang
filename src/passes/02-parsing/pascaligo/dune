@@ -10,7 +10,7 @@
 
 (library
   (name parsing_pascaligo)
-  (public_name ligo.parsing.pascaligo)
+  (public_name ligo_slim.parsing.pascaligo)
   (instrumentation (backend bisect_ppx))
   (modules
     Parser ParErr Pretty)

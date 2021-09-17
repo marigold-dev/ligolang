@@ -1,6 +1,6 @@
 (library
   (name cameligo)
-  (public_name ligo.cameligo)
+  (public_name ligo_slim.cameligo)
   (instrumentation (backend bisect_ppx))
   (libraries
     tree_abstraction_shared

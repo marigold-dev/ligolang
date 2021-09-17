@@ -1,11 +1,11 @@
 (library
  (name self_ast_imperative)
- (public_name ligo.self_ast_imperative)
+ (public_name ligo_slim.self_ast_imperative)
  (instrumentation
   (backend bisect_ppx))
  (libraries
   simple-utils
-  ligo_slim.ast_imperative
+  ast_imperative
   tezos-crypto
   tezos-base
   main_warnings)

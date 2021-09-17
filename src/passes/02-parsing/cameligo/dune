@@ -10,7 +10,7 @@
 
 (library
   (name parsing_cameligo)
-  (public_name ligo.parsing.cameligo)
+  (public_name ligo_slim.parsing.cameligo)
   (instrumentation (backend bisect_ppx))
   (modules
     Parser ParErr Pretty)

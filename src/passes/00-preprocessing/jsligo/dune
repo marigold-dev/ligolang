@@ -2,7 +2,7 @@
 
 (library
   (name preprocessing_jsligo)
-  (public_name ligo.preprocessing.jsligo)
+  (public_name ligo_slim.preprocessing.jsligo)
   (instrumentation (backend bisect_ppx))
   (libraries
      ;; Vendors
