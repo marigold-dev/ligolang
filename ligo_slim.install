@@ -774,6 +774,9 @@ lib: [
   "_build/install/default/lib/ligo_slim/predefined/predefined__Helpers.cmt" {"predefined/predefined__Helpers.cmt"}
   "_build/install/default/lib/ligo_slim/predefined/predefined__Helpers.cmti" {"predefined/predefined__Helpers.cmti"}
   "_build/install/default/lib/ligo_slim/predefined/predefined__Helpers.cmx" {"predefined/predefined__Helpers.cmx"}
+  "_build/install/default/lib/ligo_slim/preprocessing/Errors.ml" {"preprocessing/Errors.ml"}
+  "_build/install/default/lib/ligo_slim/preprocessing/cameligo.ml" {"preprocessing/cameligo.ml"}
+  "_build/install/default/lib/ligo_slim/preprocessing/cameligo.mli" {"preprocessing/cameligo.mli"}
   "_build/install/default/lib/ligo_slim/preprocessing/cameligo/Comments.ml" {"preprocessing/cameligo/Comments.ml"}
   "_build/install/default/lib/ligo_slim/preprocessing/cameligo/File.ml" {"preprocessing/cameligo/File.ml"}
   "_build/install/default/lib/ligo_slim/preprocessing/cameligo/preprocessing_cameligo.a" {"preprocessing/cameligo/preprocessing_cameligo.a"}
@@ -789,6 +792,8 @@ lib: [
   "_build/install/default/lib/ligo_slim/preprocessing/cameligo/preprocessing_cameligo__File.cmi" {"preprocessing/cameligo/preprocessing_cameligo__File.cmi"}
   "_build/install/default/lib/ligo_slim/preprocessing/cameligo/preprocessing_cameligo__File.cmt" {"preprocessing/cameligo/preprocessing_cameligo__File.cmt"}
   "_build/install/default/lib/ligo_slim/preprocessing/cameligo/preprocessing_cameligo__File.cmx" {"preprocessing/cameligo/preprocessing_cameligo__File.cmx"}
+  "_build/install/default/lib/ligo_slim/preprocessing/jsligo.ml" {"preprocessing/jsligo.ml"}
+  "_build/install/default/lib/ligo_slim/preprocessing/jsligo.mli" {"preprocessing/jsligo.mli"}
   "_build/install/default/lib/ligo_slim/preprocessing/jsligo/Comments.ml" {"preprocessing/jsligo/Comments.ml"}
   "_build/install/default/lib/ligo_slim/preprocessing/jsligo/File.ml" {"preprocessing/jsligo/File.ml"}
   "_build/install/default/lib/ligo_slim/preprocessing/jsligo/preprocessing_jsligo.a" {"preprocessing/jsligo/preprocessing_jsligo.a"}
@@ -804,6 +809,8 @@ lib: [
   "_build/install/default/lib/ligo_slim/preprocessing/jsligo/preprocessing_jsligo__File.cmi" {"preprocessing/jsligo/preprocessing_jsligo__File.cmi"}
   "_build/install/default/lib/ligo_slim/preprocessing/jsligo/preprocessing_jsligo__File.cmt" {"preprocessing/jsligo/preprocessing_jsligo__File.cmt"}
   "_build/install/default/lib/ligo_slim/preprocessing/jsligo/preprocessing_jsligo__File.cmx" {"preprocessing/jsligo/preprocessing_jsligo__File.cmx"}
+  "_build/install/default/lib/ligo_slim/preprocessing/pascaligo.ml" {"preprocessing/pascaligo.ml"}
+  "_build/install/default/lib/ligo_slim/preprocessing/pascaligo.mli" {"preprocessing/pascaligo.mli"}
   "_build/install/default/lib/ligo_slim/preprocessing/pascaligo/Comments.ml" {"preprocessing/pascaligo/Comments.ml"}
   "_build/install/default/lib/ligo_slim/preprocessing/pascaligo/File.ml" {"preprocessing/pascaligo/File.ml"}
   "_build/install/default/lib/ligo_slim/preprocessing/pascaligo/preprocessing_pascaligo.a" {"preprocessing/pascaligo/preprocessing_pascaligo.a"}
@@ -819,6 +826,38 @@ lib: [
   "_build/install/default/lib/ligo_slim/preprocessing/pascaligo/preprocessing_pascaligo__File.cmi" {"preprocessing/pascaligo/preprocessing_pascaligo__File.cmi"}
   "_build/install/default/lib/ligo_slim/preprocessing/pascaligo/preprocessing_pascaligo__File.cmt" {"preprocessing/pascaligo/preprocessing_pascaligo__File.cmt"}
   "_build/install/default/lib/ligo_slim/preprocessing/pascaligo/preprocessing_pascaligo__File.cmx" {"preprocessing/pascaligo/preprocessing_pascaligo__File.cmx"}
+  "_build/install/default/lib/ligo_slim/preprocessing/preprocessing.a" {"preprocessing/preprocessing.a"}
+  "_build/install/default/lib/ligo_slim/preprocessing/preprocessing.cma" {"preprocessing/preprocessing.cma"}
+  "_build/install/default/lib/ligo_slim/preprocessing/preprocessing.cmi" {"preprocessing/preprocessing.cmi"}
+  "_build/install/default/lib/ligo_slim/preprocessing/preprocessing.cmt" {"preprocessing/preprocessing.cmt"}
+  "_build/install/default/lib/ligo_slim/preprocessing/preprocessing.cmx" {"preprocessing/preprocessing.cmx"}
+  "_build/install/default/lib/ligo_slim/preprocessing/preprocessing.cmxa" {"preprocessing/preprocessing.cmxa"}
+  "_build/install/default/lib/ligo_slim/preprocessing/preprocessing.ml" {"preprocessing/preprocessing.ml"}
+  "_build/install/default/lib/ligo_slim/preprocessing/preprocessing__.cmi" {"preprocessing/preprocessing__.cmi"}
+  "_build/install/default/lib/ligo_slim/preprocessing/preprocessing__.cmt" {"preprocessing/preprocessing__.cmt"}
+  "_build/install/default/lib/ligo_slim/preprocessing/preprocessing__.cmx" {"preprocessing/preprocessing__.cmx"}
+  "_build/install/default/lib/ligo_slim/preprocessing/preprocessing__.ml" {"preprocessing/preprocessing__.ml"}
+  "_build/install/default/lib/ligo_slim/preprocessing/preprocessing__Cameligo.cmi" {"preprocessing/preprocessing__Cameligo.cmi"}
+  "_build/install/default/lib/ligo_slim/preprocessing/preprocessing__Cameligo.cmt" {"preprocessing/preprocessing__Cameligo.cmt"}
+  "_build/install/default/lib/ligo_slim/preprocessing/preprocessing__Cameligo.cmti" {"preprocessing/preprocessing__Cameligo.cmti"}
+  "_build/install/default/lib/ligo_slim/preprocessing/preprocessing__Cameligo.cmx" {"preprocessing/preprocessing__Cameligo.cmx"}
+  "_build/install/default/lib/ligo_slim/preprocessing/preprocessing__Errors.cmi" {"preprocessing/preprocessing__Errors.cmi"}
+  "_build/install/default/lib/ligo_slim/preprocessing/preprocessing__Errors.cmt" {"preprocessing/preprocessing__Errors.cmt"}
+  "_build/install/default/lib/ligo_slim/preprocessing/preprocessing__Errors.cmx" {"preprocessing/preprocessing__Errors.cmx"}
+  "_build/install/default/lib/ligo_slim/preprocessing/preprocessing__Jsligo.cmi" {"preprocessing/preprocessing__Jsligo.cmi"}
+  "_build/install/default/lib/ligo_slim/preprocessing/preprocessing__Jsligo.cmt" {"preprocessing/preprocessing__Jsligo.cmt"}
+  "_build/install/default/lib/ligo_slim/preprocessing/preprocessing__Jsligo.cmti" {"preprocessing/preprocessing__Jsligo.cmti"}
+  "_build/install/default/lib/ligo_slim/preprocessing/preprocessing__Jsligo.cmx" {"preprocessing/preprocessing__Jsligo.cmx"}
+  "_build/install/default/lib/ligo_slim/preprocessing/preprocessing__Pascaligo.cmi" {"preprocessing/preprocessing__Pascaligo.cmi"}
+  "_build/install/default/lib/ligo_slim/preprocessing/preprocessing__Pascaligo.cmt" {"preprocessing/preprocessing__Pascaligo.cmt"}
+  "_build/install/default/lib/ligo_slim/preprocessing/preprocessing__Pascaligo.cmti" {"preprocessing/preprocessing__Pascaligo.cmti"}
+  "_build/install/default/lib/ligo_slim/preprocessing/preprocessing__Pascaligo.cmx" {"preprocessing/preprocessing__Pascaligo.cmx"}
+  "_build/install/default/lib/ligo_slim/preprocessing/preprocessing__Reasonligo.cmi" {"preprocessing/preprocessing__Reasonligo.cmi"}
+  "_build/install/default/lib/ligo_slim/preprocessing/preprocessing__Reasonligo.cmt" {"preprocessing/preprocessing__Reasonligo.cmt"}
+  "_build/install/default/lib/ligo_slim/preprocessing/preprocessing__Reasonligo.cmti" {"preprocessing/preprocessing__Reasonligo.cmti"}
+  "_build/install/default/lib/ligo_slim/preprocessing/preprocessing__Reasonligo.cmx" {"preprocessing/preprocessing__Reasonligo.cmx"}
+  "_build/install/default/lib/ligo_slim/preprocessing/reasonligo.ml" {"preprocessing/reasonligo.ml"}
+  "_build/install/default/lib/ligo_slim/preprocessing/reasonligo.mli" {"preprocessing/reasonligo.mli"}
   "_build/install/default/lib/ligo_slim/preprocessing/reasonligo/Comments.ml" {"preprocessing/reasonligo/Comments.ml"}
   "_build/install/default/lib/ligo_slim/preprocessing/reasonligo/File.ml" {"preprocessing/reasonligo/File.ml"}
   "_build/install/default/lib/ligo_slim/preprocessing/reasonligo/preprocessing_reasonligo.a" {"preprocessing/reasonligo/preprocessing_reasonligo.a"}
@@ -1367,6 +1406,7 @@ libexec: [
   "_build/install/default/lib/ligo_slim/preprocessing/cameligo/preprocessing_cameligo.cmxs" {"preprocessing/cameligo/preprocessing_cameligo.cmxs"}
   "_build/install/default/lib/ligo_slim/preprocessing/jsligo/preprocessing_jsligo.cmxs" {"preprocessing/jsligo/preprocessing_jsligo.cmxs"}
   "_build/install/default/lib/ligo_slim/preprocessing/pascaligo/preprocessing_pascaligo.cmxs" {"preprocessing/pascaligo/preprocessing_pascaligo.cmxs"}
+  "_build/install/default/lib/ligo_slim/preprocessing/preprocessing.cmxs" {"preprocessing/preprocessing.cmxs"}
   "_build/install/default/lib/ligo_slim/preprocessing/reasonligo/preprocessing_reasonligo.cmxs" {"preprocessing/reasonligo/preprocessing_reasonligo.cmxs"}
   "_build/install/default/lib/ligo_slim/preprocessing/shared/preprocessing_shared.cmxs" {"preprocessing/shared/preprocessing_shared.cmxs"}
   "_build/install/default/lib/ligo_slim/reasonligo/reasonligo.cmxs" {"reasonligo/reasonligo.cmxs"}

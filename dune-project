@@ -45,9 +45,6 @@
    (>= 3.6.1))
   (ppx_expect
    (>= 0.14.1))
-  (tezos-utils :dev)
-  (proto-alpha-utils :dev)
-  (ligo-008-PtEdo2Zk-test-helpers :~dev)
   (yojson
    (>= 1.7.0))
   (alcotest
@@ -61,14 +58,6 @@
    (>= 0.1.4))
   (pprint
    (>= 20200410))
-  (ParserLib
-   (>= 1.0))
-  (LexerLib
-   (>= 1.1))
-  (UnionFind
-   (>= 1.0))
-  (RedBlackTrees
-   (>= 1.0))
   (linenoise
    (>= 1.3.1))
   (qcheck
