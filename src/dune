@@ -15,3 +15,5 @@
   (backend bisect_ppx))
  (libraries Preprocessor simple-utils tezos-utils tezos-micheline ligo_main)
  (modules ligo))
+
+(vendored_dirs vendors)
