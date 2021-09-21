@@ -5,14 +5,10 @@ opam update
 ./scripts/setup_dev_switch.sh 
 
 
-echo "Installing opam dependencies"
-opam update 
-./scripts/install_opam_deps.sh 
-
-
-echo "Installing vendor dependencies"
-opam update 
-./scripts/install_vendors_deps.sh
+export PATH=~/.cargo/bin:$PATH
+#opam install -y --deps-only --with-test --locked=locked ./ligo.opam $(find vendors -name \*.opam) # looks redundant - actually isn't
+                                                                                            # or maybe it is...
+opam install -y             --with-test --locked=locked $(find vendors -name \*.opam) ./ligo.opam 
 
 
 setup_opam="eval \`opam config env\` "
