@@ -7,8 +7,8 @@ opam update
 
 export PATH=~/.cargo/bin:$PATH
 #opam install -y --deps-only --with-test --locked=locked ./ligo.opam $(find vendors -name \*.opam) # looks redundant - actually isn't
-                                                                                            # or maybe it is...
-opam install -y             --with-test --locked=locked $(find vendors -name \*.opam) ./ligo.opam 
+                                                                                                 # or maybe it is...
+opam install -y --deps-only --with-test --locked=locked $(find src/vendors -name \*.opam) ./ligo.opam 
 
 
 setup_opam="eval \`opam config env\` "

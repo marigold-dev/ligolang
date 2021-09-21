@@ -48,7 +48,7 @@
 
 (rule
   (targets Parser.msg)
-  (deps (:script_messages ../../../../vendors/ligo-utils/simple-utils/messages.sh) Parser.mly ParToken.mly)
+  (deps (:script_messages ../../../vendors/ligo-utils/simple-utils/messages.sh) Parser.mly ParToken.mly)
   (action (run %{script_messages} --lex-tokens=Token.mli --par-tokens=ParToken.mly Parser.mly)))
 
 (rule
@@ -68,7 +68,7 @@
 
 (rule
   (targets all.jsligo)
-  (deps (:script_cover ../../../../vendors/ligo-utils/simple-utils/cover.sh) Parser.mly ParToken.mly Parser.msg)
+  (deps (:script_cover ../../../vendors/ligo-utils/simple-utils/cover.sh) Parser.mly ParToken.mly Parser.msg)
   (action (run %{script_cover}
                --lex-tokens=Token.mli
                --par-tokens=ParToken.mly
