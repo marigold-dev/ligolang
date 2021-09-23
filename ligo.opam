@@ -18,18 +18,12 @@ depends: [
   "ppx_deriving"
   "ppx_deriving_yojson"
   "ppx_expect"
-  "tezos-utils"
-  "proto-alpha-utils"
-  "ligo-009-PsFLoren-test-helpers"
+  "tezos-010-PtGRANAD-test-helpers"
   "yojson"
   "alcotest" { with-test & >= "1.0" & < "1.1" }
   "getopt"
   "terminal_size"
   "pprint"
-  "ParserLib"
-  "LexerLib"
-  "UnionFind"
-  "RedBlackTrees"
   "linenoise"
   "qcheck"
   "tezos-clic"
@@ -38,6 +32,11 @@ depends: [
   # work around tezos' failure to constrain
   "lwt" { = "5.4.2" }
   "bisect_ppx" {dev & >= "2.5.0"}
+  # dependencies of vendored dependencies
+  "tezos-base"
+  "tezos-crypto"
+  "tezos-micheline"
+  "tezos-client-009-PsFLoren"
 ]
 build: [
   [ "dune" "build" "-p" name "-j" jobs ]
