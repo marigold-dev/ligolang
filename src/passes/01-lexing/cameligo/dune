@@ -7,9 +7,14 @@
   (libraries
     ;; LIGO
     lexing_shared
+    ;; Vendored
+    simple-utils
+    LexerLib
+    Preprocessor
     ;; Third party
     str
-    hex)
+    hex
+    zarith)
 )
 
 ;; Build of a standalone lexer for CameLIGO
@@ -21,6 +26,10 @@
     preprocessing_cameligo
     lexing_shared
     lexing_cameligo
+    ;; Vendored
+    simple-utils
+    LexerLib
+    Preprocessor
     ;; Third party
     str)
   (modules Version LexerMain)

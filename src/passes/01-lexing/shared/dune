@@ -16,6 +16,7 @@
      ;; LIGO
      preprocessing_shared
      ;; Third party
+     yojson
      zarith
      str)
   (modules

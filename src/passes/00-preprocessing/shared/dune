@@ -4,7 +4,9 @@
   (name preprocessing_shared)
   (public_name ligo.preprocessing.shared)
   (libraries
+     yojson
      ;; Vendors
+     simple-utils
      Preprocessor)
   (modules
      Errors Common Comments File PreprocMainGen)

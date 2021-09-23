@@ -5,6 +5,7 @@
   (libraries
     simple-utils
     cst
+    cst_pascaligo
     tezos-crypto
     tezos-base
   )

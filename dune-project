@@ -2,3 +2,5 @@
 (name ligo)
 (using menhir 2.0)
 (using coq 0.2)
+
+(implicit_transitive_deps false)

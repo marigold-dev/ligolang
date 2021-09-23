@@ -7,6 +7,8 @@
   (libraries
     ;; LIGO
     lexing_shared
+    ;; Vendored
+    simple-utils
     ;; Third party
     str
     hex)
@@ -21,6 +23,8 @@
     preprocessing_jsligo
     lexing_shared
     lexing_jsligo
+    ;; Vendored
+    simple-utils
     ;; Third party
     str)
   (modules Version LexerMain)
