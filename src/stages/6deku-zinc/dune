@@ -1,0 +1,11 @@
+(library
+ (name zinc)
+ (public_name ligo.zinc)
+ (instrumentation
+  (backend bisect_ppx))
+ (libraries simple-utils tezos-utils stage_common ast_typed mini_c digestif)
+ (inline_tests)
+ (preprocess
+  (pps ppx_expect ppx_deriving.show ppx_deriving.ord ppx_deriving.eq))
+ (flags
+  (:standard -w +1..62-4-9-44-40-42-48-30@39@33 -open Simple_utils)))

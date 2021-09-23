@@ -1,1 +1,1 @@
-function chain_id (const _tt : chain_id) : chain_id is Tezos.chain_id
+const chain_id : chain_id = Tezos.chain_id;
