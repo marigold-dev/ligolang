@@ -1,0 +1,23 @@
+(library
+ (name stage_common_types)
+ (public_name ligo-types.stage_common_types)
+ (instrumentation
+  (backend bisect_ppx))
+ (libraries simple-utils zarith hex)
+ (inline_tests)
+ (preprocess
+  (pps
+   ppx_expect
+   ppx_deriving.show
+   ppx_deriving.ord
+   ppx_deriving.eq
+   ppx_only_interpreter_tags))
+ (modules enums types PP_enums PP helpers))
+
+(library
+ (name ppx_only_interpreter_tags)
+ (kind ppx_deriver)
+ (modules ppx_only_interpreter_tags)
+ (preprocess
+  (pps ppxlib.metaquot))
+ (libraries ppxlib))

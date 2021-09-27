@@ -2,7 +2,7 @@
   (name stage_common)
   (public_name ligo.stage_common)
   (instrumentation (backend bisect_ppx))
-  (modules PP PP_enums ast_common backends constant debug enums fold_maps folds helpers maps of_yojson test to_yojson types)
+  (modules PP ast_common enums helpers backends constant debug fold_maps folds maps of_yojson test to_yojson types)
   (libraries
     simple-utils
     zarith
@@ -10,6 +10,7 @@
     tezos-utils
     tezos-hacl-glue-unix
     bls12-381-unix
+    ligo-types.stage_common_types
   )
   (inline_tests)
   (preprocess
@@ -17,10 +18,3 @@
   )
   (flags (:standard -open Simple_utils))
 )
-
-(library
- (name ppx_only_interpreter_tags)
- (kind ppx_deriver)
- (modules ppx_only_interpreter_tags)
- (preprocess (pps ppxlib.metaquot))
- (libraries ppxlib))

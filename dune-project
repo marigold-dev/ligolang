@@ -19,6 +19,27 @@
 
 (maintainers "contact@ligolang.org")
 
+(package
+ (name ligo-types)
+ (synopsis "A high-level language which compiles to Michelson")
+ (depends
+  (ppx_deriving
+   (>= 5.2.1))
+  (ppx_deriving_yojson
+   (>= 3.6.1))
+  (ppx_expect
+   (>= 0.14.1))
+  (ppx_yojson_conv
+   (>= 0.14.0))
+  (yojson
+   (>= 1.7.0))
+  (alcotest
+   (and
+    :with-test
+    (>= 1.0)
+    (< 1.1)))
+  (pprint
+   (>= 20200410))))
 
 (package
  (name ligo)
@@ -28,6 +49,8 @@
    (>= 20200624))
   (ocamlgraph
    (>= 2.0.0))
+  (ppx_yojson_conv
+   (>= 0.14.0))
   (coq
    (and
     :build
