@@ -1,6 +1,6 @@
 (library
  (name zinc)
- (public_name ligo.zinc)
+ (public_name ligo-types.zinc)
  (instrumentation
   (backend bisect_ppx))
  (libraries simple-utils ligo-types.stage_common_types mini_c_types digestif)
@@ -11,6 +11,6 @@
    ppx_deriving.show
    ppx_deriving.ord
    ppx_deriving.eq
-   ppx_yojson_conv))
+   ppx_deriving_yojson))
  (flags
   (:standard -w +1..62-4-9-44-40-42-48-30@39@33 -open Simple_utils)))

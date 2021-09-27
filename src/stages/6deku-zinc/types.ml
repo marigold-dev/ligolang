@@ -44,7 +44,7 @@ type zinc_instruction =
   | RecordAccess of
       (Stage_common_types.Types.label[@equal equal_label] [@printer pp_label fprintf])
   (* math *)
-  | Num of (Z.t[@printer fun fmt v -> fprintf fmt "%s" (Z.to_string v)])
+  | Num of (Z.t [@printer fun fmt v -> fprintf fmt "%s" (Z.to_string v)] [@to_yojson Mini_c_types.Types.z_to_yojson] [@of_yojson Mini_c_types.Types.z_of_yojson])
   | Add
   (* boolean *)
   | Bool of bool
@@ -52,7 +52,7 @@ type zinc_instruction =
   (* Crypto *)
   | Key of string
   | HashKey
-  | Hash of Digestif.BLAKE2B.t
+  | Hash of (Digestif.BLAKE2B.t [@to_yojson fun digest -> `String (Digestif.BLAKE2B.to_raw_string digest)] [@of_yojson function| `String digest -> Ok(Digestif.BLAKE2B.of_raw_string digest) | _ -> failwith "string expected"])
   (* serialization *)
   | Bytes of bytes
   (*
@@ -71,8 +71,8 @@ type zinc_instruction =
   | ChainID
   (* Random handling stuff (need to find a better way to do that) *)
   | Done
-[@@deriving show { with_path = false }, eq]
+[@@deriving show { with_path = false }, eq, yojson]
 
-and zinc = zinc_instruction list [@@deriving show { with_path = false }, eq]
+and zinc = zinc_instruction list [@@deriving show { with_path = false }, eq, yojson]
 
-type program = (string * zinc) list [@@deriving show { with_path = false }, eq]
+type program = (string * zinc) list [@@deriving show { with_path = false }, eq, yojson]

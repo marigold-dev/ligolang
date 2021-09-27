@@ -1,10 +1,7 @@
 include Stage_common_types.Types
 
-module Z = struct
-include Z
- let t_of_yojson t = assert false
- let yojson_of_t json = assert false
-end
+let z_of_yojson = function| `String s -> Ok(Z.of_string s) | _ -> failwith "string expected!"
+let z_to_yojson = fun z -> `String (Z.to_string z)
 
 type 'a annotated = string option * 'a
 [@@deriving yojson]
@@ -20,9 +17,11 @@ type type_content =
   | T_set of type_expression
   | T_contract of type_expression
   | T_ticket of type_expression
-  | T_sapling_state of Z.t
-  | T_sapling_transaction of Z.t
-  | T_option of type_expression
+  | T_sapling_state of (Z.t [@to_yojson z_to_yojson] [@of_yojson  z_of_yojson])
+  | T_sapling_transaction of (Z.t [@to_yojson z_to_yojson] [@of_yojson  z_of_yojson])
+  | T_option of type_expression 
+[@@deriving yojson]
+  
 
 and type_expression = { type_content : type_content; location : Location.t }
 
