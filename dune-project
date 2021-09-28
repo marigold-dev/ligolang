@@ -40,7 +40,9 @@
     (< 1.1)))
   (pprint
    (>= 20200410))
-  (zarith (>= 1.11))))
+  (zarith (>= 1.11))
+  (digestif (>= 1.0.1)))
+)
 
 (package
  (name ligo)
