@@ -46,7 +46,7 @@
   (digestif
    (>= 1.0.1))
  (tezos-micheline
-  (>= 10.2))))
+  (>= 8.0))))
 
 (package
  (name ligo)
