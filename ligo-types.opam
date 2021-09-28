@@ -17,6 +17,7 @@ depends: [
   "yojson" {>= "1.7.0"}
   "alcotest" {with-test & >= "1.0" & < "1.1"}
   "pprint" {>= "20200410"}
+  "zarith" {>= "1.11"}
   "odoc" {with-doc}
 ]
 build: [
