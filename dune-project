@@ -22,7 +22,8 @@
  (synopsis "A high-level language which compiles to Michelson")
  (version 0.0.1)
  (depends
- (hex (>= 1.4.0))
+  (hex
+   (>= 1.4.0))
   (ppx_deriving
    (>= 5.2.1))
   (ppx_deriving_yojson
@@ -40,16 +41,20 @@
     (< 1.1)))
   (pprint
    (>= 20200410))
-  (zarith (>= 1.11))
-  (digestif (>= 1.0.1)))
-)
+  (zarith
+   (>= 1.11))
+  (digestif
+   (>= 1.0.1))
+ (tezos-micheline
+  (>= 10.2))))
 
 (package
  (name ligo)
  (synopsis "A high-level language which compiles to Michelson")
  (version 0.0.1)
  (depends
- (hex (>= 1.4.0))
+  (hex
+   (>= 1.4.0))
   (menhir
    (>= 20200624))
   (ocamlgraph

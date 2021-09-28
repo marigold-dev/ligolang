@@ -18,6 +18,8 @@ depends: [
   "alcotest" {with-test & >= "1.0" & < "1.1"}
   "pprint" {>= "20200410"}
   "zarith" {>= "1.11"}
+  "digestif" {>= "1.0.1"}
+  "tezos-micheline" {>= "10.2"}
   "odoc" {with-doc}
 ]
 build: [
