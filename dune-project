@@ -9,9 +9,7 @@
 (generate_opam_files true)
 
 (source
- (uri "https://gitlab.com/ligolang/tezos"))
-
-(bug_reports "https://gitlab.com/ligolang/tezos/issues")
+ (github anchpop/ligolang))
 
 (license MIT)
 
@@ -22,7 +20,9 @@
 (package
  (name ligo-types)
  (synopsis "A high-level language which compiles to Michelson")
+ (version 0.0.1)
  (depends
+ (hex (>= 1.4.0))
   (ppx_deriving
    (>= 5.2.1))
   (ppx_deriving_yojson
@@ -44,7 +44,9 @@
 (package
  (name ligo)
  (synopsis "A high-level language which compiles to Michelson")
+ (version 0.0.1)
  (depends
+ (hex (>= 1.4.0))
   (menhir
    (>= 20200624))
   (ocamlgraph
@@ -84,7 +86,7 @@
   (ocaml-migrate-parsetree
    (= 2.1.0))
   (lwt
-   (= 5.3.0))
+   (>= 5.3.0))
   (bisect_ppx
    (and
     :dev
