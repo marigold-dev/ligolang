@@ -1,0 +1,12 @@
+(library
+  (name cst_pascaligo)
+  (public_name ligo.cst.pascaligo)
+  (instrumentation (backend bisect_ppx))
+  (libraries
+    ;; Vendors
+    LexerLib
+    simple-utils
+    ;; Third party
+    hex
+    zarith)
+  (modules CST Printer))

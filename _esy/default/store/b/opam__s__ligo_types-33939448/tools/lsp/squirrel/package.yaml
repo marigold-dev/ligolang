@@ -1,0 +1,254 @@
+name: ligo-squirrel
+
+dependencies:
+  - base
+  - duplo
+  - ghc-prim
+
+default-extensions:
+  - AllowAmbiguousTypes
+  - ApplicativeDo
+  - BangPatterns
+  - BlockArguments
+  - ConstraintKinds
+  - DataKinds
+  - DeriveAnyClass
+  - DeriveFoldable
+  - DeriveFunctor
+  - DeriveTraversable
+  - DerivingStrategies
+  - DerivingVia
+  - DuplicateRecordFields
+  - FlexibleContexts
+  - FlexibleInstances
+  - FunctionalDependencies
+  - GADTs
+  - GeneralisedNewtypeDeriving
+  - ImportQualifiedPost
+  - LambdaCase
+  - MagicHash
+  - MultiParamTypeClasses
+  - MultiWayIf
+  - NamedFieldPuns
+  - OverloadedStrings
+  - QuantifiedConstraints
+  - QuasiQuotes
+  - PatternSynonyms
+  - RankNTypes
+  - RecordWildCards
+  - ScopedTypeVariables
+  - StandaloneDeriving
+  - TemplateHaskell
+  - TupleSections
+  - TypeApplications
+  - TypeFamilies
+  - TypeOperators
+  - UndecidableInstances
+  - ViewPatterns
+
+ghc-options:
+  - -Weverything
+  - -Wno-missing-exported-signatures
+  - -Wno-missing-import-lists
+  - -Wno-missed-specialisations
+  - -Wno-all-missed-specialisations
+  - -Wno-unsafe
+  - -Wno-safe
+  - -Wno-missing-local-signatures
+  - -Wno-monomorphism-restriction
+  - -Wno-implicit-prelude
+  - -Wno-partial-fields
+  - -Wno-missing-export-lists  # FIXME
+  - -Wno-missing-safe-haskell-mode
+  - -Wno-prepositive-qualified-module
+
+library:
+  source-dirs:
+    - src/
+
+  include-dirs:
+    - grammar/pascaligo/src
+    - grammar/reasonligo/src
+    - grammar/camligo/src
+
+  c-sources:
+    - grammar/pascaligo/src/parser.c
+    - grammar/pascaligo/src/scanner.c
+    - grammar/reasonligo/src/parser.c
+    - grammar/reasonligo/src/scanner.c
+    - grammar/camligo/src/parser.c
+    - grammar/camligo/src/scanner.c
+
+  dependencies:
+    - algebraic-graphs
+    - aeson
+    - bytestring
+    - containers
+    - bytestring
+    - data-default
+    - directory
+    - exceptions
+    - fastsum
+    - filepath
+    - interpolate
+    - lens
+    - lsp-types
+    - mtl
+    - pretty
+    - process
+    - regex-tdfa
+    - safe-exceptions
+    - template-haskell
+    - text
+    - transformers
+    - tree-sitter
+    - unordered-containers
+
+executables:
+  ligo-squirrel:
+    main: Main.hs
+
+    dependencies:
+      - algebraic-graphs
+      - clock
+      - data-default
+      - exceptions
+      - focus
+      - hashable
+      - hslogger
+      - interpolate
+      - lens
+      - ligo-squirrel
+      - lsp
+      - mtl
+      - safe-exceptions
+      - stm
+      - stm-containers
+      - text
+      - transformers
+      - unliftio
+      - unliftio-core
+
+    source-dirs:
+      - app/ligo-squirrel
+
+    ghc-options: -threaded
+
+  ligo-vet:
+    main: Main.hs
+
+    other-modules: []
+
+    source-dirs:
+      - app/ligo-vet
+
+    dependencies:
+      - ligo-squirrel
+      - optparse-applicative
+      - with-utf8
+
+tests:
+  lsp-test:
+    main: Driver.hs
+
+    source-dirs:
+      - test/lsp-test/
+      - test/test-common/
+
+    ghc-options:
+      - -Wno-incomplete-uni-patterns
+      - -threaded
+      - -eventlog
+      - -rtsopts
+        # Weird quoting is required for cabal to correctly pass this as _one_ option,
+        # otherwise it splits by spaces.
+        # :facepalm:
+      - '"-with-rtsopts=-N -A64m -AL256m"'
+
+    dependencies:
+      - HUnit
+      - directory
+      - filepath
+      - hspec-expectations
+      - lens
+      - ligo-squirrel
+      - lsp-types
+      - safe-exceptions
+      - tasty
+      - tasty-hunit
+      - template-haskell
+      - text
+      - unordered-containers
+
+    build-tools:
+      - tasty-discover:tasty-discover
+
+  ligo-contracts-test:
+    main: Driver.hs
+
+    source-dirs:
+      - test/ligo-contracts-test/
+      - test/test-common/
+
+    ghc-options:
+      - -Wno-incomplete-uni-patterns
+      - -threaded
+      - -eventlog
+      - -rtsopts
+        # Weird quoting is required for cabal to correctly pass this as _one_ option,
+        # otherwise it splits by spaces.
+        # :facepalm:
+      - '"-with-rtsopts=-N -A64m -AL256m"'
+
+    dependencies:
+      - HUnit
+      - directory
+      - filepath
+      - hspec-expectations
+      - lens
+      - ligo-squirrel
+      - lsp-types
+      - safe-exceptions
+      - tasty
+      - tasty-hunit
+      - template-haskell
+      - text
+      - unordered-containers
+
+    build-tools:
+      - tasty-discover:tasty-discover
+
+  integration-test:
+    main: Driver.hs
+
+    ghc-options:
+      - -Wno-incomplete-uni-patterns
+      - -threaded
+      - -eventlog
+      - -rtsopts
+        # Weird quoting is required for cabal to correctly pass this as _one_ option,
+        # otherwise it splits by spaces.
+        # :facepalm:
+      - '"-with-rtsopts=-N -A64m -AL256m"'
+
+    source-dirs:
+      - test/integration-test/
+      - test/test-common/
+
+    dependencies:
+      - HUnit
+      - directory
+      - filepath
+      - hspec-expectations
+      - lens
+      - ligo-squirrel
+      - lsp-types
+      - safe-exceptions
+      - tasty
+      - tasty-hunit
+      - template-haskell
+      - text
+      - unordered-containers
+
+    build-tools:
+      - tasty-discover:tasty-discover

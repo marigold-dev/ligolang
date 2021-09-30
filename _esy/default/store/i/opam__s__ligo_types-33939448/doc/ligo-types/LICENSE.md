@@ -1,0 +1,1 @@
+/workspaces/ligolang/_esy/default/store/b/opam__s__ligo_types-33939448/_build/install/default/doc/ligo-types/LICENSE.md

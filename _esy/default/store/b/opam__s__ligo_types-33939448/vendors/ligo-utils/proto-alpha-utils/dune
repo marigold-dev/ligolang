@@ -1,0 +1,16 @@
+(library
+  (name proto_alpha_utils)
+  (public_name proto-alpha-utils)
+  (libraries
+    tezos-error-monad
+    tezos-stdlib-unix
+    tezos-protocol-010-PtGRANAD
+    tezos-protocol-010-PtGRANAD-parameters
+    tezos-client-010-PtGRANAD
+    tezos-memory-proto-alpha
+    data-encoding
+    simple-utils
+    tezos-utils
+  )
+ (flags (:standard -open Simple_utils))
+)

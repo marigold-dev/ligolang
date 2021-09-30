@@ -1,0 +1,13 @@
+(library
+  (name cst_jsligo)
+  (public_name ligo.cst.jsligo)
+  (instrumentation (backend bisect_ppx))
+  (libraries
+    ;; Vendors
+    LexerLib
+    simple-utils
+    ;; Third party
+    hex
+    zarith)
+  (modules CST Printer)
+)

@@ -104,4 +104,5 @@
   (tezos-crypto
    (>= 10.2))
   (tezos-micheline
-   (>= 10.2))))
+   (>= 10.2))
+   ))
