@@ -1,4 +1,0 @@
-(contract
-  (const
-    (? main)
-    (lam (type? (? i) int) : (option $ nat) => (apply is_nat i))))
