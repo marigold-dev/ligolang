@@ -1,6 +1,0 @@
-# esy-build-package: building: @opam/ligo-types@link-dev:./ligo-types.opam
-# esy-build-package: pwd: /workspaces/ligolang/_esy/default/store/b/opam__s__ligo_types-33939448
-# esy-build-package: running: 'dune' 'subst'
-Error: ligo-types.install: No such file or directory
-error: command failed: 'dune' 'subst' (exited with 1)
-esy-build-package: exiting with errors above...

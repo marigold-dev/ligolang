@@ -18,3 +18,4 @@ version.ml
 .history
 /to-dos.html
 node_modules
+_esy/*
