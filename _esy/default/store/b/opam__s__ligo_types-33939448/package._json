@@ -42,8 +42,5 @@
     "@opam/tezos-crypto": "10.2",
     "@opam/tezos-micheline": "10.2",
     "@opam/bls12-381": "1.0.0"
-  },
-  "resolutions": {
-    "@opam/bls12-381-unix": "git:git+ssh://anchpop@gitlab.com:dannywillems/ocaml-bls12-381.git:bls12-381-unix.opam#12c90104b87bb9ec8df5c795d1c192a783bffd44"
   }
 }

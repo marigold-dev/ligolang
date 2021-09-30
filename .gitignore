@@ -17,3 +17,4 @@ version.ml
 /_coverage_*/
 .history
 /to-dos.html
+node_modules

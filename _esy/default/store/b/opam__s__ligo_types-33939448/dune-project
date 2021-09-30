@@ -1,7 +1,7 @@
 (lang dune 2.8)
 
 (name ligo)
-(version Test-Release-1594-g7dee617ed-dirty)
+(version Test-Release-1595-gc065d4316-dirty)
 
 (using menhir 2.0)
 
