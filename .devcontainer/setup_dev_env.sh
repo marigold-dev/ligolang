@@ -1,4 +1,4 @@
-opam init --disable-sandboxing --bare -y 
+git push -fopam init --disable-sandboxing --bare -y 
 
 echo "Setting up dev switch"
 opam update 
