@@ -19,6 +19,12 @@ depends: [
   "pprint" {>= "20200410"}
   "zarith" {>= "1.11"}
   "digestif" {>= "1.0.1"}
+  "alcotest-lwt"
+  "data-encoding"
+  "lwt-canceler"
+  "lwt_log"
+  "ringo"
+  "ipaddr"
   "odoc" {with-doc}
 ]
 build: [

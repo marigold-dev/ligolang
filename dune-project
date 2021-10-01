@@ -45,8 +45,13 @@
    (>= 1.11))
   (digestif
    (>= 1.0.1))
- (tezos-micheline
-  (>= 8.0))))
+  
+    alcotest-lwt
+    data-encoding
+    lwt-canceler
+    lwt_log
+    ringo
+    ipaddr))
 
 (package
  (name ligo)
@@ -99,10 +104,11 @@
    (and
     :dev
     (>= 2.5.0)))
-  (tezos-base
-   (>= 10.2))
-  (tezos-crypto
-   (>= 10.2))
-  (tezos-micheline
-   (>= 10.2))
+
+    alcotest-lwt
+    data-encoding
+    lwt-canceler
+    lwt_log
+    ringo
+    ipaddr
    ))

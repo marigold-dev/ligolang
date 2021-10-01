@@ -1,0 +1,70 @@
+lib: [
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/META"
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/dune-package"
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/mini_c_types/PP.ml" {"mini_c_types/PP.ml"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/mini_c_types/PP.mli" {"mini_c_types/PP.mli"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/mini_c_types/mini_c_types.a" {"mini_c_types/mini_c_types.a"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/mini_c_types/mini_c_types.cma" {"mini_c_types/mini_c_types.cma"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/mini_c_types/mini_c_types.cmi" {"mini_c_types/mini_c_types.cmi"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/mini_c_types/mini_c_types.cmt" {"mini_c_types/mini_c_types.cmt"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/mini_c_types/mini_c_types.cmx" {"mini_c_types/mini_c_types.cmx"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/mini_c_types/mini_c_types.cmxa" {"mini_c_types/mini_c_types.cmxa"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/mini_c_types/mini_c_types.ml" {"mini_c_types/mini_c_types.ml"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/mini_c_types/mini_c_types__PP.cmi" {"mini_c_types/mini_c_types__PP.cmi"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/mini_c_types/mini_c_types__PP.cmt" {"mini_c_types/mini_c_types__PP.cmt"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/mini_c_types/mini_c_types__PP.cmti" {"mini_c_types/mini_c_types__PP.cmti"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/mini_c_types/mini_c_types__PP.cmx" {"mini_c_types/mini_c_types__PP.cmx"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/mini_c_types/mini_c_types__Types.cmi" {"mini_c_types/mini_c_types__Types.cmi"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/mini_c_types/mini_c_types__Types.cmt" {"mini_c_types/mini_c_types__Types.cmt"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/mini_c_types/mini_c_types__Types.cmx" {"mini_c_types/mini_c_types__Types.cmx"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/mini_c_types/types.ml" {"mini_c_types/types.ml"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/opam"
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/stage_common_types/PP.ml" {"stage_common_types/PP.ml"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/stage_common_types/PP_enums.ml" {"stage_common_types/PP_enums.ml"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/stage_common_types/enums.ml" {"stage_common_types/enums.ml"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/stage_common_types/helpers.ml" {"stage_common_types/helpers.ml"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/stage_common_types/helpers.mli" {"stage_common_types/helpers.mli"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/stage_common_types/stage_common_types.a" {"stage_common_types/stage_common_types.a"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/stage_common_types/stage_common_types.cma" {"stage_common_types/stage_common_types.cma"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/stage_common_types/stage_common_types.cmi" {"stage_common_types/stage_common_types.cmi"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/stage_common_types/stage_common_types.cmt" {"stage_common_types/stage_common_types.cmt"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/stage_common_types/stage_common_types.cmx" {"stage_common_types/stage_common_types.cmx"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/stage_common_types/stage_common_types.cmxa" {"stage_common_types/stage_common_types.cmxa"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/stage_common_types/stage_common_types.ml" {"stage_common_types/stage_common_types.ml"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/stage_common_types/stage_common_types__Enums.cmi" {"stage_common_types/stage_common_types__Enums.cmi"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/stage_common_types/stage_common_types__Enums.cmt" {"stage_common_types/stage_common_types__Enums.cmt"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/stage_common_types/stage_common_types__Enums.cmx" {"stage_common_types/stage_common_types__Enums.cmx"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/stage_common_types/stage_common_types__Helpers.cmi" {"stage_common_types/stage_common_types__Helpers.cmi"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/stage_common_types/stage_common_types__Helpers.cmt" {"stage_common_types/stage_common_types__Helpers.cmt"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/stage_common_types/stage_common_types__Helpers.cmti" {"stage_common_types/stage_common_types__Helpers.cmti"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/stage_common_types/stage_common_types__Helpers.cmx" {"stage_common_types/stage_common_types__Helpers.cmx"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/stage_common_types/stage_common_types__PP.cmi" {"stage_common_types/stage_common_types__PP.cmi"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/stage_common_types/stage_common_types__PP.cmt" {"stage_common_types/stage_common_types__PP.cmt"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/stage_common_types/stage_common_types__PP.cmx" {"stage_common_types/stage_common_types__PP.cmx"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/stage_common_types/stage_common_types__PP_enums.cmi" {"stage_common_types/stage_common_types__PP_enums.cmi"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/stage_common_types/stage_common_types__PP_enums.cmt" {"stage_common_types/stage_common_types__PP_enums.cmt"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/stage_common_types/stage_common_types__PP_enums.cmx" {"stage_common_types/stage_common_types__PP_enums.cmx"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/stage_common_types/stage_common_types__Types.cmi" {"stage_common_types/stage_common_types__Types.cmi"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/stage_common_types/stage_common_types__Types.cmt" {"stage_common_types/stage_common_types__Types.cmt"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/stage_common_types/stage_common_types__Types.cmx" {"stage_common_types/stage_common_types__Types.cmx"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/stage_common_types/types.ml" {"stage_common_types/types.ml"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/zinc/types.ml" {"zinc/types.ml"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/zinc/zinc.a" {"zinc/zinc.a"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/zinc/zinc.cma" {"zinc/zinc.cma"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/zinc/zinc.cmi" {"zinc/zinc.cmi"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/zinc/zinc.cmt" {"zinc/zinc.cmt"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/zinc/zinc.cmx" {"zinc/zinc.cmx"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/zinc/zinc.cmxa" {"zinc/zinc.cmxa"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/zinc/zinc.ml" {"zinc/zinc.ml"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/zinc/zinc__Types.cmi" {"zinc/zinc__Types.cmi"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/zinc/zinc__Types.cmt" {"zinc/zinc__Types.cmt"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/zinc/zinc__Types.cmx" {"zinc/zinc__Types.cmx"}
+]
+libexec: [
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/mini_c_types/mini_c_types.cmxs" {"mini_c_types/mini_c_types.cmxs"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/stage_common_types/stage_common_types.cmxs" {"stage_common_types/stage_common_types.cmxs"}
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/lib/ligo-types/zinc/zinc.cmxs" {"zinc/zinc.cmxs"}
+]
+doc: [
+  "/workspaces/ligolang/_esy/default/store/b/ligo-5df06075/install/default/doc/ligo-types/LICENSE.md"
+]
