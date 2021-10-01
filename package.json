@@ -57,11 +57,6 @@
     "@opam/resto-cohttp-self-serving-client": "*"
   },
   "resolutions": {
-    "@opam/ligo-types": {
-      "source": "link:./ligo-types.opam",
-      "override": {
-        "buildsInSource": true
-      }
-    }
+    "@opam/ligo-types": "github:anchpop/ligolang:ligo-types.opam#41a52f7a45201ff3d57236d75749c3cc68186210"
   }
 }

@@ -1,5 +1,5 @@
 {
-  "checksum": "ddb3ccb16dc350c25238a6ee1529c49c",
+  "checksum": "727830f6ce88f62a61489fd372525a2a",
   "root": "ligo@link-dev:./package.json",
   "node": {
     "yarn-pkg-config@github:esy-ocaml/yarn-pkg-config#db3a0b63883606dd57c54a7158d560d6cba8cd79@d41d8cd9": {
@@ -62,7 +62,7 @@
         "@opam/lwt-canceler@opam:0.3@64a4b548",
         "@opam/lwt@opam:5.4.2@f5e79982",
         "@opam/linenoise@opam:1.3.1@d0b372a4",
-        "@opam/ligo-types@link:./ligo-types.opam",
+        "@opam/ligo-types@github:anchpop/ligolang:ligo-types.opam#41a52f7a45201ff3d57236d75749c3cc68186210@d41d8cd9",
         "@opam/irmin-pack@opam:2.7.2@ec4b3c92",
         "@opam/ipaddr@opam:5.2.0@6ac621fb", "@opam/hex@opam:1.4.0@41725494",
         "@opam/hacl-star-raw@opam:0.4.1@825d08ff",
@@ -2445,16 +2445,19 @@
         "@opam/dune@opam:2.9.1@1e504822"
       ]
     },
-    "@opam/ligo-types@link:./ligo-types.opam": {
-      "id": "@opam/ligo-types@link:./ligo-types.opam",
+    "@opam/ligo-types@github:anchpop/ligolang:ligo-types.opam#41a52f7a45201ff3d57236d75749c3cc68186210@d41d8cd9": {
+      "id":
+        "@opam/ligo-types@github:anchpop/ligolang:ligo-types.opam#41a52f7a45201ff3d57236d75749c3cc68186210@d41d8cd9",
       "name": "@opam/ligo-types",
-      "version": "link:./ligo-types.opam",
+      "version":
+        "github:anchpop/ligolang:ligo-types.opam#41a52f7a45201ff3d57236d75749c3cc68186210",
       "source": {
-        "type": "link",
-        "path": ".",
-        "manifest": "ligo-types.opam"
+        "type": "install",
+        "source": [
+          "github:anchpop/ligolang:ligo-types.opam#41a52f7a45201ff3d57236d75749c3cc68186210"
+        ]
       },
-      "overrides": [ { "buildsInSource": true } ],
+      "overrides": [],
       "dependencies": [
         "@opam/zarith@opam:1.12@232cc7f2",
         "@opam/yojson@opam:1.7.0@69d87312", "@opam/ringo@opam:0.5@2f28117a",
