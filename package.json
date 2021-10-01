@@ -1,7 +1,7 @@
 {
   "name": "ligo",
   "esy": {
-    "build": "dune build -p #{self.name}",
+    "build": "dune build -p #{self.name},ligo-types",
     "release": {
       "bin": [
         "genesis_helper",
@@ -39,6 +39,7 @@
     "@opam/bisect_ppx": ">= 2.5.0",
     "@opam/bls12-381": "1.0.0",
     "@opam/bls12-381-unix": "1.0.0",
+    "@opam/bls12-381-legacy": "*",
     "@opam/ligo-types": "*",
     "@opam/alcotest-lwt": "*",
     "@opam/data-encoding": "*",
@@ -57,6 +58,6 @@
     "@opam/resto-cohttp-self-serving-client": "*"
   },
   "resolutions": {
-    "@opam/ligo-types": "link:./ligo-types.opam"
+    "@opam/ligo-types": "link:./ligo-types.opam",
   }
 }

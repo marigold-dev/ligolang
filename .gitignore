@@ -11,6 +11,7 @@ cache/*
 **/.DS_Store
 .vscode/
 /ligo.install
+/ligo-types.install
 *.coverage
 /_coverage/
 /_coverage_*/
