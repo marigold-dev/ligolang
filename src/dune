@@ -10,4 +10,14 @@
      tezos-utils
      tezos-micheline
      ligo_main)
+  (modules ligo)
 )
+
+(library
+  (name ligo_types)
+  (public_name ligo-types)
+  (modules ligo_types)
+)
+
+
+(vendored_dirs vendors)
