@@ -55,9 +55,20 @@
     "@opam/hacl-star": "*",
     "@opam/hacl-star-raw": "*",
     "@opam/irmin-pack": "*",
-    "@opam/resto-cohttp-self-serving-client": "*"
+    "@opam/resto-cohttp-self-serving-client": "*",
+    "@opam/tezos-rust-libs": "*"
   },
   "resolutions": {
     "@opam/ligo-types": "link:./ligo-types.opam",
+    "@opam/bls12-381-legacy": {
+      "source": "link:./opams/bls12-381-legacy.opam",
+      "override": {
+      }
+    },
+    "@opam/bls12-381-gen": {
+      "source": "link:./opams/bls12-381-gen.opam",
+      "override": {
+      }
+    }
   }
 }
