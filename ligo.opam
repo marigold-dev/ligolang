@@ -39,7 +39,7 @@ build: [
     "dune"
     "build"
     "-p"
-    "ligo,ligo-types"
+    "ligo,ligo-types,simple-utils,tezos-utils,UnionFind,RedBlackTrees,LexerLib,proto-alpha-utils,ParserLib,tezos-memory-proto-alpha,Preprocessor"
     "-j"
     jobs
     "@install"
