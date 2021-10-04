@@ -1,7 +1,7 @@
 {
   "name": "ligo",
   "esy": {
-    "build": "dune build -p #{self.name},ligo-types",
+    "build": "dune build -p #{self.name}",
     "release": {
       "bin": [
         "genesis_helper",

@@ -42,7 +42,7 @@ build: [
     "dune"
     "build"
     "-p"
-    name
+    "ligo,ligo-types"
     "-j"
     jobs
     "@install"
