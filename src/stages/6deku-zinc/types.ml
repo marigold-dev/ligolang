@@ -107,8 +107,7 @@ type env_item =
   | `Record of
     (stack_item Stage_common_types.Types.label_map
     [@printer label_map_printer fprintf pp_stack_item]
-    [@equal Stage_common_types.Types.LMap.equal equal_stack_item]
-    [@of_yojson fun m -> assert false]) ] (* TODO: need to fix to use label_map_of_yojson *)
+    [@equal Stage_common_types.Types.LMap.equal equal_stack_item]) ] 
 [@@deriving show, eq, yojson]
 
 and stack_item =
@@ -118,8 +117,7 @@ and stack_item =
   | `Record of
     (stack_item Stage_common_types.Types.label_map
     [@printer label_map_printer fprintf pp_stack_item]
-    [@equal Stage_common_types.Types.LMap.equal equal_stack_item]
-    [@of_yojson fun _ -> assert false])
+    [@equal Stage_common_types.Types.LMap.equal equal_stack_item])
   | (* marker to note function calls *)
     `Marker of zinc * env_item list ]
 [@@deriving show, eq]
@@ -127,13 +125,8 @@ and stack_item =
 and clos = { code : zinc; env : env_item list } [@@deriving show, eq, yojson]
 
 
-let label_map_of_yojson m =
-  let of_yojson = [%of_yojson: (Stage_common_types.Types.label * stack_item) list] in Result.map Stage_common_types.Types.LMap.of_list (m |> of_yojson) 
-
-let label_map_of_yojson m =
-  let of_yojson = assert false in match m |> of_yojson with | Ok m -> Ok (Stage_common_types.Types.LMap.of_list m) | Error e -> Error e
-
-
 type env = env_item list [@@deriving show, eq, yojson]
 
 type stack = stack_item list [@@deriving show, eq, yojson]
+
+type zinc_state = zinc * env * stack  [@@deriving show, eq, yojson]

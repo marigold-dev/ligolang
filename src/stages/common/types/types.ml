@@ -32,7 +32,12 @@ let label_of_yojson = function
 
 
 module LMap = Map.Make( struct type t = label let compare (Label a) (Label b) = String.compare a b end)
-type 'a label_map = 'a LMap.t
+type 'a label_map = 'a LMap.t 
+
+type 'a label_association_list = (label * 'a) list [@@deriving yojson]
+
+let label_map_of_yojson a m = Result.map LMap.of_list (label_association_list_of_yojson a m)
+let _label_map_to_yojson a m = LMap.bindings m |> label_association_list_to_yojson a
 
 let const_name = function
   | Deprecated {const;_} -> const

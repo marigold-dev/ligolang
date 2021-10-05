@@ -4,7 +4,7 @@ let env_to_stack : env_item -> stack_item = function #env_item as x -> x
 
 let initial_state ?initial_stack:(stack = []) a = (a, [], stack)
 
-let rec apply_zinc (instructions, env, stack) =
+let rec apply_zinc : Zinc.Types.zinc_state -> Zinc.Types.zinc_state = fun (instructions, env, stack) ->
   let apply_once (instructions : zinc) (env : env_item list)
       (stack : stack_item list) =
     let () =
