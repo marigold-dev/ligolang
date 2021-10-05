@@ -43,13 +43,6 @@ let rec tail_compile :
  (*** For optimization purposes, we have one function for compiling expressions in the "tail position" and another for
      compiling everything else. *)
  fun ~raise environment expr ->
-  let () =
-    print_endline
-      (Format.asprintf "tail compile: %a / env: %s" AST.PP.expression expr
-         (environment.binders
-         |> List.map ~f:(Format.asprintf "%a" Var.pp)
-         |> String.concat ","))
-  in
   let tail_compile = tail_compile ~raise in
   let other_compile = other_compile ~raise in
   let compile_let environment ~let':name ~equal:value ~in':expression =
@@ -92,14 +85,6 @@ and other_compile :
     k:zinc ->
     zinc =
  fun ~raise environment expr ~k ->
-  let () =
-    print_endline
-      (Format.asprintf "other compile: %a / ~k:%s / env: %s" AST.PP.expression
-         expr (Zinc.Types.show_zinc k)
-         (environment.binders
-         |> List.map ~f:(Format.asprintf "%a" Var.pp)
-         |> String.concat ","))
-  in
   let tail_compile = tail_compile ~raise in
   let other_compile = other_compile ~raise in
   let compile_pattern_matching = compile_pattern_matching ~raise in
@@ -296,7 +281,6 @@ and compile_pattern_matching :
           location = loc;
         }
       in
-      let () = print_endline "constructed, recursing..." in
       lettified |> compile_expression
   | _ ->
       failwith

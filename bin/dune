@@ -2,6 +2,6 @@
  (name ligo_wrapper)
  (package ligo)
  (public_name ligo_wrapper)
- (libraries ligo zinc)
+ (libraries ligo zinc test_helpers simple-utils)
  (modules ligo_wrapper)
 )
