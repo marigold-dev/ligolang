@@ -32,15 +32,15 @@ let expect_env =
   Alcotest.(
     check
       (Alcotest.testable
-         (fun ppf env -> Fmt.pf ppf "%a" Zincing.Interpreter.pp_env env)
-         Zincing.Interpreter.equal_env))
+         (fun ppf env -> Fmt.pf ppf "%a" Zinc.Types.pp_env env)
+         Zinc.Types.equal_env))
 
 let expect_stack =
   Alcotest.(
     check
       (Alcotest.testable
-         (fun ppf stack -> Fmt.pf ppf "%a" Zincing.Interpreter.pp_stack stack)
-         Zincing.Interpreter.equal_stack))
+         (fun ppf stack -> Fmt.pf ppf "%a" Zinc.Types.pp_stack stack)
+         Zinc.Types.equal_stack))
 
 let expect_simple_compile_to ?reason:(enabled = false) ?(index = 0)
     ?(initial_stack = []) ?code ?env ?stack ~raise ~add_warning contract_file

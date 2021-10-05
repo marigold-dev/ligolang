@@ -1,41 +1,5 @@
 open Zinc.Types
 
-let label_map_printer
-    (fprintf :
-      Format.formatter ->
-      ('a, Format.formatter, unit, unit, unit, unit) format6 ->
-      'a) pp_stack_item fmt =
-  fprintf fmt "{%a}"
-    (Stage_common.PP.record_sep_expr pp_stack_item
-       (Simple_utils.PP_helpers.const ", "))
-
-type env_item =
-  [ `Z of zinc_instruction
-  | `Clos of clos
-  | `Record of
-    (stack_item Stage_common.Types.label_map
-    [@printer label_map_printer fprintf pp_stack_item]
-    [@equal Stage_common.Types.LMap.equal equal_stack_item]) ]
-[@@deriving show, eq]
-
-and stack_item =
-  [ (* copied from env_item *)
-    `Z of zinc_instruction
-  | `Clos of clos
-  | `Record of
-    (stack_item Stage_common.Types.label_map
-    [@printer label_map_printer fprintf pp_stack_item]
-    [@equal Stage_common.Types.LMap.equal equal_stack_item])
-  | (* marker to note function calls *)
-    `Marker of zinc * env_item list ]
-[@@deriving show, eq]
-
-and clos = { code : zinc; env : env_item list } [@@deriving show, eq]
-
-type env = env_item list [@@deriving show, eq]
-
-type stack = stack_item list [@@deriving show, eq]
-
 let env_to_stack : env_item -> stack_item = function #env_item as x -> x
 
 let initial_state ?initial_stack:(stack = []) a = (a, [], stack)

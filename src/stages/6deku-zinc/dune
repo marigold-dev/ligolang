@@ -3,7 +3,7 @@
  (public_name ligo-types.zinc)
  (instrumentation
   (backend bisect_ppx))
- (libraries simple-utils ligo-types.stage_common_types mini_c_types digestif)
+ (libraries simple-utils stage_common_types mini_c_types digestif)
  (inline_tests)
  (preprocess
   (pps
