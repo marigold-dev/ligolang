@@ -1,0 +1,7 @@
+(executable
+ (name ligo_wrapper)
+ (package ligo)
+ (public_name ligo_wrapper)
+ (libraries ligo zinc)
+ (modules ligo_wrapper)
+)
