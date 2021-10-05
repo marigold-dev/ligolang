@@ -2,6 +2,6 @@
  (name ligo_wrapper)
  (package ligo)
  (public_name ligo_wrapper)
- (libraries ligo zinc test_helpers simple-utils)
+ (libraries ligo zinc test_helpers simple-utils preprocessing lexing self_ast_typed)
  (modules ligo_wrapper)
 )
