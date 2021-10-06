@@ -10,6 +10,9 @@ let _ = [ Zinc.Types.Num (Z.of_int 42); Return ]
 
 *)
 
+let str_to_zinc ~raise ~add_warning zinc_str =
+  zinc_str |> Yojson.Safe.from_string |> Zinc.Types.program_of_yojson
+  
 let ligo_to_zinc ~raise ~add_warning ligo_str =
   Ok (Test_helpers.to_zinc ~raise ~add_warning ligo_str Env Test_helpers.options
   |> Zinc.Types.program_to_yojson |> Yojson.Safe.to_string)
@@ -29,14 +32,14 @@ let main ~raise ~add_warning ~options:_ () =
     | [| _; "ligo-to-zinc"; ligo_str |] ->
         ligo_to_zinc ~raise ~add_warning ligo_str
     | [| _; "interpret-zinc"; code_str; env_str; stack_str  |] -> interpret_zinc ~raise ~add_warning ~code_str ~env_str ~stack_str 
-    | _ -> Error "Invalid input!"
+    | _ -> Error (Printf.sprintf "Invalid input! %s" (Sys.argv |> Array.to_list |> String.concat ", "))
   in
   match output with 
   | Ok msg ->  
-    let () = print_endline "=============== output ==============" in
+    let () = print_endline "=============== output ===============" in
     print_endline msg
   | Error msg -> 
-    let () = print_endline "=============== error ==============" in
+    let () = print_endline "=============== error ===============" in
     print_endline msg
 
 let () =

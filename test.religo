@@ -1,1 +1,1 @@
-let i = 4
+let main = (i: int) => 4

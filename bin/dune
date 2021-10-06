@@ -1,7 +1,7 @@
 (executable
- (name ligo_wrapper)
+ (name Ligo_wrapper)
  (package ligo)
- (public_name ligo_wrapper)
+ (public_name Ligo_wrapper)
  (libraries ligo zinc zincing test_helpers simple-utils preprocessing lexing self_ast_typed)
  (modules ligo_wrapper)
 )
