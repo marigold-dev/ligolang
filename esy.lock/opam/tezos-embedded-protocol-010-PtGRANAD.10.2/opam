@@ -8,14 +8,15 @@ license: "MIT"
 depends: [
   "dune" { >= "2.5" }
   "tezos-protocol-010-PtGRANAD" { = version }
+  "tezos-protocol-updater" { = version }
 ]
 build: [
   ["rm" "-r" "vendors"]
   ["dune" "build" "-p" name "-j" jobs]
-  ["mv" "src/proto_010_PtGRANAD/lib_parameters/%{name}%.install" "./"]
+  ["mv" "src/proto_010_PtGRANAD/lib_protocol/%{name}%.install" "./"]
   ["dune" "runtest" "-p" name "-j" jobs] {with-test}
 ]
-synopsis: "Tezos/Protocol: parameters"
+synopsis: "Tezos/Protocol: economic-protocol definition, embedded in `tezos-node`"
 
 url {
   src: "https://gitlab.com/tezos/tezos/-/archive/v10.2/tezos-v10.2.tar.bz2"

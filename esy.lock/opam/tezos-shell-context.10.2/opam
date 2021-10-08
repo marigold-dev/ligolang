@@ -7,19 +7,15 @@ dev-repo: "git+https://gitlab.com/tezos/tezos.git"
 license: "MIT"
 depends: [
   "dune" { >= "2.5" }
-  "tezos-protocol-compiler" { = version }
+  "tezos-protocol-environment" { = version }
 ]
 build: [
   ["rm" "-r" "vendors"]
-  [
-    "sed" "-i.back" "-e" "s/-nostdlib//g"
-    "%{build}%/src/proto_010_PtGRANAD/lib_protocol/dune.inc"
-  ]
   ["dune" "build" "-p" name "-j" jobs]
-  ["mv" "src/proto_010_PtGRANAD/lib_protocol/%{name}%.install" "./"]
+  ["mv" "src/lib_protocol_environment/%{name}%.install" "./"]
   ["dune" "runtest" "-p" name "-j" jobs] {with-test}
 ]
-synopsis: "Tezos/Protocol: economic-protocol definition"
+synopsis: "Tezos: economic-protocols environment implementation for `tezos-node`"
 
 url {
   src: "https://gitlab.com/tezos/tezos/-/archive/v10.2/tezos-v10.2.tar.bz2"
