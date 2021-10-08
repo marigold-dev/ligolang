@@ -18,7 +18,7 @@
     "format": "dune build @fmt --auto-promote"
   },
   "dependencies": {
-    "ocaml": "^4.12.0",
+    "ocaml": "4.10.2000",
     "@opam/dune": ">= 2.9.1",
     "@opam/hex": ">= 1.4.0",
     "@opam/menhir": "20200624",
@@ -56,7 +56,8 @@
     "@opam/hacl-star-raw": "*",
     "@opam/irmin-pack": "*",
     "@opam/resto-cohttp-self-serving-client": "*",
-    "@opam/tezos-rust-libs": "*"
+    "@opam/tezos-rust-libs": "*",
+    "@opam/tezos-micheline": "*"
   },
   "resolutions": {
     "@opam/ligo-types": "link:./ligo-types.opam",

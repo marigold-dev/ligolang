@@ -30,7 +30,9 @@ depends: [
   "domain-name" {>= "0.3.0"}
   "logs"
   "pbkdf"
+  "ipaddr" {>= "5.2.0"}
 ]
+conflicts: [ "result" {< "1.5"} ]
 build: [
   ["dune" "subst"] {dev}
   ["dune" "build" "-p" name "-j" jobs]
@@ -49,10 +51,10 @@ namely PKCS 1, PKCS 5, PKCS 7, PKCS 8, PKCS 9, PKCS 10, and PKCS 12.
 """
 url {
   src:
-    "https://github.com/mirleft/ocaml-x509/releases/download/v0.14.1/x509-v0.14.1.tbz"
+    "https://github.com/mirleft/ocaml-x509/releases/download/v0.15.0/x509-v0.15.0.tbz"
   checksum: [
-    "sha256=d91eb4f2790f9d098713c71cc4b5d12706aedb1795666b5e6d667fe5c262f9c3"
-    "sha512=aaf0b7bfe23fa02028d6cde0a83a189ce7dccba7cf64d475c27ea66e8b7801b17f8776abcaca5d15cc33a0e396fdda4695f5c56eef9ed24a66bd066a37cc8954"
+    "sha256=d0971862f1c0f3362eac46691f45130b3517874e0226de44eacefff85f925eb9"
+    "sha512=5fd820271bca45254af055b8c4c62460677a43c8092c3d2b9cfa55ae7e7ad3f00e2616dd90eeadbf17e3441b962774edc0cbf2e562cc9dbb0cd39735cac5704a"
   ]
 }
-x-commit-hash: "6f3044bbe996d77bfdf29c34bbbbe59c8444669f"
+x-commit-hash: "25ca258afcff0e62d40a69d106950fea955bca03"
