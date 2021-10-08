@@ -69,6 +69,45 @@
           "@opam/ctypes": "*"
         }
       }
+    },
+    "@opam/tezos-sapling": {
+      "source": "https://gitlab.com/tezos/tezos/-/archive/v10.2/tezos-v10.2.tar.bz2#19dbe332c3d84ebdc8f9d2360a07f97302e66a58",
+      "override": {
+        "buildsInSource": true,
+        "buildEnvOverride": {
+          "OPAM_SWITCH_PREFIX": "#{ @opam/tezos-rust-libs.install }"
+        },
+        "build": [
+          [
+            "rm",
+            "-r",
+            "vendors"
+          ],
+          "dune build -j 4 -p tezos-sapling @install",
+          [
+            "mv",
+            "src/lib_sapling/tezos-sapling.install",
+            "./"
+          ]
+        ],
+        "install": [
+          [
+            "esy-installer",
+            "./tezos-sapling.install"
+          ]
+        ],
+        "dependencies": {
+          "@opam/dune": "*",
+          "@opam/hex": "*",
+          "@opam/ctypes": "*",
+          "@opam/ctypes-foreign": "*",
+          "@opam/data-encoding": "*",
+          "@opam/tezos-crypto": "*",
+          "@opam/tezos-stdlib": "*",
+          "@opam/tezos-error-monad": "*",
+          "@opam/tezos-rust-libs": "*"
+        }
+      }
     }
   }
 }
