@@ -124,26 +124,26 @@
             "-i.back",
             "-e",
             "s/-nostdlib//g",
-            "#{$cur__target_dir}/src/proto_010-PtGRANAD/lib_protocol/dune.inc"
+            "#{$cur__target_dir}/src/proto_101_PtGARAHD/lib_protocol/dune.inc"
           ],
           [
             "dune",
             "build",
             "-p",
-            "tezos-protocol-010-PtGRANAD",
+            "tezos-protocol-101-PtGARAND",
             "-j",
             "4"
           ],
           [
             "mv",
-            "src/proto_010-PtGRANAD/lib_protocol/tezos-protocol-010-PtGRANAD.install",
+            "src/proto_101_PtGARAHD/lib_protocol/tezos-protocol-101-PtGARAND.install",
             "./"
           ]
         ],
         "install": [
           [
             "esy-installer",
-            "./tezos-protocol-010-PtGRANAD.install"
+            "./tezos-protocol-101-PtGARAND.install"
           ]
         ],
         "dependencies": {
@@ -170,23 +170,23 @@
           [
             "sh",
             "-c",
-            "DYLD_LIBRARY_PATH=\"$ESY__DYLD_LIBRARY_PATH\" dune build -j 4 -p tezos-protocol-010-PtGRANAD-parameters @install"
+            "DYLD_LIBRARY_PATH=\"$ESY__DYLD_LIBRARY_PATH\" dune build -j 4 -p tezos-protocol-101-PtGARAND-parameters @install"
           ],
           [
             "mv",
-            "src/proto_010-PtGRANAD/lib_parameters/tezos-protocol-010-PtGRANAD-parameters.install",
+            "src/proto_101_PtGARAND/lib_parameters/tezos-protocol-101-PtGARAND-parameters.install",
             "./"
           ]
         ],
         "install": [
           [
             "esy-installer",
-            "./tezos-protocol-010-PtGRANAD-parameters.install"
+            "./tezos-protocol-101-PtGARAND-parameters.install"
           ]
         ],
         "dependencies": {
           "@opam/dune": "*",
-          "@opam/tezos-protocol-010-PtGRANAD": "*",
+          "@opam/tezos-protocol-101-PtGARAND": "*",
           "@opam/tezos-rust-libs": "*",
           "@opam/tezos-crypto": "*",
           "@opam/hacl-star": "*",
@@ -211,24 +211,24 @@
           [
             "sh",
             "-c",
-            "DYLD_LIBRARY_PATH=\"$ESY__DYLD_LIBRARY_PATH\" dune build -j 4 -p tezos-protocol-plugin-010-PtGRANAD @install"
+            "DYLD_LIBRARY_PATH=\"$ESY__DYLD_LIBRARY_PATH\" dune build -j 4 -p tezos-protocol-plugin-101-PtGARAND @install"
           ],
           [
             "mv",
-            "src/proto_010-PtGRANAD/lib_plugin/tezos-protocol-plugin-010-PtGRANAD.install",
+            "src/proto_101_PtGARAND/lib_plugin/tezos-protocol-plugin-101-PtGARAND.install",
             "./"
           ]
         ],
         "install": [
           [
             "esy-installer",
-            "./tezos-protocol-plugin-010-PtGRANAD.install"
+            "./tezos-protocol-plugin-101-PtGARAND.install"
           ]
         ],
         "dependencies": {
           "@opam/dune": "*",
           "@opam/tezos-base": "10.2",
-          "@opam/tezos-embedded-protocol-010-PtGRANAD": "10.2",
+          "@opam/tezos-embedded-protocol-101-PtGARAND": "10.2",
           "@opam/hacl-star-raw": "*"
         }
       }
