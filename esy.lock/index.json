@@ -1,5 +1,5 @@
 {
-  "checksum": "254a8a53ff2cf15c1aa6215125672d4d",
+  "checksum": "42fadb7a385d0933b6236cb029a82bf3",
   "root": "ligo@link-dev:./package.json",
   "node": {
     "yarn-pkg-config@github:esy-ocaml/yarn-pkg-config#db3a0b63883606dd57c54a7158d560d6cba8cd79@d41d8cd9": {
@@ -918,9 +918,9 @@
         "@opam/lwt-exit@opam:1.0@7669b970", "@opam/dune@opam:2.9.1@1e504822"
       ]
     },
-    "@opam/tezos-protocol-plugin-010-PtGRANAD@archive:https://gitlab.com/tezos/tezos/-/archive/v10.2/tezos-v10.2.tar.bz2#sha1:19dbe332c3d84ebdc8f9d2360a07f97302e66a58@ca363968": {
+    "@opam/tezos-protocol-plugin-010-PtGRANAD@archive:https://gitlab.com/tezos/tezos/-/archive/v10.2/tezos-v10.2.tar.bz2#sha1:19dbe332c3d84ebdc8f9d2360a07f97302e66a58@6d61992b": {
       "id":
-        "@opam/tezos-protocol-plugin-010-PtGRANAD@archive:https://gitlab.com/tezos/tezos/-/archive/v10.2/tezos-v10.2.tar.bz2#sha1:19dbe332c3d84ebdc8f9d2360a07f97302e66a58@ca363968",
+        "@opam/tezos-protocol-plugin-010-PtGRANAD@archive:https://gitlab.com/tezos/tezos/-/archive/v10.2/tezos-v10.2.tar.bz2#sha1:19dbe332c3d84ebdc8f9d2360a07f97302e66a58@6d61992b",
       "name": "@opam/tezos-protocol-plugin-010-PtGRANAD",
       "version":
         "archive:https://gitlab.com/tezos/tezos/-/archive/v10.2/tezos-v10.2.tar.bz2#sha1:19dbe332c3d84ebdc8f9d2360a07f97302e66a58",
@@ -945,7 +945,7 @@
             ],
             [
               "mv",
-              "src/proto_010-PtGRANAD/lib_plugin/tezos-protocol-plugin-010-PtGRANAD.install",
+              "src/proto_010_PtGRANAD/lib_plugin/tezos-protocol-plugin-010-PtGRANAD.install",
               "./"
             ]
           ],
@@ -1119,9 +1119,9 @@
         "@opam/dune@opam:2.9.1@1e504822"
       ]
     },
-    "@opam/tezos-protocol-010-PtGRANAD-parameters@archive:https://gitlab.com/tezos/tezos/-/archive/v10.2/tezos-v10.2.tar.bz2#sha1:19dbe332c3d84ebdc8f9d2360a07f97302e66a58@6f0753eb": {
+    "@opam/tezos-protocol-010-PtGRANAD-parameters@archive:https://gitlab.com/tezos/tezos/-/archive/v10.2/tezos-v10.2.tar.bz2#sha1:19dbe332c3d84ebdc8f9d2360a07f97302e66a58@6f4aac5b": {
       "id":
-        "@opam/tezos-protocol-010-PtGRANAD-parameters@archive:https://gitlab.com/tezos/tezos/-/archive/v10.2/tezos-v10.2.tar.bz2#sha1:19dbe332c3d84ebdc8f9d2360a07f97302e66a58@6f0753eb",
+        "@opam/tezos-protocol-010-PtGRANAD-parameters@archive:https://gitlab.com/tezos/tezos/-/archive/v10.2/tezos-v10.2.tar.bz2#sha1:19dbe332c3d84ebdc8f9d2360a07f97302e66a58@6f4aac5b",
       "name": "@opam/tezos-protocol-010-PtGRANAD-parameters",
       "version":
         "archive:https://gitlab.com/tezos/tezos/-/archive/v10.2/tezos-v10.2.tar.bz2#sha1:19dbe332c3d84ebdc8f9d2360a07f97302e66a58",
@@ -1147,7 +1147,7 @@
             ],
             [
               "mv",
-              "src/proto_010-PtGRANAD/lib_parameters/tezos-protocol-010-PtGRANAD-parameters.install",
+              "src/proto_010_PtGRANAD/lib_parameters/tezos-protocol-010-PtGRANAD-parameters.install",
               "./"
             ]
           ],
@@ -1170,7 +1170,7 @@
       ],
       "dependencies": [
         "@opam/tezos-rust-libs@opam:1.1@02945c1d",
-        "@opam/tezos-protocol-010-PtGRANAD@archive:https://gitlab.com/tezos/tezos/-/archive/v10.2/tezos-v10.2.tar.bz2#sha1:19dbe332c3d84ebdc8f9d2360a07f97302e66a58@ddcd5a9e",
+        "@opam/tezos-protocol-010-PtGRANAD@archive:https://gitlab.com/tezos/tezos/-/archive/v10.2/tezos-v10.2.tar.bz2#sha1:19dbe332c3d84ebdc8f9d2360a07f97302e66a58@86c93d61",
         "@opam/tezos-crypto@opam:10.2@91268504",
         "@opam/hacl-star-raw@opam:0.3.2@fdb666c6",
         "@opam/hacl-star@opam:0.3.2@bf74eb6c",
@@ -1179,9 +1179,9 @@
       ],
       "devDependencies": []
     },
-    "@opam/tezos-protocol-010-PtGRANAD@archive:https://gitlab.com/tezos/tezos/-/archive/v10.2/tezos-v10.2.tar.bz2#sha1:19dbe332c3d84ebdc8f9d2360a07f97302e66a58@ddcd5a9e": {
+    "@opam/tezos-protocol-010-PtGRANAD@archive:https://gitlab.com/tezos/tezos/-/archive/v10.2/tezos-v10.2.tar.bz2#sha1:19dbe332c3d84ebdc8f9d2360a07f97302e66a58@86c93d61": {
       "id":
-        "@opam/tezos-protocol-010-PtGRANAD@archive:https://gitlab.com/tezos/tezos/-/archive/v10.2/tezos-v10.2.tar.bz2#sha1:19dbe332c3d84ebdc8f9d2360a07f97302e66a58@ddcd5a9e",
+        "@opam/tezos-protocol-010-PtGRANAD@archive:https://gitlab.com/tezos/tezos/-/archive/v10.2/tezos-v10.2.tar.bz2#sha1:19dbe332c3d84ebdc8f9d2360a07f97302e66a58@86c93d61",
       "name": "@opam/tezos-protocol-010-PtGRANAD",
       "version":
         "archive:https://gitlab.com/tezos/tezos/-/archive/v10.2/tezos-v10.2.tar.bz2#sha1:19dbe332c3d84ebdc8f9d2360a07f97302e66a58",
@@ -1198,14 +1198,14 @@
             [ "rm", "-r", "vendors" ],
             [
               "sed", "-i.back", "-e", "s/-nostdlib//g",
-              "#{$cur__target_dir}/src/proto_010-PtGRANAD/lib_protocol/dune.inc"
+              "#{$cur__target_dir}/src/proto_010_PtGARAHD/lib_protocol/dune.inc"
             ],
             [
               "dune", "build", "-p", "tezos-protocol-010-PtGRANAD", "-j", "4"
             ],
             [
               "mv",
-              "src/proto_010-PtGRANAD/lib_protocol/tezos-protocol-010-PtGRANAD.install",
+              "src/proto_010_PtGARAHD/lib_protocol/tezos-protocol-010-PtGRANAD.install",
               "./"
             ]
           ],
@@ -1506,12 +1506,12 @@
       "overrides": [],
       "dependencies": [
         "@opam/tezos-protocol-updater@opam:10.2@1de2280c",
-        "@opam/tezos-protocol-010-PtGRANAD@archive:https://gitlab.com/tezos/tezos/-/archive/v10.2/tezos-v10.2.tar.bz2#sha1:19dbe332c3d84ebdc8f9d2360a07f97302e66a58@ddcd5a9e",
+        "@opam/tezos-protocol-010-PtGRANAD@archive:https://gitlab.com/tezos/tezos/-/archive/v10.2/tezos-v10.2.tar.bz2#sha1:19dbe332c3d84ebdc8f9d2360a07f97302e66a58@86c93d61",
         "@opam/dune@opam:2.9.1@1e504822", "@esy-ocaml/substs@0.0.1@d41d8cd9"
       ],
       "devDependencies": [
         "@opam/tezos-protocol-updater@opam:10.2@1de2280c",
-        "@opam/tezos-protocol-010-PtGRANAD@archive:https://gitlab.com/tezos/tezos/-/archive/v10.2/tezos-v10.2.tar.bz2#sha1:19dbe332c3d84ebdc8f9d2360a07f97302e66a58@ddcd5a9e",
+        "@opam/tezos-protocol-010-PtGRANAD@archive:https://gitlab.com/tezos/tezos/-/archive/v10.2/tezos-v10.2.tar.bz2#sha1:19dbe332c3d84ebdc8f9d2360a07f97302e66a58@86c93d61",
         "@opam/dune@opam:2.9.1@1e504822"
       ]
     },
@@ -1631,8 +1631,8 @@
       "dependencies": [
         "@opam/tezos-signer-backends@opam:10.2@d569bb8d",
         "@opam/tezos-proxy@opam:10.2@3f1215cf",
-        "@opam/tezos-protocol-plugin-010-PtGRANAD@archive:https://gitlab.com/tezos/tezos/-/archive/v10.2/tezos-v10.2.tar.bz2#sha1:19dbe332c3d84ebdc8f9d2360a07f97302e66a58@ca363968",
-        "@opam/tezos-protocol-010-PtGRANAD-parameters@archive:https://gitlab.com/tezos/tezos/-/archive/v10.2/tezos-v10.2.tar.bz2#sha1:19dbe332c3d84ebdc8f9d2360a07f97302e66a58@6f0753eb",
+        "@opam/tezos-protocol-plugin-010-PtGRANAD@archive:https://gitlab.com/tezos/tezos/-/archive/v10.2/tezos-v10.2.tar.bz2#sha1:19dbe332c3d84ebdc8f9d2360a07f97302e66a58@6d61992b",
+        "@opam/tezos-protocol-010-PtGRANAD-parameters@archive:https://gitlab.com/tezos/tezos/-/archive/v10.2/tezos-v10.2.tar.bz2#sha1:19dbe332c3d84ebdc8f9d2360a07f97302e66a58@6f4aac5b",
         "@opam/tezos-mockup-registration@opam:10.2@4f756277",
         "@opam/ppx_inline_test@opam:v0.14.1@8b68b6f7",
         "@opam/dune@opam:2.9.1@1e504822", "@esy-ocaml/substs@0.0.1@d41d8cd9"
@@ -1640,8 +1640,8 @@
       "devDependencies": [
         "@opam/tezos-signer-backends@opam:10.2@d569bb8d",
         "@opam/tezos-proxy@opam:10.2@3f1215cf",
-        "@opam/tezos-protocol-plugin-010-PtGRANAD@archive:https://gitlab.com/tezos/tezos/-/archive/v10.2/tezos-v10.2.tar.bz2#sha1:19dbe332c3d84ebdc8f9d2360a07f97302e66a58@ca363968",
-        "@opam/tezos-protocol-010-PtGRANAD-parameters@archive:https://gitlab.com/tezos/tezos/-/archive/v10.2/tezos-v10.2.tar.bz2#sha1:19dbe332c3d84ebdc8f9d2360a07f97302e66a58@6f0753eb",
+        "@opam/tezos-protocol-plugin-010-PtGRANAD@archive:https://gitlab.com/tezos/tezos/-/archive/v10.2/tezos-v10.2.tar.bz2#sha1:19dbe332c3d84ebdc8f9d2360a07f97302e66a58@6d61992b",
+        "@opam/tezos-protocol-010-PtGRANAD-parameters@archive:https://gitlab.com/tezos/tezos/-/archive/v10.2/tezos-v10.2.tar.bz2#sha1:19dbe332c3d84ebdc8f9d2360a07f97302e66a58@6f4aac5b",
         "@opam/tezos-mockup-registration@opam:10.2@4f756277",
         "@opam/ppx_inline_test@opam:v0.14.1@8b68b6f7",
         "@opam/dune@opam:2.9.1@1e504822"
@@ -1729,8 +1729,8 @@
         "@opam/tezos-stdlib-unix@opam:10.2@197e5adf",
         "@opam/tezos-shell-services@opam:10.2@db475ec6",
         "@opam/tezos-protocol-environment@opam:10.2@58a00819",
-        "@opam/tezos-protocol-010-PtGRANAD-parameters@archive:https://gitlab.com/tezos/tezos/-/archive/v10.2/tezos-v10.2.tar.bz2#sha1:19dbe332c3d84ebdc8f9d2360a07f97302e66a58@6f0753eb",
-        "@opam/tezos-protocol-010-PtGRANAD@archive:https://gitlab.com/tezos/tezos/-/archive/v10.2/tezos-v10.2.tar.bz2#sha1:19dbe332c3d84ebdc8f9d2360a07f97302e66a58@ddcd5a9e",
+        "@opam/tezos-protocol-010-PtGRANAD-parameters@archive:https://gitlab.com/tezos/tezos/-/archive/v10.2/tezos-v10.2.tar.bz2#sha1:19dbe332c3d84ebdc8f9d2360a07f97302e66a58@6f4aac5b",
+        "@opam/tezos-protocol-010-PtGRANAD@archive:https://gitlab.com/tezos/tezos/-/archive/v10.2/tezos-v10.2.tar.bz2#sha1:19dbe332c3d84ebdc8f9d2360a07f97302e66a58@86c93d61",
         "@opam/tezos-client-010-PtGRANAD@opam:10.2@93e99184",
         "@opam/tezos-base@opam:10.2@96e16313",
         "@opam/dune@opam:2.9.1@1e504822",
@@ -1741,8 +1741,8 @@
         "@opam/tezos-stdlib-unix@opam:10.2@197e5adf",
         "@opam/tezos-shell-services@opam:10.2@db475ec6",
         "@opam/tezos-protocol-environment@opam:10.2@58a00819",
-        "@opam/tezos-protocol-010-PtGRANAD-parameters@archive:https://gitlab.com/tezos/tezos/-/archive/v10.2/tezos-v10.2.tar.bz2#sha1:19dbe332c3d84ebdc8f9d2360a07f97302e66a58@6f0753eb",
-        "@opam/tezos-protocol-010-PtGRANAD@archive:https://gitlab.com/tezos/tezos/-/archive/v10.2/tezos-v10.2.tar.bz2#sha1:19dbe332c3d84ebdc8f9d2360a07f97302e66a58@ddcd5a9e",
+        "@opam/tezos-protocol-010-PtGRANAD-parameters@archive:https://gitlab.com/tezos/tezos/-/archive/v10.2/tezos-v10.2.tar.bz2#sha1:19dbe332c3d84ebdc8f9d2360a07f97302e66a58@6f4aac5b",
+        "@opam/tezos-protocol-010-PtGRANAD@archive:https://gitlab.com/tezos/tezos/-/archive/v10.2/tezos-v10.2.tar.bz2#sha1:19dbe332c3d84ebdc8f9d2360a07f97302e66a58@86c93d61",
         "@opam/tezos-client-010-PtGRANAD@opam:10.2@93e99184",
         "@opam/tezos-base@opam:10.2@96e16313",
         "@opam/dune@opam:2.9.1@1e504822",
