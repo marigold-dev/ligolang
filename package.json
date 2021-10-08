@@ -40,7 +40,6 @@
     "@opam/bls12-381": "1.0.0",
     "@opam/bls12-381-unix": "1.0.0",
     "@opam/bls12-381-legacy": "*",
-    "@opam/ligo-types": "*",
     "@opam/alcotest-lwt": "*",
     "@opam/data-encoding": "*",
     "@opam/lwt-canceler": "0.3",
@@ -57,10 +56,10 @@
     "@opam/irmin-pack": "*",
     "@opam/resto-cohttp-self-serving-client": "*",
     "@opam/tezos-rust-libs": "*",
-    "@opam/tezos-micheline": "*"
+    "@opam/tezos-micheline": "*",
+    "@opam/tezos-010-PtGRANAD-test-helpers": "10.2"
   },
   "resolutions": {
-    "@opam/ligo-types": "link:./ligo-types.opam",
     "@opam/bls12-381-legacy": {
       "source": "link:./opams/bls12-381-legacy.opam",
       "override": {

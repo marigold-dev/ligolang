@@ -10,7 +10,6 @@
     tezos-utils
     tezos-hacl-glue-unix
     bls12-381-unix
-    ligo-types.stage_common_types
   )
   (inline_tests)
   (preprocess
