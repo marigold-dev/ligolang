@@ -37,9 +37,6 @@
     "@opam/ocaml-migrate-parsetree": ">= 2.1.0",
     "@opam/lwt": ">= 5.4.2",
     "@opam/bisect_ppx": ">= 2.5.0",
-    "@opam/bls12-381": "1.0.0",
-    "@opam/bls12-381-unix": "1.0.0",
-    "@opam/bls12-381-legacy": "*",
     "@opam/alcotest-lwt": "*",
     "@opam/data-encoding": "*",
     "@opam/lwt-canceler": "0.3",
@@ -60,14 +57,17 @@
     "@opam/tezos-010-PtGRANAD-test-helpers": "10.2"
   },
   "resolutions": {
-    "@opam/bls12-381-legacy": {
-      "source": "link:./opams/bls12-381-legacy.opam",
+    "@opam/bls12-381-unix": {
+      "source": "git:https://gitlab.com/dannywillems/ocaml-bls12-381.git:bls12-381-unix.opam#d448d9d370ae711d9357bf0e366281b711f4b422",
       "override": {
-      }
-    },
-    "@opam/bls12-381-gen": {
-      "source": "link:./opams/bls12-381-gen.opam",
-      "override": {
+        "buildEnv": {
+          "OPAM_SWITCH_PREFIX": "#{ @opam/tezos-rust-libs.install }"
+        },
+        "dependencies": {
+          "@opam/bls12-381": "0.4.3",
+          "@opam/bls12-381-gen": "0.4.3",
+          "@opam/ctypes": "*"
+        }
       }
     }
   }
