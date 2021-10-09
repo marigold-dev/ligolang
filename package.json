@@ -4,12 +4,25 @@
     "build": "dune build -p #{self.name}",
     "release": {
       "bin": [
-        "genesis_helper",
         "sidecli"
-      ]
+      ],
+      "includePackages": [
+        "root",
+        "@opam/hacl-star-raw",
+        "@opam/conf-libev",
+        "@opam/conf-libffi",
+        "@opam/conf-gmp"
+      ],
+      "rewritePrefix": true
     },
     "buildEnv": {
       "PATH": "%{localStore}%/../bin:$PATH"
+    }
+  },
+  "exportedEnv": {
+    "DYLD_LIBRARY_PATH": {
+      "val": "#{@opam/hacl-star-raw.lib / 'hacl-star-raw' : $DYLD_LIBRARY_PATH}",
+      "scope": "global"
     }
   },
   "license": "MIT",
