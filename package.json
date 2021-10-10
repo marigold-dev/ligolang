@@ -183,7 +183,7 @@
           [
             "sh",
             "-c",
-            "DYLD_LIBRARY_PATH=\"$ESY__DYLD_LIBRARY_PATH\" dune build -j 4 -p tezos-protocol-010-PtGRANAD-parameters @install"
+            "LD_LIBRARY_PATH=\"$ESY__DYLD_LIBRARY_PATH\" dune build -j 4 -p tezos-protocol-010-PtGRANAD-parameters @install"
           ],
           [
             "mv",
@@ -224,7 +224,7 @@
           [
             "sh",
             "-c",
-            "DYLD_LIBRARY_PATH=\"$ESY__DYLD_LIBRARY_PATH\" dune build -j 4 -p tezos-protocol-plugin-010-PtGRANAD @install"
+            "LD_LIBRARY_PATH=\"$ESY__DYLD_LIBRARY_PATH\" dune build -j 4 -p tezos-protocol-plugin-010-PtGRANAD @install"
           ],
           [
             "mv",
@@ -242,9 +242,14 @@
           "@opam/dune": "*",
           "@opam/tezos-base": "10.2",
           "@opam/tezos-embedded-protocol-010-PtGRANAD": "10.2",
-          "@opam/hacl-star-raw": "*"
+          "@opam/hacl-star-raw": "*",
+          "@opam/tezos-protocol-010-PtGRANAD": "10.2"
         }
       }
+    },
+    "@opam/tezos-embedded-protocol-010-PtGRANAD": {
+      "source": "https://gitlab.com/tezos/tezos/-/archive/v10.2/tezos-v10.2.tar.bz2#19dbe332c3d84ebdc8f9d2360a07f97302e66a58",
+      "override": {}
     }
   }
 }

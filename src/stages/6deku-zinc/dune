@@ -1,8 +1,9 @@
 (library
  (name zinc)
+ (public_name ligo.zinc)
  (instrumentation
   (backend bisect_ppx))
- (libraries simple-utils stage_common mini_c_types digestif)
+ (libraries simple-utils stage_common mini_c digestif)
  (inline_tests)
  (preprocess
   (pps
