@@ -113,7 +113,7 @@ and expression_content ppf (e:expression_content) = match e with
   | E_application(a, b) -> fprintf ppf "@[(%a)@(%a)@]" expression a expression b
 
   | E_constant c -> fprintf ppf "@[%a@[<hv 1>(%a)@]@]" constant c.cons_name (list_sep_d expression) c.arguments
-  | E_literal v -> fprintf ppf "@[L(%a)@]" Stage_common_types.PP.literal v
+  | E_literal v -> fprintf ppf "@[L(%a)@]" Stage_common.PP.literal v
   | E_if_bool (c, a, b) ->
     fprintf ppf
       "@[match %a with@ @[<hv>| True ->@;<1 2>%a@ | False ->@;<1 2>%a@]@]"
@@ -182,7 +182,7 @@ and tl_statement ppf (ass, _) = declaration ppf ass
 and program ppf (p:program) =
   fprintf ppf "@[<v>%a@]" (pp_print_list ~pp_sep:(tag "@ ") tl_statement) p
 
-and constant ppf : constant' -> unit = Stage_common_types.PP_enums.constant' ppf
+and constant ppf : constant' -> unit = Stage_common.PP_enums.constant' ppf
 
 let%expect_test _ =
   Format.printf "%a" value (D_bytes (Bytes.of_string "foo")) ;

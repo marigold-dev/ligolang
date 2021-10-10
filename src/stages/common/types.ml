@@ -1,4 +1,3 @@
-open Simple_utils
 include Enums
 
 module SMap = Map.Make(String)

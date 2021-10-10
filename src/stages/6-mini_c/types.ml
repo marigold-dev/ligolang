@@ -1,5 +1,4 @@
-include Stage_common_types.Types
-
+include Stage_common.Types
 let z_of_yojson = function| `String s -> Ok(Z.of_string s) | _ -> failwith "string expected!"
 let z_to_yojson = fun z -> `String (Z.to_string z)
 
@@ -21,9 +20,12 @@ type type_content =
   | T_sapling_transaction of (Z.t [@to_yojson z_to_yojson] [@of_yojson  z_of_yojson])
   | T_option of type_expression 
 [@@deriving yojson]
-  
 
-and type_expression = { type_content : type_content; location : Location.t }
+
+and type_expression = {
+  type_content : type_content;
+  location : Location.t;
+}
 
 and type_base =
   | TB_unit
@@ -48,17 +50,16 @@ and type_base =
   | TB_bls12_381_fr
   | TB_never
 
-type environment_element = expression_variable * type_expression
+and environment_element = expression_variable * type_expression
 
 and environment = environment_element list
 
 and environment_wrap = {
-  pre_environment : environment;
-  post_environment : environment;
+  pre_environment : environment ;
+  post_environment : environment ;
 }
 
 and var_name = expression_variable
-
 and fun_name = expression_variable
 
 type inline = bool
@@ -93,30 +94,16 @@ and expression_content =
   | E_constant of constant
   | E_application of (expression * expression)
   | E_variable of var_name
-  | E_iterator of
-      constant' * ((var_name * type_expression) * expression) * expression
-  | E_fold of
-      (((var_name * type_expression) * expression) * expression * expression)
-  | E_fold_right of
-      (((var_name * type_expression) * expression)
-      * (expression * type_expression)
-      * expression)
-  | E_if_bool of (expression * expression * expression)
-  | E_if_none of
-      expression * expression * ((var_name * type_expression) * expression)
-  | E_if_cons of
-      expression
-      * expression
-      * (((var_name * type_expression) * (var_name * type_expression))
-        * expression)
-  | E_if_left of
-      expression
-      * ((var_name * type_expression) * expression)
-      * ((var_name * type_expression) * expression)
-  | E_let_in of
-      expression * inline * ((var_name * type_expression) * expression)
+  | E_iterator of constant' * ((var_name * type_expression) * expression) * expression
+  | E_fold     of (((var_name * type_expression) * expression) * expression * expression)
+  | E_fold_right of (((var_name * type_expression) * expression) * (expression * type_expression) * expression)
+  | E_if_bool  of (expression * expression * expression)
+  | E_if_none  of expression * expression * ((var_name * type_expression) * expression)
+  | E_if_cons  of expression * expression * (((var_name * type_expression) * (var_name * type_expression)) * expression)
+  | E_if_left  of expression * ((var_name * type_expression) * expression) * ((var_name * type_expression) * expression)
+  | E_let_in   of expression * inline * ((var_name * type_expression) * expression)
   | E_tuple of expression list
-  | E_let_tuple of expression * ((var_name * type_expression) list * expression)
+  | E_let_tuple of expression * (((var_name * type_expression) list) * expression)
   (* E_proj (record, index, field_count): we use the field_count to
      know whether the index is the last field or not, since Michelson
      treats the last element of a comb differently than the rest. We
@@ -129,17 +116,23 @@ and expression_content =
   | E_raw_michelson of (Location.t, string) Tezos_micheline.Micheline.node list
 
 and expression = {
-  content : expression_content;
-  type_expression : type_expression;
+  content : expression_content ;
+  type_expression : type_expression ;
   location : Location.t;
 }
 
-and constant = { cons_name : constant'; arguments : expression list }
+and constant = {
+  cons_name : constant';
+  arguments : expression list;
+}
 
 and assignment = var_name * inline * expression
 
 and toplevel_statement = assignment * environment_wrap
 
-and anon_function = { binder : expression_variable; body : expression }
+and anon_function = {
+  binder : expression_variable ;
+  body : expression ;
+}
 
 and program = toplevel_statement list

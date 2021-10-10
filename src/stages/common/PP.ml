@@ -1,7 +1,6 @@
 open Types
 open Format
-open Simple_utils
-open Simple_utils.PP_helpers
+open PP_helpers
 include PP_enums
 
 let option_inline ppf inline =

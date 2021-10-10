@@ -1,13 +1,12 @@
 open Types
-open Simple_utils
+
 
 let range i j =
   let rec aux i j acc = if i >= j then acc else aux i (j-1) (j-1 :: acc) in
   aux i j []
 
 let label_range i j =
-  let f = fun i -> Label (string_of_int i) in 
-  List.map ~f @@ range i j
+  List.map ~f:(fun i -> Label (string_of_int i)) @@ range i j
 
 let is_tuple_lmap m =
   List.for_all ~f:(fun i -> LMap.mem i m) @@ (label_range 0 (LMap.cardinal m))
