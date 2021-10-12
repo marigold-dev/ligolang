@@ -2,7 +2,6 @@
 *~
 *.merlin
 cache/*
-version.ml
 /result
 /result-*
 /_opam/
@@ -12,8 +11,11 @@ version.ml
 **/.DS_Store
 .vscode/
 /ligo.install
+/ligo-types.install
 *.coverage
 /_coverage/
 /_coverage_*/
 .history
 /to-dos.html
+node_modules/*
+_esy/*
