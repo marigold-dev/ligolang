@@ -1,5 +1,6 @@
+open Simple_utils
 open Trace
-open Zinc.Types
+open Zinc_types.Types
 module AST = Ast_typed
 open Ast_typed.Types
 
@@ -95,7 +96,7 @@ and other_compile :
   let () =
     print_endline
       (Format.asprintf "other compile: %a / ~k:%s / env: %s" AST.PP.expression
-         expr (Zinc.Types.show_zinc k)
+         expr (show_zinc k)
          (environment.binders
          |> List.map ~f:(Format.asprintf "%a" Var.pp)
          |> String.concat ","))
@@ -133,7 +134,15 @@ and other_compile :
         (compile_constant constant :: k)
         constant.arguments
   | E_variable ({ wrap_content = variable; location = _ } as binder) -> (
-      match Utils.find_index variable environment.binders with
+    let find_index x lst =
+  let rec func x lst c =
+    match lst with
+    | [] -> None
+    | hd :: tl -> if hd = x then Some c else func x tl (c + 1)
+  in
+  func x lst 0 in
+
+      match find_index variable environment.binders with
       | None ->
           failwith
             (Format.asprintf "binder %a not found in environment!"
@@ -163,17 +172,16 @@ and other_compile :
         matching
   (* Record *)
   | E_record expression_label_map ->
-      let open Stage_common.Types in
-      let bindings = LMap.bindings expression_label_map in
+      let bindings = Stage_common.Types.LMap.bindings expression_label_map in
       compile_known_function_application environment
         (MakeRecord
            (List.map
-              ~f:(fun (k, value) -> (k, compile_type value.type_expression))
+              ~f:(fun (Stage_common.Types.Label k, _) -> (Zinc_types.Types.Label k))
               bindings)
          :: k)
         (List.map ~f:(fun (_, value) -> value) bindings)
-  | E_record_accessor { record; path } ->
-      compile_known_function_application environment (RecordAccess path :: k)
+  | E_record_accessor { record; path=Stage_common.Types.Label path } ->
+      compile_known_function_application environment (RecordAccess (Zinc_types.Types.Label path) :: k)
         [ record ]
   | E_record_update _record_update -> failwith "E_record_update unimplemented"
   | E_module_accessor _module_access ->
@@ -186,15 +194,6 @@ and compile_constant :
     zinc_instruction =
  fun ~raise type_expression constant ->
   match constant.cons_name with
-  | C_BYTES_UNPACK -> (
-      match type_expression.type_content with
-      | T_constant
-          { injection = Verbatim "option"; parameters = [ unpacking_type ] } ->
-          let compiled_type = compile_type ~raise unpacking_type in
-          Unpack compiled_type
-      | _ ->
-          failwith "Incomprehensible type when processing an unpack expression!"
-      )
   | C_CHAIN_ID -> ChainID
   | C_HASH_KEY -> HashKey
   | C_EQ -> Eq

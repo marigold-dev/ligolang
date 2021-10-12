@@ -27,7 +27,7 @@
   },
   "license": "MIT",
   "scripts": {
-    "test": "dune test",
+    "test": "dune build -w @zinctest --no-buffer",
     "format": "dune build @fmt --auto-promote"
   },
   "dependencies": {
@@ -67,7 +67,13 @@
     "@opam/resto-cohttp-self-serving-client": "*",
     "@opam/tezos-rust-libs": "*",
     "@opam/tezos-micheline": "*",
-    "@opam/tezos-010-PtGRANAD-test-helpers": "10.2"
+    "@opam/tezos-010-PtGRANAD-test-helpers": "10.2",
+    "@opam/zinc-types": "*",
+    "@opam/sexplib": "v0.14.0"
+  },
+  "devDependencies": {
+    "@opam/ocaml-lsp-server": "*",
+    "@opam/ocamlformat": "*"
   },
   "resolutions": {
     "@opam/bls12-381-unix": {
@@ -250,6 +256,7 @@
     "@opam/tezos-embedded-protocol-010-PtGRANAD": {
       "source": "https://gitlab.com/tezos/tezos/-/archive/v10.2/tezos-v10.2.tar.bz2#19dbe332c3d84ebdc8f9d2360a07f97302e66a58",
       "override": {}
-    }
+    },
+    "@opam/zinc-types": "github:anchpop/zinc_types#e0afd3c2a72536fdbae2de7476130f989fe810e5"
   }
 }
