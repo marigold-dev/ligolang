@@ -75,7 +75,7 @@ let rec tail_compile :
       tail_compile
         (environment |> add_binder lambda.binder.wrap_content)
         lambda.result
-  | E_let_in { let_binder; rhs; let_result } ->
+  | E_let_in { let_binder; rhs; let_result; _ } ->
       compile_let environment ~let':let_binder.wrap_content ~equal:rhs
         ~in':let_result
   (* TODO: function applications are disagregated in typed_ast, this defeats the whole purpose of using zinc, need to fix this *)
@@ -104,7 +104,6 @@ and other_compile :
   let tail_compile = tail_compile ~raise in
   let other_compile = other_compile ~raise in
   let compile_pattern_matching = compile_pattern_matching ~raise in
-  let compile_type = compile_type ~raise in
   let compile_let environment ~let':name ~equal:value ~in':expression =
     let result_compiled =
       other_compile (environment |> add_binder name) expression ~k:(EndLet :: k)
@@ -134,13 +133,14 @@ and other_compile :
         (compile_constant constant :: k)
         constant.arguments
   | E_variable ({ wrap_content = variable; location = _ } as binder) -> (
-    let find_index x lst =
-  let rec func x lst c =
-    match lst with
-    | [] -> None
-    | hd :: tl -> if hd = x then Some c else func x tl (c + 1)
-  in
-  func x lst 0 in
+      let find_index x lst =
+        let rec func x lst c =
+          match lst with
+          | [] -> None
+          | hd :: tl -> if hd = x then Some c else func x tl (c + 1)
+        in
+        func x lst 0
+      in
 
       match find_index variable environment.binders with
       | None ->
@@ -152,11 +152,11 @@ and other_compile :
   | E_application { lamb; args } ->
       compile_function_application ~function_compiler:other_compile environment
         lamb [ args ] ~k
-  | E_lambda { binder = { wrap_content = binder }; result } ->
+  | E_lambda { binder = { wrap_content = binder; _ }; result } ->
       Closure (Grab :: tail_compile (environment |> add_binder binder) result)
       :: k
   | E_recursive _recursive -> failwith "E_recursive unimplemented"
-  | E_let_in { let_binder; rhs; let_result } ->
+  | E_let_in { let_binder; rhs; let_result; _ } ->
       compile_let environment ~let':let_binder.wrap_content ~equal:rhs
         ~in':let_result
   | E_type_in _type_in -> failwith "E_type_in unimplemented"
@@ -176,12 +176,14 @@ and other_compile :
       compile_known_function_application environment
         (MakeRecord
            (List.map
-              ~f:(fun (Stage_common.Types.Label k, _) -> (Zinc_types.Types.Label k))
+              ~f:(fun (Stage_common.Types.Label k, _) ->
+                Zinc_types.Types.Label k)
               bindings)
          :: k)
         (List.map ~f:(fun (_, value) -> value) bindings)
-  | E_record_accessor { record; path=Stage_common.Types.Label path } ->
-      compile_known_function_application environment (RecordAccess (Zinc_types.Types.Label path) :: k)
+  | E_record_accessor { record; path = Stage_common.Types.Label path } ->
+      compile_known_function_application environment
+        (RecordAccess (Zinc_types.Types.Label path) :: k)
         [ record ]
   | E_record_update _record_update -> failwith "E_record_update unimplemented"
   | E_module_accessor _module_access ->
@@ -192,7 +194,7 @@ and compile_constant :
     AST.type_expression ->
     AST.constant ->
     zinc_instruction =
- fun ~raise type_expression constant ->
+ fun ~raise:_ _ constant ->
   match constant.cons_name with
   | C_CHAIN_ID -> ChainID
   | C_HASH_KEY -> HashKey
@@ -237,7 +239,7 @@ and make_expression_with_dependencies :
                  let_binder = binder;
                  rhs = expression;
                  let_result = result;
-                 attr = { inline = false ; no_mutation = false };
+                 attr = { inline = false; no_mutation = false };
                };
            location = loc;
            type_expression = expression.type_expression;
@@ -252,7 +254,7 @@ and compile_pattern_matching :
   let compile_type = compile_type ~raise in
   let compiled_type = compile_type to_match.matchee.type_expression in
   match (compiled_type, to_match.cases) with
-  | T_tuple _t, Match_record { fields = binders; body } ->
+  | T_tuple _t, Match_record { fields = binders; body; _ } ->
       let open Stage_common.Types in
       let fresh = Simple_utils.Var.fresh () in
       let loc =
@@ -289,7 +291,7 @@ and compile_pattern_matching :
                 let_binder = { wrap_content = fresh; location = loc };
                 rhs = to_match.matchee;
                 let_result = lettified;
-                attr = { inline = false ; no_mutation = false };
+                attr = { inline = false; no_mutation = false };
               };
           type_expression = to_match.matchee.type_expression;
           location = loc;
@@ -310,7 +312,7 @@ let compile_module :
   let (Module_Fully_Typed ast) = modul in
   let constant_declaration_extractor :
       declaration_loc -> (module_variable * expression) option = function
-    | { wrap_content = Declaration_constant declaration_constant } ->
+    | { wrap_content = Declaration_constant declaration_constant; _ } ->
         let name =
           match declaration_constant.name with
           | Some name -> name

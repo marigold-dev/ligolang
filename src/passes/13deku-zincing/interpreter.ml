@@ -88,5 +88,5 @@ let rec apply_zinc (instructions, env, stack) =
   | Some (instructions, env, stack) -> apply_zinc (instructions, env, stack)
 
 module Utils = struct
-  let unit_record = `Record Stage_common.Types.LMap.empty
+  let unit_record = `Record Zinc_types.Types.LMap.empty
 end
