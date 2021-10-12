@@ -6,7 +6,7 @@
 		"dockerfile": "Dockerfile",
 		// Update 'VARIANT' to pick an Debian version: bullseye, buster, stretch
 		"args": {
-			"VARIANT": "buster"
+			"VARIANT": "16"
 		}
 	},
 	"settings": {
@@ -54,5 +54,5 @@
 	// "runArgs": [ "--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined" ],
 	"postCreateCommand": "./.devcontainer/setup_dev_env.sh",
 	// Comment out connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
-	"remoteUser": "vscode"
+	"remoteUser": "node"
 }

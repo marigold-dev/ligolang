@@ -1,4 +1,4 @@
-let _ = [ Zinc.Types.Num (Z.of_int 42); Return ]
+let _ = [ Zinc_types.Types.Num (Z.of_int 42); Return ]
 
 (*
 
@@ -11,18 +11,18 @@ let _ = [ Zinc.Types.Num (Z.of_int 42); Return ]
 *)
 
 let str_to_zinc ~raise ~add_warning zinc_str =
-  zinc_str |> Yojson.Safe.from_string |> Zinc.Types.program_of_yojson
+  zinc_str |> Yojson.Safe.from_string |> Zinc_types.Types.program_of_yojson
   
 let ligo_to_zinc ~raise ~add_warning ligo_str =
   Ok (Test_helpers.to_zinc ~raise ~add_warning ligo_str Env Test_helpers.options
-  |> Zinc.Types.program_to_yojson |> Yojson.Safe.to_string)
+  |> Zinc_types.Types.program_to_yojson |> Yojson.Safe.to_string)
 
 let interpret_zinc ~raise:_ ~add_warning:_ ~code_str ~env_str ~stack_str  =
-  let code = code_str |> Yojson.Safe.from_string |> Zinc.Types.zinc_of_yojson in 
-  let stack = stack_str |> Yojson.Safe.from_string |> Zinc.Types.stack_of_yojson in
-  let env = env_str |> Yojson.Safe.from_string |> Zinc.Types.env_of_yojson in 
+  let code = code_str |> Yojson.Safe.from_string |> Zinc_types.Types.zinc_of_yojson in 
+  let stack = stack_str |> Yojson.Safe.from_string |> Zinc_types.Types.stack_of_yojson in
+  let env = env_str |> Yojson.Safe.from_string |> Zinc_types.Types.env_of_yojson in 
   match (code, env, stack) with 
-  | Ok code, Ok env, Ok stack -> Ok (Zincing.Interpreter.apply_zinc (code, env, stack) |> Zinc.Types.zinc_state_to_yojson |> Yojson.Safe.to_string)
+  | Ok code, Ok env, Ok stack -> Ok (Zincing.Interpreter.apply_zinc (code, env, stack) |> Zinc_types.Types.zinc_state_to_yojson |> Yojson.Safe.to_string)
   | _ -> Error "parsing error"
 
 

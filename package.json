@@ -1,0 +1,262 @@
+{
+  "name": "ligo",
+  "esy": {
+    "build": "dune build -p #{self.name}",
+    "release": {
+      "bin": [
+        "ligo_wrapper"
+      ],
+      "includePackages": [
+        "root",
+        "@opam/hacl-star-raw",
+        "@opam/conf-libev",
+        "@opam/conf-libffi",
+        "@opam/conf-gmp"
+      ],
+      "rewritePrefix": true
+    },
+    "buildEnv": {
+      "PATH": "%{localStore}%/../bin:$PATH"
+    }
+  },
+  "exportedEnv": {
+    "DYLD_LIBRARY_PATH": {
+      "val": "#{@opam/hacl-star-raw.lib / 'hacl-star-raw' : $DYLD_LIBRARY_PATH}",
+      "scope": "global"
+    }
+  },
+  "license": "MIT",
+  "scripts": {
+    "test": "dune build -w @zinctest --no-buffer",
+    "format": "dune build @fmt --auto-promote"
+  },
+  "dependencies": {
+    "ocaml": "4.10.2000",
+    "@opam/dune": ">= 2.9.1",
+    "@opam/hex": ">= 1.4.0",
+    "@opam/menhir": "20200624",
+    "@opam/ocamlgraph": ">= 2.0.0",
+    "@opam/coq": "~8.13",
+    "@opam/ppx_deriving": ">= 5.2.1",
+    "@opam/ppx_deriving_yojson": ">= 3.6.1",
+    "@opam/ppx_expect": "v0.14.1",
+    "@opam/yojson": ">= 1.7.0",
+    "@opam/alcotest": ">= 1.0",
+    "@opam/getopt": "20120615",
+    "@opam/terminal_size": ">= 0.1.4",
+    "@opam/pprint": "20200410",
+    "@opam/linenoise": ">= 1.3.1",
+    "@opam/qcheck": ">= 0.17",
+    "@opam/ocaml-migrate-parsetree": ">= 2.1.0",
+    "@opam/lwt": ">= 5.4.2",
+    "@opam/bisect_ppx": ">= 2.5.0",
+    "@opam/alcotest-lwt": "*",
+    "@opam/data-encoding": "*",
+    "@opam/lwt-canceler": "0.3",
+    "@opam/lwt_log": "*",
+    "@opam/ringo": "*",
+    "@opam/ringo-lwt": "*",
+    "@opam/ipaddr": "*",
+    "@opam/ptime": "*",
+    "@opam/mtime": "*",
+    "@opam/secp256k1-internal": "*",
+    "@opam/resto-directory": "*",
+    "@opam/hacl-star": "*",
+    "@opam/hacl-star-raw": "*",
+    "@opam/irmin-pack": "*",
+    "@opam/resto-cohttp-self-serving-client": "*",
+    "@opam/tezos-rust-libs": "*",
+    "@opam/tezos-micheline": "*",
+    "@opam/tezos-010-PtGRANAD-test-helpers": "10.2",
+    "@opam/zinc-types": "*",
+    "@opam/sexplib": "v0.14.0"
+  },
+  "devDependencies": {
+    "@opam/ocaml-lsp-server": "*",
+    "@opam/ocamlformat": "*"
+  },
+  "resolutions": {
+    "@opam/bls12-381-unix": {
+      "source": "git:https://gitlab.com/dannywillems/ocaml-bls12-381.git:bls12-381-unix.opam#d448d9d370ae711d9357bf0e366281b711f4b422",
+      "override": {
+        "buildEnv": {
+          "OPAM_SWITCH_PREFIX": "#{ @opam/tezos-rust-libs.install }"
+        },
+        "dependencies": {
+          "@opam/bls12-381": "0.4.3",
+          "@opam/bls12-381-gen": "0.4.3",
+          "@opam/ctypes": "*"
+        }
+      }
+    },
+    "@opam/tezos-sapling": {
+      "source": "https://gitlab.com/tezos/tezos/-/archive/v10.2/tezos-v10.2.tar.bz2#19dbe332c3d84ebdc8f9d2360a07f97302e66a58",
+      "override": {
+        "buildsInSource": true,
+        "buildEnvOverride": {
+          "OPAM_SWITCH_PREFIX": "#{ @opam/tezos-rust-libs.install }"
+        },
+        "build": [
+          [
+            "rm",
+            "-r",
+            "vendors"
+          ],
+          "dune build -j 4 -p tezos-sapling @install",
+          [
+            "mv",
+            "src/lib_sapling/tezos-sapling.install",
+            "./"
+          ]
+        ],
+        "install": [
+          [
+            "esy-installer",
+            "./tezos-sapling.install"
+          ]
+        ],
+        "dependencies": {
+          "@opam/dune": "*",
+          "@opam/hex": "*",
+          "@opam/ctypes": "*",
+          "@opam/ctypes-foreign": "*",
+          "@opam/data-encoding": "*",
+          "@opam/tezos-crypto": "*",
+          "@opam/tezos-stdlib": "*",
+          "@opam/tezos-error-monad": "*",
+          "@opam/tezos-rust-libs": "*"
+        }
+      }
+    },
+    "@opam/tezos-protocol-010-PtGRANAD": {
+      "source": "https://gitlab.com/tezos/tezos/-/archive/v10.2/tezos-v10.2.tar.bz2#19dbe332c3d84ebdc8f9d2360a07f97302e66a58",
+      "override": {
+        "buildsInSource": true,
+        "build": [
+          [
+            "rm",
+            "-r",
+            "vendors"
+          ],
+          [
+            "sed",
+            "-i.back",
+            "-e",
+            "s/-nostdlib//g",
+            "#{$cur__target_dir}/src/proto_010_PtGRANAD/lib_protocol/dune.inc"
+          ],
+          [
+            "dune",
+            "build",
+            "-p",
+            "tezos-protocol-010-PtGRANAD",
+            "-j",
+            "4"
+          ],
+          [
+            "mv",
+            "src/proto_010_PtGRANAD/lib_protocol/tezos-protocol-010-PtGRANAD.install",
+            "./"
+          ]
+        ],
+        "install": [
+          [
+            "esy-installer",
+            "./tezos-protocol-010-PtGRANAD.install"
+          ]
+        ],
+        "dependencies": {
+          "@opam/dune": "*",
+          "@opam/tezos-base": "*",
+          "@opam/tezos-protocol-compiler": "*"
+        }
+      }
+    },
+    "@opam/tezos-protocol-010-PtGRANAD-parameters": {
+      "source": "https://gitlab.com/tezos/tezos/-/archive/v10.2/tezos-v10.2.tar.bz2#19dbe332c3d84ebdc8f9d2360a07f97302e66a58",
+      "override": {
+        "buildsInSource": true,
+        "buildEnvOverride": {
+          "LD_LIBRARY_PATH": "#{@opam/conf-libffi.lib : $LD_LIBRARY_PATH}",
+          "ESY__DYLD_LIBRARY_PATH": "#{ @opam/hacl-star-raw.lib / 'hacl-star-raw' }"
+        },
+        "build": [
+          [
+            "rm",
+            "-r",
+            "vendors"
+          ],
+          [
+            "sh",
+            "-c",
+            "LD_LIBRARY_PATH=\"$ESY__DYLD_LIBRARY_PATH\" dune build -j 4 -p tezos-protocol-010-PtGRANAD-parameters @install"
+          ],
+          [
+            "mv",
+            "src/proto_010_PtGRANAD/lib_parameters/tezos-protocol-010-PtGRANAD-parameters.install",
+            "./"
+          ]
+        ],
+        "install": [
+          [
+            "esy-installer",
+            "./tezos-protocol-010-PtGRANAD-parameters.install"
+          ]
+        ],
+        "dependencies": {
+          "@opam/dune": "*",
+          "@opam/tezos-protocol-010-PtGRANAD": "*",
+          "@opam/tezos-rust-libs": "*",
+          "@opam/tezos-crypto": "*",
+          "@opam/hacl-star": "*",
+          "@opam/hacl-star-raw": "*",
+          "@opam/conf-libffi": "*"
+        }
+      }
+    },
+    "@opam/tezos-protocol-plugin-010-PtGRANAD": {
+      "source": "https://gitlab.com/tezos/tezos/-/archive/v10.2/tezos-v10.2.tar.bz2#19dbe332c3d84ebdc8f9d2360a07f97302e66a58",
+      "override": {
+        "buildsInSource": true,
+        "buildEnvOverride": {
+          "ESY__DYLD_LIBRARY_PATH": "#{ @opam/hacl-star-raw.lib / 'hacl-star-raw' }"
+        },
+        "build": [
+          [
+            "rm",
+            "-r",
+            "vendors"
+          ],
+          [
+            "sh",
+            "-c",
+            "LD_LIBRARY_PATH=\"$ESY__DYLD_LIBRARY_PATH\" dune build -j 4 -p tezos-protocol-plugin-010-PtGRANAD @install"
+          ],
+          [
+            "mv",
+            "src/proto_010_PtGRANAD/lib_plugin/tezos-protocol-plugin-010-PtGRANAD.install",
+            "./"
+          ]
+        ],
+        "install": [
+          [
+            "esy-installer",
+            "./tezos-protocol-plugin-010-PtGRANAD.install"
+          ]
+        ],
+        "dependencies": {
+          "@opam/dune": "*",
+          "@opam/tezos-base": "10.2",
+          "@opam/tezos-embedded-protocol-010-PtGRANAD": "10.2",
+          "@opam/hacl-star-raw": "*",
+          "@opam/tezos-protocol-010-PtGRANAD": "10.2"
+        }
+      }
+    },
+    "@opam/tezos-embedded-protocol-010-PtGRANAD": {
+      "source": "https://gitlab.com/tezos/tezos/-/archive/v10.2/tezos-v10.2.tar.bz2#19dbe332c3d84ebdc8f9d2360a07f97302e66a58",
+      "override": {}
+    },
+    "@opam/zinc-types": "github:anchpop/zinc_types#e0afd3c2a72536fdbae2de7476130f989fe810e5"
+  }
+}
