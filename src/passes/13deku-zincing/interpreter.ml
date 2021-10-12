@@ -1,10 +1,11 @@
-open Zinc.Types
+open Simple_utils
+open Zinc_types.Types
 
 let env_to_stack : env_item -> stack_item = function #env_item as x -> x
 
 let initial_state ?initial_stack:(stack = []) a = (a, [], stack)
 
-let rec apply_zinc : Zinc.Types.zinc_state -> Zinc.Types.zinc_state = fun (instructions, env, stack) ->
+let rec apply_zinc (instructions, env, stack) =
   let apply_once (instructions : zinc) (env : env_item list)
       (stack : stack_item list) =
     let () =
@@ -34,7 +35,6 @@ let rec apply_zinc : Zinc.Types.zinc_state -> Zinc.Types.zinc_state = fun (instr
     | ((Num _ | Address _ | Key _ | Hash _ | Bool _) as v) :: c, env, s -> Some (c, env, `Z v :: s)
     (* ADTs *)
     | MakeRecord r :: c, env, s ->
-        let open Stage_common.Types in
         let rec zipExtra x y =
           match (x, y) with
           | x :: xs, y :: ys ->
@@ -46,13 +46,12 @@ let rec apply_zinc : Zinc.Types.zinc_state -> Zinc.Types.zinc_state = fun (instr
         let record_contents, new_stack = zipExtra r s in
         let record_contents =
           List.fold record_contents ~init:LMap.empty
-            ~f:(fun acc ((label, _), value) -> acc |> LMap.add label value)
+            ~f:(fun acc (label, value) -> acc |> LMap.add label value)
         in
 
         Some (c, env, `Record record_contents :: new_stack)
     | RecordAccess accessor :: c, env, `Record r :: s ->
-        let open Stage_common.Types.LMap in
-        Some (c, env, (r |> find accessor) :: s)
+        Some (c, env, (r |> LMap.find accessor) :: s)
     (* Math *)
     | Add :: c, env, `Z (Num a) :: `Z (Num b) :: s ->
         Some (c, env, `Z (Num (Z.add a b)) :: s)
@@ -62,7 +61,7 @@ let rec apply_zinc : Zinc.Types.zinc_state -> Zinc.Types.zinc_state = fun (instr
     (* Crypto *)
     | HashKey :: c, env, `Z (Key key) :: s ->
         let h = Digestif.BLAKE2B.hmac_string ~key:"???" key in
-        Some (c, env, `Z (Zinc.Types.Hash h) :: s)
+        Some (c, env, `Z (Hash h) :: s)
     (* Tezos specific *)
     | ChainID :: c, env, s ->
         Some
@@ -89,5 +88,5 @@ let rec apply_zinc : Zinc.Types.zinc_state -> Zinc.Types.zinc_state = fun (instr
   | Some (instructions, env, stack) -> apply_zinc (instructions, env, stack)
 
 module Utils = struct
-  let unit_record = `Record Stage_common.Types.LMap.empty
+  let unit_record = `Record Zinc_types.Types.LMap.empty
 end
