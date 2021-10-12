@@ -4,7 +4,8 @@
     "build": "dune build -p #{self.name}",
     "release": {
       "bin": [
-        "ligo_wrapper"
+        "Ligo_wrapper",
+        "ligo"
       ],
       "includePackages": [
         "root",

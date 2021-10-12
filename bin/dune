@@ -3,5 +3,5 @@
  (package ligo)
  (public_name Ligo_wrapper)
  (libraries ligo zinc.types zincing test_helpers simple-utils preprocessing lexing self_ast_typed)
- (modules ligo_wrapper)
+ (modules Ligo_wrapper)
 )
