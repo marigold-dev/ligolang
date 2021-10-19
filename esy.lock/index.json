@@ -1,5 +1,5 @@
 {
-  "checksum": "085b1e408277ed7f0eb22a28f4338c2b",
+  "checksum": "9d0eb2b317a859914d4329247efa7bb6",
   "root": "ligo@link-dev:./package.json",
   "node": {
     "yarn-pkg-config@github:esy-ocaml/yarn-pkg-config#db3a0b63883606dd57c54a7158d560d6cba8cd79@d41d8cd9": {
@@ -43,8 +43,7 @@
       },
       "overrides": [],
       "dependencies": [
-        "ocaml@4.10.2000@d41d8cd9",
-        "@opam/zinc-types@github:anchpop/zinc_types#e0afd3c2a72536fdbae2de7476130f989fe810e5@d41d8cd9",
+        "ocaml@4.10.2000@d41d8cd9", "@opam/zinc-types@link:../zinc_types",
         "@opam/yojson@opam:1.7.0@69d87312",
         "@opam/tezos-rust-libs@opam:1.1@02945c1d",
         "@opam/tezos-micheline@opam:10.2@56ace82f",
@@ -56,6 +55,7 @@
         "@opam/resto-directory@opam:0.6.1@0656b073",
         "@opam/resto-cohttp-self-serving-client@opam:0.6.1@c4e15c83",
         "@opam/qcheck@opam:0.18@0e7e7278", "@opam/ptime@opam:0.8.5@0051d642",
+        "@opam/ppx_repr@opam:0.4.0@7a2664de",
         "@opam/ppx_expect@opam:v0.14.1@72b3b5e4",
         "@opam/ppx_deriving_yojson@opam:3.6.1@faf11a7c",
         "@opam/ppx_deriving@opam:5.2.1@089e5dd3",
@@ -69,6 +69,7 @@
         "@opam/lwt@opam:5.4.2@f5e79982",
         "@opam/linenoise@opam:1.3.1@d0b372a4",
         "@opam/irmin-pack@opam:2.7.2@ec4b3c92",
+        "@opam/irmin@opam:2.7.2@4299ca00",
         "@opam/ipaddr@opam:5.2.0@6ac621fb", "@opam/hex@opam:1.4.0@41725494",
         "@opam/hacl-star-raw@opam:0.3.2@fdb666c6",
         "@opam/hacl-star@opam:0.3.2@bf74eb6c",
@@ -81,7 +82,7 @@
         "@opam/alcotest@opam:1.5.0@c3a8eb69"
       ],
       "devDependencies": [
-        "@opam/ocamlformat@opam:0.17.0@3d3f3367",
+        "@opam/ocamlformat@opam:0.18.0@a5c80606",
         "@opam/ocaml-lsp-server@opam:1.4.1@cd85c376"
       ]
     },
@@ -151,18 +152,11 @@
       ],
       "devDependencies": []
     },
-    "@opam/zinc-types@github:anchpop/zinc_types#e0afd3c2a72536fdbae2de7476130f989fe810e5@d41d8cd9": {
-      "id":
-        "@opam/zinc-types@github:anchpop/zinc_types#e0afd3c2a72536fdbae2de7476130f989fe810e5@d41d8cd9",
+    "@opam/zinc-types@link:../zinc_types": {
+      "id": "@opam/zinc-types@link:../zinc_types",
       "name": "@opam/zinc-types",
-      "version":
-        "github:anchpop/zinc_types#e0afd3c2a72536fdbae2de7476130f989fe810e5",
-      "source": {
-        "type": "install",
-        "source": [
-          "github:anchpop/zinc_types#e0afd3c2a72536fdbae2de7476130f989fe810e5"
-        ]
-      },
+      "version": "link:../zinc_types",
+      "source": { "type": "link", "path": "../zinc_types" },
       "overrides": [],
       "dependencies": [
         "ocaml@4.10.2000@d41d8cd9", "@reason-native/pastel@0.3.0@d41d8cd9",
@@ -3418,20 +3412,20 @@
         "@opam/dune@opam:2.9.1@1e504822"
       ]
     },
-    "@opam/ocamlformat@opam:0.17.0@3d3f3367": {
-      "id": "@opam/ocamlformat@opam:0.17.0@3d3f3367",
+    "@opam/ocamlformat@opam:0.18.0@a5c80606": {
+      "id": "@opam/ocamlformat@opam:0.18.0@a5c80606",
       "name": "@opam/ocamlformat",
-      "version": "opam:0.17.0",
+      "version": "opam:0.18.0",
       "source": {
         "type": "install",
         "source": [
-          "archive:https://opam.ocaml.org/cache/sha256/68/68848b12e82dc1077a29f63d2777680e692b1a565276fcd00f06fb93cced3438#sha256:68848b12e82dc1077a29f63d2777680e692b1a565276fcd00f06fb93cced3438",
-          "archive:https://github.com/ocaml-ppx/ocamlformat/releases/download/0.17.0/ocamlformat-0.17.0.tbz#sha256:68848b12e82dc1077a29f63d2777680e692b1a565276fcd00f06fb93cced3438"
+          "archive:https://opam.ocaml.org/cache/sha256/98/981a44296485da6ca29ab2cd8c711270398e5e1d1624408ec403c0b0ea9fe114#sha256:981a44296485da6ca29ab2cd8c711270398e5e1d1624408ec403c0b0ea9fe114",
+          "archive:https://github.com/ocaml-ppx/ocamlformat/releases/download/0.18.0/ocamlformat-0.18.0.tbz#sha256:981a44296485da6ca29ab2cd8c711270398e5e1d1624408ec403c0b0ea9fe114"
         ],
         "opam": {
           "name": "ocamlformat",
-          "version": "0.17.0",
-          "path": "esy.lock/opam/ocamlformat.0.17.0"
+          "version": "0.18.0",
+          "path": "esy.lock/opam/ocamlformat.0.18.0"
         }
       },
       "overrides": [],
@@ -3442,7 +3436,6 @@
         "@opam/ppxlib@opam:0.22.2@61009929",
         "@opam/odoc@opam:1.5.3@a56545ed",
         "@opam/ocaml-version@opam:3.4.0@b6cd49e1",
-        "@opam/ocaml-migrate-parsetree@opam:2.2.0@45331a3e",
         "@opam/menhirSdk@opam:20200624@4624a1f4",
         "@opam/menhirLib@opam:20200624@378a35e8",
         "@opam/menhir@opam:20200624@80593070",
@@ -3462,7 +3455,6 @@
         "@opam/ppxlib@opam:0.22.2@61009929",
         "@opam/odoc@opam:1.5.3@a56545ed",
         "@opam/ocaml-version@opam:3.4.0@b6cd49e1",
-        "@opam/ocaml-migrate-parsetree@opam:2.2.0@45331a3e",
         "@opam/menhirSdk@opam:20200624@4624a1f4",
         "@opam/menhirLib@opam:20200624@378a35e8",
         "@opam/menhir@opam:20200624@80593070",
