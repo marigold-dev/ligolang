@@ -126,6 +126,8 @@ and other_compile :
       | Literal_int x -> Num x :: k
       | Literal_address s -> Address s :: k
       | Literal_bytes b -> Bytes b :: k
+      | Literal_string (Standard b) -> String b :: k
+      | Literal_string (Verbatim b) -> String b :: k
       | _ -> failwith "literal type not supported")
   | E_constant constant ->
       let compile_constant = compile_constant ~raise expr.type_expression in
@@ -200,6 +202,8 @@ and compile_constant :
   | C_HASH_KEY -> HashKey
   | C_EQ -> Eq
   | C_ADD -> Add
+  | C_FAILWITH -> Failwith
+  | C_CONTRACT_OPT -> Contract_opt
   | name ->
       failwith
         (Format.asprintf "Unsupported constant: %a" AST.PP.constant' name)
