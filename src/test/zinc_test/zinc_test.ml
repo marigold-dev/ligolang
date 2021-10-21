@@ -252,23 +252,42 @@ let basic_link =
     ~index:1
     ~stack:[ `Z (Num (Z.of_int 1)) ]
 
-let _main =
-  test_suite "Zinc tests"
+(* below this line are tests that fail because I haven't yet implemented the necessary primatives *)
+
+let failwith_simple =
+  expect_simple_compile_to ~reason:true "failwith_simple"
     [
-      test_w "simple1" simple_1;
-      test_w "simple2" simple_2;
-      test_w "simple3" simple_3;
-      (*test_w "simple4" simple_4;*)
-      test_w "id" id;
-      test_w "chain_id" chain_id;
-      test_w "chain_id_func" chain_id_func;
-      test_w "tuple_creation" tuple_creation;
-      test_w "check_record_destructure" check_record_destructure;
-      test_w "check_hash_key" check_hash_key;
-      test_w "basic_function_application" basic_function_application;
-      test_w "basic_link" basic_link;
+      ("a", [ Num (Z.of_int 1); Return ]);
     ]
 
+let get_contract_opt =
+  expect_simple_compile_to ~reason:true "get_contract_opt"
+    [
+      ("a", [ Num (Z.of_int 1); Return ]);
+    ]
+
+let match_on_sum =
+  expect_simple_compile_to ~reason:true "match_on_sum"
+    [
+      ("a", [ Num (Z.of_int 1); Return ]);
+    ]
+
+let create_transaction =
+  expect_simple_compile_to ~reason:true "create_transaction"
+    [
+      ("a", [ Num (Z.of_int 1); Return ]);
+    ]
+let mutez_construction =
+  expect_simple_compile_to ~reason:true "mutez_construction"
+    [
+      ("a", [ Num (Z.of_int 1); Return ]);
+    ]
+let list_construction =
+  expect_simple_compile_to ~reason:true "list_construction"
+    [
+      ("a", [ Num (Z.of_int 1); Return ]);
+    ]
+    
 let main =
   test_suite "Zinc tests"
     [
@@ -284,4 +303,10 @@ let main =
       test_w "check_hash_key" check_hash_key;
       test_w "basic_function_application" basic_function_application;
       test_w "basic_link" basic_link;
+      test_w "failwith_simple" failwith_simple;
+      test_w "get_contract_opt" get_contract_opt;
+      test_w "match_on_sum" match_on_sum;
+      test_w "create_transaction" create_transaction;
+      test_w "mutez_construction" mutez_construction;
+      test_w "list_construction" list_construction;
     ]
