@@ -26,7 +26,7 @@ let interpret_zinc ~raise:_ ~add_warning:_ ~zinc_state =
   | Ok (code, env, stack) ->
       Ok
         (Zincing.Interpreter.apply_zinc (code, env, stack)
-        |> Zinc_types.Types.zinc_state_to_yojson |> Yojson.Safe.to_string)
+        |> Zinc_types.Types.interpreter_output_to_yojson |> Yojson.Safe.to_string)
   | _ -> Error "parsing error"
 
 let main ~raise ~add_warning ~options:_ () =

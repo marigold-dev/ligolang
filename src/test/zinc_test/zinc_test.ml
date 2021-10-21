@@ -44,8 +44,8 @@ let expect_stack =
          Zinc_types.Types.equal_stack))
 
 let expect_simple_compile_to ?reason:(enabled = false) ?(index = 0)
-    ?(initial_stack = []) ?code ?env ?stack ~raise ~add_warning contract_file
-    (expected_zinc : Zinc_types.Types.program) () =
+    ?(initial_stack = []) ?expect_failure ?code ?env ?stack ~raise ~add_warning
+    contract_file (expected_zinc : Zinc_types.Types.program) () =
   let to_zinc = to_zinc ~raise ~add_warning in
   let contract =
     Printf.sprintf "./contracts/%s.%s" contract_file
@@ -57,36 +57,42 @@ let expect_simple_compile_to ?reason:(enabled = false) ?(index = 0)
       (Printf.sprintf "compiling %s" contract_file)
       expected_zinc zinc
   in
-  let output_code, output_env, output_stack =
-    List.nth_exn zinc index |> snd
-    |> Zincing.Interpreter.initial_state ~initial_stack
-    |> Zincing.Interpreter.apply_zinc
-  in
-  let () =
-    match code with
-    | Some expected_code ->
-        expect_code
-          (Printf.sprintf "evaluating code for %s" contract_file)
-          expected_code output_code
-    | None -> ()
-  in
-  let () =
-    match env with
-    | Some expected_zinc ->
-        expect_env
-          (Printf.sprintf "evaluating env for %s" contract_file)
-          expected_zinc output_env
-    | None -> ()
-  in
-  let () =
-    match stack with
-    | Some expected_stack ->
-        expect_stack
-          (Printf.sprintf "evaluating stack for %s" contract_file)
-          expected_stack output_stack
-    | None -> ()
-  in
-  ()
+  match
+    ( expect_failure,
+      List.nth_exn zinc index |> snd
+      |> Zincing.Interpreter.initial_state ~initial_stack
+      |> Zincing.Interpreter.apply_zinc )
+  with
+  | None, Success (output_code, output_env, output_stack) ->
+      let () =
+        match code with
+        | Some expected_code ->
+            expect_code
+              (Printf.sprintf "evaluating code for %s" contract_file)
+              expected_code output_code
+        | None -> ()
+      in
+      let () =
+        match env with
+        | Some expected_zinc ->
+            expect_env
+              (Printf.sprintf "evaluating env for %s" contract_file)
+              expected_zinc output_env
+        | None -> ()
+      in
+      let () =
+        match stack with
+        | Some expected_stack ->
+            expect_stack
+              (Printf.sprintf "evaluating stack for %s" contract_file)
+              expected_stack output_stack
+        | None -> ()
+      in
+      ()
+  | Some s, Failure s' -> Alcotest.(check string) "hmm" s s'
+  | Some _, Success _ -> failwith "expected failure, but execution was successful"
+  | None, Failure _ ->
+      failwith "was not expecting failure, but execution failed anyway"
 
 (* ================ *)
 (* Tests *)
@@ -256,38 +262,29 @@ let basic_link =
 
 let failwith_simple =
   expect_simple_compile_to ~reason:true "failwith_simple"
-    [
-      ("a", [ Num (Z.of_int 1); Return ]);
-    ]
+    [ ("a", [ String "Not a contract"; Failwith; Return ]) ]
+    ~expect_failure:"Not a contract"
 
 let get_contract_opt =
   expect_simple_compile_to ~reason:true "get_contract_opt"
-    [
-      ("a", [ Num (Z.of_int 1); Return ]);
-    ]
+    [ ("a", [ Num (Z.of_int 1); Return ]) ]
 
 let match_on_sum =
   expect_simple_compile_to ~reason:true "match_on_sum"
-    [
-      ("a", [ Num (Z.of_int 1); Return ]);
-    ]
+    [ ("a", [ Num (Z.of_int 1); Return ]) ]
 
 let create_transaction =
   expect_simple_compile_to ~reason:true "create_transaction"
-    [
-      ("a", [ Num (Z.of_int 1); Return ]);
-    ]
+    [ ("a", [ Num (Z.of_int 1); Return ]) ]
+
 let mutez_construction =
   expect_simple_compile_to ~reason:true "mutez_construction"
-    [
-      ("a", [ Num (Z.of_int 1); Return ]);
-    ]
+    [ ("a", [ Num (Z.of_int 1); Return ]) ]
+
 let list_construction =
   expect_simple_compile_to ~reason:true "list_construction"
-    [
-      ("a", [ Num (Z.of_int 1); Return ]);
-    ]
-    
+    [ ("a", [ Num (Z.of_int 1); Return ]) ]
+
 let main =
   test_suite "Zinc tests"
     [
