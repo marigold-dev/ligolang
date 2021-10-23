@@ -26,8 +26,8 @@ let expect_code =
   Alcotest.(
     check
       (Alcotest.testable
-         (fun ppf zinc -> Fmt.pf ppf "%a" Zinc_types.Types.pp_zinc zinc)
-         Zinc_types.Types.equal_zinc))
+         (fun ppf zinc -> Fmt.pf ppf "%a" Zinc_types.Types.pp_zinc_code zinc)
+         Zinc_types.Types.equal_zinc_code))
 
 let expect_env =
   Alcotest.(
@@ -44,7 +44,7 @@ let expect_stack =
          Zinc_types.Types.equal_stack))
 
 let expect_simple_compile_to ?reason:(enabled = false) ?(index = 0)
-    ?(initial_stack = []) ?expect_failure ?code ?env ?stack ~raise ~add_warning
+    ?(initial_stack = []) ?expect_failure ?env ?stack ~raise ~add_warning
     contract_file (expected_zinc : Zinc_types.Types.program) () =
   let to_zinc = to_zinc ~raise ~add_warning in
   let contract =
@@ -63,15 +63,7 @@ let expect_simple_compile_to ?reason:(enabled = false) ?(index = 0)
       |> Zincing.Interpreter.initial_state ~initial_stack
       |> Zincing.Interpreter.apply_zinc )
   with
-  | None, Success (output_code, output_env, output_stack) ->
-      let () =
-        match code with
-        | Some expected_code ->
-            expect_code
-              (Printf.sprintf "evaluating code for %s" contract_file)
-              expected_code output_code
-        | None -> ()
-      in
+  | None, Success (output_env, output_stack) ->
       let () =
         match env with
         | Some expected_zinc ->
@@ -258,16 +250,23 @@ let basic_link =
     ~index:1
     ~stack:[ `Z (Num (Z.of_int 1)) ]
 
-(* below this line are tests that fail because I haven't yet implemented the necessary primatives *)
 
 let failwith_simple =
   expect_simple_compile_to ~reason:true "failwith_simple"
     [ ("a", [ String "Not a contract"; Failwith; Return ]) ]
     ~expect_failure:"Not a contract"
 
+
+
 let get_contract_opt =
   expect_simple_compile_to ~reason:true "get_contract_opt"
-    [ ("a", [ Num (Z.of_int 1); Return ]) ]
+    [("a", [(Address "whatever"); Contract_opt; Return])] 
+    ~stack:[]  (* Will be tricky - requires introducing sum types to the execution environment 
+                  Worse, it's not even clear how to execute it in a seperate process, which was
+                  a design goal for the zinc interpreter *)
+
+  
+(* below this line are tests that fail because I haven't yet implemented the necessary primatives *)
 
 let match_on_sum =
   expect_simple_compile_to ~reason:true "match_on_sum"

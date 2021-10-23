@@ -40,7 +40,7 @@ let compile_type ~(raise : Errors.zincing_error raise) t =
   t |> Spilling.compile_type ~raise |> fun x -> x.type_content
 
 let rec tail_compile :
-    raise:Errors.zincing_error raise -> environment -> AST.expression -> zinc =
+    raise:Errors.zincing_error raise -> environment -> AST.expression -> 'a zinc =
  (*** For optimization purposes, we have one function for compiling expressions in the "tail position" and another for
      compiling everything else. *)
  fun ~raise environment expr ->
@@ -90,13 +90,13 @@ and other_compile :
     raise:Errors.zincing_error raise ->
     environment ->
     AST.expression ->
-    k:zinc ->
-    zinc =
+    k:'a zinc ->
+    'a zinc =
  fun ~raise environment expr ~k ->
   let () =
     print_endline
       (Format.asprintf "other compile: %a / ~k:%s / env: %s" AST.PP.expression
-         expr (show_zinc k)
+         expr (show_zinc (fun _ _ -> failwith "unreachable") k)
          (environment.binders
          |> List.map ~f:(Format.asprintf "%a" Var.pp)
          |> String.concat ","))
@@ -195,7 +195,7 @@ and compile_constant :
     raise:Errors.zincing_error raise ->
     AST.type_expression ->
     AST.constant ->
-    zinc_instruction =
+    'a zinc_instruction =
  fun ~raise:_ _ constant ->
   match constant.cons_name with
   | C_CHAIN_ID -> ChainID
@@ -216,9 +216,9 @@ and compile_constant :
 and compile_known_function_application :
     raise:Errors.zincing_error raise ->
     environment ->
-    zinc ->
+    'a zinc ->
     AST.expression list ->
-    zinc =
+    'a zinc =
  fun ~raise environment compiled_func args ->
   let rec comp l =
     match l with
@@ -251,9 +251,9 @@ and make_expression_with_dependencies :
 
 and compile_pattern_matching :
     raise:Errors.zincing_error raise ->
-    compile_expression:(AST.expression -> zinc) ->
+    compile_expression:(AST.expression -> 'a zinc) ->
     AST.matching ->
-    zinc =
+    'a zinc =
  fun ~raise ~compile_expression to_match ->
   let compile_type = compile_type ~raise in
   let compiled_type = compile_type to_match.matchee.type_expression in

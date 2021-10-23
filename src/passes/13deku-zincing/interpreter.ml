@@ -5,15 +5,16 @@ let env_to_stack : env_item -> stack_item = function #env_item as x -> x
 
 let initial_state ?initial_stack:(stack = []) a = (a, [], stack)
 
-let rec apply_zinc (instructions, env, stack) =
-  let apply_once (instructions : zinc) (env : env_item list)
+let apply_zinc : Nothing.t interpreter_input -> interpreter_output =
+ fun (code, env, stack) ->
+  let apply_once (code : zinc_extended) (env : env_item list)
       (stack : stack_item list) =
     let () =
       print_endline
         (Format.asprintf "interpreting:\ncode:  %a\nenv:   %a\nstack: %a"
-           pp_zinc instructions pp_env env pp_stack stack)
+           pp_zinc_extended code pp_env env pp_stack stack)
     in
-    match (instructions, env, stack) with
+    match (code, env, stack) with
     | Grab :: c, env, (#env_item as v) :: s -> `Some (c, v :: env, s)
     | Grab :: c, env, `Marker (c', e') :: s ->
         `Some (c', e', `Clos { code = Grab :: c; env } :: s)
@@ -32,7 +33,10 @@ let rec apply_zinc (instructions, env, stack) =
     | EndLet :: c, _ :: env, s -> `Some (c, env, s)
     (* zinc extensions *)
     (* operations that jsut drop something on the stack haha *)
-    | ((Num _ | Address _ | Key _ | Hash _ | Bool _ | String _) as v) :: c, env, s -> `Some (c, env, `Z v :: s)
+    | ( ((Num _ | Address _ | Key _ | Hash _ | Bool _ | String _) as v) :: c,
+        env,
+        s ) ->
+        `Some (c, env, `Z v :: s)
     (* ADTs *)
     | MakeRecord r :: c, env, s ->
         let rec zipExtra x y =
@@ -76,20 +80,25 @@ let rec apply_zinc (instructions, env, stack) =
                Hash h)
             :: s )
     (* should be unreachable except when program is done *)
-    | Return :: _, _, _ -> `Done
+    | Return :: [], _, _ -> `Done
     | Failwith :: _, _, `Z (String s) :: _ -> `Failwith s
     (* should not be reachable *)
     | x :: _, _, _ ->
-        `Internal_error (Format.asprintf "%a unimplemented!" pp_zinc_instruction x)
+        `Internal_error
+          (Format.asprintf "%a unimplemented!" pp_zinc_instruction_extended x)
     | _ ->
         `Internal_error
-          (Format.asprintf "somehow ran out of instructions without hitting return!")
+          (Format.asprintf "somehow ran out of code without hitting return!")
   in
-  match apply_once instructions env stack with
-  | `Done -> Success (instructions, env, stack)
-  | `Failwith s -> Failure s
-  | `Internal_error s -> failwith s
-  | `Some (instructions, env, stack) -> apply_zinc (instructions, env, stack)
+  let code : zinc_extended = generalize_zinc code in
+  let rec loop code env stack =
+    match apply_once code env stack with
+    | `Done -> Success (env, stack)
+    | `Failwith s -> Failure s
+    | `Internal_error s -> failwith s
+    | `Some (code, env, stack) -> loop code env stack
+  in
+  loop code env stack
 
 module Utils = struct
   let unit_record = `Record Zinc_types.Types.LMap.empty
