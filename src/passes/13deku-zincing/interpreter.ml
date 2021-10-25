@@ -56,6 +56,13 @@ let interpret_zinc :
         `Some (c, env, `Record record_contents :: new_stack)
     | RecordAccess accessor :: c, env, `Record r :: s ->
         `Some (c, env, (r |> LMap.find accessor) :: s)
+    | MatchVariant vs :: c, env, `Variant (Label label, item) :: s -> (
+        match
+          List.find_map vs ~f:(fun (Label match_arm, constructors) ->
+              if String.equal match_arm label then Some constructors else None)
+        with
+        | None -> `Internal_error "inexhaustive match"
+        | Some match_code -> `Some (List.concat [match_code; c], env, item :: s))
     (* Math *)
     | Add :: c, env, `Z (Num a) :: `Z (Num b) :: s ->
         `Some (c, env, `Z (Num (Z.add a b)) :: s)
@@ -85,10 +92,7 @@ let interpret_zinc :
           match interpreter_context.get_contract_opt address with
           | Some (address, entrypoint) ->
               `Variant
-                ( Label "some",
-                  `Z
-                    (Extensions
-                       (Contract (address, entrypoint))) )
+                (Label "Some", `Z (Extensions (Contract (address, entrypoint))))
           | None -> `Variant (Label "None", Utils.unit_record)
         in
         `Some (c, env, contract :: s)
@@ -112,4 +116,3 @@ let interpret_zinc :
     | `Some (code, env, stack) -> loop code env stack
   in
   loop code env stack
-

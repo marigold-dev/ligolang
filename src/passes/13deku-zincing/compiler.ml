@@ -16,31 +16,24 @@ open Ast_typed.Types
 
 (* Types defined in ../../stages/6deku-zinc/types.ml *)
 
-type environment = {
-  (* not implemented yet, so this is just a placeholder *)
-  top_level_lets : AST.module_variable list;
-  binders : AST.expression_ Var.t list;
-}
+type environment = { binders : AST.expression_ Var.t list }
 
-let empty_environment = { top_level_lets = []; binders = [] }
+let empty_environment = { binders = [] }
 
 (*** Adds a binder to the environment. 
      For example, in `let a=b in c`, `a` is a binder and it needs to be added to the environment when compiling `c` *)
-let add_binder x = function
-  | { top_level_lets; binders } -> { top_level_lets; binders = x :: binders }
+let add_binder x = function { binders } -> { binders = x :: binders }
 
 (*** Adds a declaration name to the environment. 
      For example, in `let a=b; let c=d;`, `a` is a declaration name and it needs to be added to the environment when compiling `d` *)
-let add_declaration_name x = function
-  | { top_level_lets; binders } ->
-      { top_level_lets = x :: top_level_lets; binders }
 
 (*** Compiles a type from the ast_typed representation to mini-c's, which is substantially simpler and more useful for us *)
 let compile_type ~(raise : Errors.zincing_error raise) t =
   t |> Spilling.compile_type ~raise |> fun x -> x.type_content
 
 let rec tail_compile :
-    raise:Errors.zincing_error raise -> environment -> AST.expression -> 'a zinc =
+    raise:Errors.zincing_error raise -> environment -> AST.expression -> 'a zinc
+    =
  (*** For optimization purposes, we have one function for compiling expressions in the "tail position" and another for
      compiling everything else. *)
  fun ~raise environment expr ->
@@ -96,7 +89,8 @@ and other_compile :
   let () =
     print_endline
       (Format.asprintf "other compile: %a / ~k:%s / env: %s" AST.PP.expression
-         expr (show_zinc (fun _ _ -> failwith "unreachable") k)
+         expr
+         (show_zinc (fun _ _ -> failwith "unreachable") k)
          (environment.binders
          |> List.map ~f:(Format.asprintf "%a" Var.pp)
          |> String.concat ","))
@@ -168,10 +162,7 @@ and other_compile :
   (* Variant *)
   | E_constructor _constructor ->
       failwith "E_constructor unimplemented" (* For user defined constructors *)
-  | E_matching matching ->
-      compile_pattern_matching
-        ~compile_expression:(other_compile environment ~k)
-        matching
+  | E_matching matching -> compile_pattern_matching environment matching ~k
   (* Record *)
   | E_record expression_label_map ->
       let bindings = Stage_common.Types.LMap.bindings expression_label_map in
@@ -251,14 +242,16 @@ and make_expression_with_dependencies :
 
 and compile_pattern_matching :
     raise:Errors.zincing_error raise ->
-    compile_expression:(AST.expression -> 'a zinc) ->
+    environment ->
     AST.matching ->
+    k:'a zinc ->
     'a zinc =
- fun ~raise ~compile_expression to_match ->
+ fun ~raise environment to_match ~k ->
+  let other_compile = other_compile ~raise in
   let compile_type = compile_type ~raise in
   let compiled_type = compile_type to_match.matchee.type_expression in
   match (compiled_type, to_match.cases) with
-  | T_tuple _t, Match_record { fields = binders; body; _ } ->
+  | T_tuple _, Match_record { fields = binders; body; _ } ->
       let open Stage_common.Types in
       let fresh = Simple_utils.Var.fresh () in
       let loc =
@@ -301,8 +294,25 @@ and compile_pattern_matching :
           location = loc;
         }
       in
-      let () = print_endline "constructed, recursing..." in
-      lettified |> compile_expression
+      other_compile environment lettified ~k
+  | T_option _, Match_variant { cases; _ } ->
+      let code =
+        Zinc_types.Types.MatchVariant
+          (List.map
+             ~f:
+               (fun {
+                      constructor = Label label;
+                      pattern = { wrap_content = pattern; _ };
+                      body;
+                    } ->
+               (* We assume that the interpreter will put the matched value on the stack *)
+               let compiled =
+                 Grab :: other_compile (add_binder pattern environment) body ~k
+               in
+               (Zinc_types.Types.Label label, compiled))
+             cases)
+      in
+      other_compile environment to_match.matchee ~k:[ code ]
   | _ ->
       failwith
         (Format.asprintf

@@ -3,11 +3,7 @@
 open Test_helpers
 
 let test_interpreter_context =
-  Zinc_types.Types.
-    {
-      get_contract_opt =
-        (fun address -> Some (address, None));
-    }
+  Zinc_types.Types.{ get_contract_opt = (fun address -> Some (address, None)) }
 
 (* Helpers *)
 
@@ -267,12 +263,32 @@ let get_contract_opt =
   expect_simple_compile_to ~reason:true "get_contract_opt"
     [ ("a", [ Address "whatever"; Contract_opt; Return ]) ]
     ~stack:
-      [ `Variant (Label "some", `Z (Extensions (Contract ("whatever", None)))) ]
+      [ `Variant (Label "Some", `Z (Extensions (Contract ("whatever", None)))) ]
 
 let match_on_sum =
   expect_simple_compile_to ~reason:true "match_on_sum"
-    [ ("a", [ Num (Z.of_int 1); Return ]) ]
-    
+    [
+      ( "a",
+        [
+          Address "tz1TGu6TN5GSez2ndXXeDX6LgUDvLzPLqgYV";
+          Grab;
+          Access 0;
+          Contract_opt;
+          Grab;
+          Access 0;
+          MatchVariant
+            [
+              (Label "Some", [ Grab; Access 0; Return ]);
+              (Label "None", [ Grab; String "Not a contract"; Failwith; Return ]);
+            ];
+        ] );
+    ]
+    ~stack:
+      [
+        `Z
+          (Extensions (Contract ("tz1TGu6TN5GSez2ndXXeDX6LgUDvLzPLqgYV", None)));
+      ]
+
 (* below this line are tests that fail because I haven't yet implemented the necessary primatives *)
 
 let create_transaction =
