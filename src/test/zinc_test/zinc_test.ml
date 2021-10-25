@@ -6,8 +6,7 @@ let test_interpreter_context =
   Zinc_types.Types.
     {
       get_contract_opt =
-        (fun address ->
-          `Variant (Label "some", `Z (Extensions (Contract (address, None)))));
+        (fun address -> Some (address, None));
     }
 
 (* Helpers *)
@@ -147,7 +146,7 @@ let chain_id =
 let chain_id_func =
   expect_simple_compile_to "chain_id_func"
     [ ("chain_id", [ Grab; ChainID; Return ]) ]
-    ~initial_stack:[ Zincing.Interpreter.Utils.unit_record ]
+    ~initial_stack:[ Zinc_types.Types.Utils.unit_record ]
 
 let tuple_creation =
   let open Zinc_types.Types in

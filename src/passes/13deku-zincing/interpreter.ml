@@ -1,13 +1,12 @@
 open Simple_utils
 open Zinc_types.Types
 
-
-
 let env_to_stack : env_item -> stack_item = function #env_item as x -> x
 
 let initial_state ?initial_stack:(stack = []) a = (a, [], stack)
 
-let interpret_zinc : interpreter_context -> interpreter_input -> interpreter_output =
+let interpret_zinc :
+    interpreter_context -> interpreter_input -> interpreter_output =
  fun interpreter_context (code, env, stack) ->
   let apply_once (code : zinc_extended) (env : env_item list)
       (stack : stack_item list) =
@@ -80,9 +79,21 @@ let interpret_zinc : interpreter_context -> interpreter_input -> interpreter_out
                in
                Hash h)
             :: s )
-    | Contract_opt :: c, env, `Z (Address address) :: s -> `Some (c, env, (interpreter_context.get_contract_opt address) :: s)
+    | Contract_opt :: c, env, `Z (Address address) :: s ->
+        (* todo: abstract this into a function *)
+        let contract =
+          match interpreter_context.get_contract_opt address with
+          | Some (address, entrypoint) ->
+              `Variant
+                ( Label "some",
+                  `Z
+                    (Extensions
+                       (Contract (address, entrypoint))) )
+          | None -> `Variant (Label "None", Utils.unit_record)
+        in
+        `Some (c, env, contract :: s)
     (* should be unreachable except when program is done *)
-    | Return :: [], _, _ -> `Done
+    | [ Return ], _, _ -> `Done
     | Failwith :: _, _, `Z (String s) :: _ -> `Failwith s
     (* should not be reachable *)
     | x :: _, _, _ ->
@@ -102,6 +113,3 @@ let interpret_zinc : interpreter_context -> interpreter_input -> interpreter_out
   in
   loop code env stack
 
-module Utils = struct
-  let unit_record = `Record Zinc_types.Types.LMap.empty
-end
