@@ -1,12 +1,14 @@
 open Simple_utils
 open Zinc_types.Types
 
+
+
 let env_to_stack : env_item -> stack_item = function #env_item as x -> x
 
 let initial_state ?initial_stack:(stack = []) a = (a, [], stack)
 
-let apply_zinc : Nothing.t interpreter_input -> interpreter_output =
- fun (code, env, stack) ->
+let interpret_zinc : interpreter_context -> interpreter_input -> interpreter_output =
+ fun interpreter_context (code, env, stack) ->
   let apply_once (code : zinc_extended) (env : env_item list)
       (stack : stack_item list) =
     let () =
@@ -52,7 +54,6 @@ let apply_zinc : Nothing.t interpreter_input -> interpreter_output =
           List.fold record_contents ~init:LMap.empty
             ~f:(fun acc (label, value) -> acc |> LMap.add label value)
         in
-
         `Some (c, env, `Record record_contents :: new_stack)
     | RecordAccess accessor :: c, env, `Record r :: s ->
         `Some (c, env, (r |> LMap.find accessor) :: s)
@@ -79,6 +80,7 @@ let apply_zinc : Nothing.t interpreter_input -> interpreter_output =
                in
                Hash h)
             :: s )
+    | Contract_opt :: c, env, `Z (Address address) :: s -> `Some (c, env, (interpreter_context.get_contract_opt address) :: s)
     (* should be unreachable except when program is done *)
     | Return :: [], _, _ -> `Done
     | Failwith :: _, _, `Z (String s) :: _ -> `Failwith s

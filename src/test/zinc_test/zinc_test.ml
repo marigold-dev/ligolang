@@ -2,6 +2,14 @@
 
 open Test_helpers
 
+let test_interpreter_context =
+  Zinc_types.Types.
+    {
+      get_contract_opt =
+        (fun address ->
+          `Variant (Label "some", `Z (Extensions (Contract (address, None)))));
+    }
+
 (* Helpers *)
 
 (* Compiling *)
@@ -61,7 +69,7 @@ let expect_simple_compile_to ?reason:(enabled = false) ?(index = 0)
     ( expect_failure,
       List.nth_exn zinc index |> snd
       |> Zincing.Interpreter.initial_state ~initial_stack
-      |> Zincing.Interpreter.apply_zinc )
+      |> Zincing.Interpreter.interpret_zinc test_interpreter_context )
   with
   | None, Success (output_env, output_stack) ->
       let () =
@@ -82,7 +90,8 @@ let expect_simple_compile_to ?reason:(enabled = false) ?(index = 0)
       in
       ()
   | Some s, Failure s' -> Alcotest.(check string) "hmm" s s'
-  | Some _, Success _ -> failwith "expected failure, but execution was successful"
+  | Some _, Success _ ->
+      failwith "expected failure, but execution was successful"
   | None, Failure _ ->
       failwith "was not expecting failure, but execution failed anyway"
 
@@ -250,27 +259,22 @@ let basic_link =
     ~index:1
     ~stack:[ `Z (Num (Z.of_int 1)) ]
 
-
 let failwith_simple =
   expect_simple_compile_to ~reason:true "failwith_simple"
     [ ("a", [ String "Not a contract"; Failwith; Return ]) ]
     ~expect_failure:"Not a contract"
 
-
-
 let get_contract_opt =
   expect_simple_compile_to ~reason:true "get_contract_opt"
-    [("a", [(Address "whatever"); Contract_opt; Return])] 
-    ~stack:[]  (* Will be tricky - requires introducing sum types to the execution environment 
-                  Worse, it's not even clear how to execute it in a seperate process, which was
-                  a design goal for the zinc interpreter *)
-
-  
-(* below this line are tests that fail because I haven't yet implemented the necessary primatives *)
+    [ ("a", [ Address "whatever"; Contract_opt; Return ]) ]
+    ~stack:
+      [ `Variant (Label "some", `Z (Extensions (Contract ("whatever", None)))) ]
 
 let match_on_sum =
   expect_simple_compile_to ~reason:true "match_on_sum"
     [ ("a", [ Num (Z.of_int 1); Return ]) ]
+    
+(* below this line are tests that fail because I haven't yet implemented the necessary primatives *)
 
 let create_transaction =
   expect_simple_compile_to ~reason:true "create_transaction"

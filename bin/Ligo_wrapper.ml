@@ -17,10 +17,10 @@ let ligo_to_zinc ~raise ~add_warning ligo_str =
   Ok
     (Test_helpers.to_zinc ~raise ~add_warning ligo_str Env Test_helpers.options
     |> Zinc_types.Types.program_to_yojson |> Yojson.Safe.to_string)
-
+(*
 let interpret_zinc ~raise:_ ~add_warning:_ ~zinc_state =
   let zinc_state =
-    zinc_state |> Yojson.Safe.from_string |> Zinc_types.Types.zinc_state_of_yojson
+    zinc_state |> Yojson.Safe.from_string |> Zinc_types.Types.interpreter_input_state_of_yojson
   in
   match zinc_state with
   | Ok (code, env, stack) ->
@@ -28,6 +28,7 @@ let interpret_zinc ~raise:_ ~add_warning:_ ~zinc_state =
         (Zincing.Interpreter.apply_zinc (code, env, stack)
         |> Zinc_types.Types.interpreter_output_to_yojson |> Yojson.Safe.to_string)
   | _ -> Error "parsing error"
+
 
 let main ~raise ~add_warning ~options:_ () =
   let output =
@@ -54,3 +55,4 @@ let () =
   let add_warning _ = () in
   let options = Test_helpers.options in
   main ~raise ~add_warning ~options ()
+*)
