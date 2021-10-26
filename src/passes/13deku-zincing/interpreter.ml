@@ -1,4 +1,3 @@
-open Simple_utils
 open Zinc_types.Types
 
 let env_to_stack : env_item -> stack_item = function #env_item as x -> x
@@ -26,7 +25,7 @@ let interpret_zinc :
     | Apply :: _, _, `Clos { code = c'; env = e' } :: s -> `Some (c', e', s)
     (* Below here is just modern SECD *)
     | Access n :: c, env, s -> (
-        let nth = List.nth env n in
+        let nth = Base.List.nth env n in
         match nth with
         | Some nth -> `Some (c, env, (nth |> env_to_stack) :: s)
         | None -> `Internal_error "Tried to access env item out of bounds")
@@ -51,7 +50,7 @@ let interpret_zinc :
         in
         let record_contents, new_stack = zipExtra r s in
         let record_contents =
-          List.fold record_contents ~init:LMap.empty
+          Base.List.fold record_contents ~init:LMap.empty
             ~f:(fun acc (label, value) -> acc |> LMap.add label value)
         in
         `Some (c, env, `Record record_contents :: new_stack)
@@ -59,7 +58,7 @@ let interpret_zinc :
         `Some (c, env, (r |> LMap.find accessor) :: s)
     | MatchVariant vs :: c, env, `Variant (Label label, item) :: s -> (
         match
-          List.find_map vs ~f:(fun (Label match_arm, constructors) ->
+          Base.List.find_map vs ~f:(fun (Label match_arm, constructors) ->
               if String.equal match_arm label then Some constructors else None)
         with
         | None -> `Internal_error "inexhaustive match"
@@ -102,11 +101,12 @@ let interpret_zinc :
         `Some (c, env, contract :: s)
     | ( MakeTransaction :: c,
         env,
-        r
-        :: `Z (Mutez amount)
-           :: `Z (Extensions (Contract contract)) :: s )
+        r :: `Z (Mutez amount) :: `Z (Extensions (Contract contract)) :: s )
       when equal_stack_item r Utils.unit_record ->
-        `Some (c, env, `Z (Extensions (Operation (Transaction (amount, contract)) )) :: s) 
+        `Some
+          ( c,
+            env,
+            `Z (Extensions (Operation (Transaction (amount, contract)))) :: s )
     (* should be unreachable except when program is done *)
     | [ Return ], _, _ -> `Done
     | Failwith :: _, _, `Z (String s) :: _ -> `Failwith s
