@@ -34,7 +34,8 @@ let interpret_zinc :
     | EndLet :: c, _ :: env, s -> `Some (c, env, s)
     (* zinc extensions *)
     (* operations that jsut drop something on the stack haha *)
-    | ( ((Num _ | Address _ | Key _ | Hash _ | Bool _ | String _ | Mutez _) as v) :: c,
+    | ( ((Num _ | Address _ | Key _ | Hash _ | Bool _ | String _ | Mutez _) as v)
+        :: c,
         env,
         s ) ->
         `Some (c, env, `Z v :: s)
@@ -62,7 +63,8 @@ let interpret_zinc :
               if String.equal match_arm label then Some constructors else None)
         with
         | None -> `Internal_error "inexhaustive match"
-        | Some match_code -> `Some (List.concat [match_code; c], env, item :: s))
+        | Some match_code ->
+            `Some (List.concat [ match_code; c ], env, item :: s))
     (* Math *)
     | Add :: c, env, `Z (Num a) :: `Z (Num b) :: s ->
         `Some (c, env, `Z (Num (Z.add a b)) :: s)
@@ -98,6 +100,13 @@ let interpret_zinc :
           | None -> `Variant (Label "None", Utils.unit_record)
         in
         `Some (c, env, contract :: s)
+    | ( MakeTransaction :: c,
+        env,
+        r
+        :: `Z (Mutez amount)
+           :: `Z (Extensions (Contract contract)) :: s )
+      when equal_stack_item r Utils.unit_record ->
+        `Some (c, env, `Z (Extensions (Operation (Transaction (amount, contract)) )) :: s) 
     (* should be unreachable except when program is done *)
     | [ Return ], _, _ -> `Done
     | Failwith :: _, _, `Z (String s) :: _ -> `Failwith s

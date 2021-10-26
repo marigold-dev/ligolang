@@ -278,9 +278,10 @@ let match_on_sum =
           Access 0;
           MatchVariant
             [
-              (Label "Some", [ Grab; Access 0; Return ]);
-              (Label "None", [ Grab; String "Not a contract"; Failwith; Return ]);
+              (Label "Some", [ Grab; Access 0 ]);
+              (Label "None", [ Grab; String "Not a contract"; Failwith ]);
             ];
+          Return;
         ] );
     ]
     ~stack:
@@ -289,17 +290,45 @@ let match_on_sum =
           (Extensions (Contract ("tz1TGu6TN5GSez2ndXXeDX6LgUDvLzPLqgYV", None)));
       ]
 
-
+(* below this line are tests that fail because I haven't yet implemented the necessary primatives *)
 
 let mutez_construction =
   expect_simple_compile_to ~reason:true "mutez_construction"
     [ ("a", [ Mutez (Z.of_int 1); Return ]) ]
 
-(* below this line are tests that fail because I haven't yet implemented the necessary primatives *)
-
 let create_transaction =
   expect_simple_compile_to ~reason:true "create_transaction"
-    [ ("a", [ Num (Z.of_int 1); Return ]) ]
+    [
+      ( "a",
+        [
+          Address "tz1TGu6TN5GSez2ndXXeDX6LgUDvLzPLqgYV";
+          Grab;
+          Access 0;
+          Contract_opt;
+          Grab;
+          Access 0;
+          MatchVariant
+            [
+              (Label "Some", [ Grab; Access 0 ]);
+              (Label "None", [ Grab; String "Not a contract"; Failwith ]);
+            ];
+          EndLet;
+          Grab;
+          Access 0;
+          Mutez (Z.of_int 10);
+          MakeRecord [];
+          MakeTransaction;
+          Return;
+        ] );
+    ]
+    ~stack:
+      [
+        `Z
+          (Extensions
+             (Operation
+                (Transaction
+                   (Z.of_int 10, ("tz1TGu6TN5GSez2ndXXeDX6LgUDvLzPLqgYV", None)))));
+      ]
 
 let list_construction =
   expect_simple_compile_to ~reason:true "list_construction"
@@ -323,7 +352,7 @@ let main =
       test_w "failwith_simple" failwith_simple;
       test_w "get_contract_opt" get_contract_opt;
       test_w "match_on_sum" match_on_sum;
-      test_w "mutez_construction" mutez_construction;
       test_w "create_transaction" create_transaction;
+      test_w "mutez_construction" mutez_construction;
       test_w "list_construction" list_construction;
     ]

@@ -196,6 +196,8 @@ and compile_constant :
   | C_ADD -> Add
   | C_FAILWITH -> Failwith
   | C_CONTRACT_OPT -> Contract_opt
+  | C_CALL -> MakeTransaction
+  | C_UNIT -> MakeRecord []
   | name ->
       failwith
         (Format.asprintf "Unsupported constant: %a" AST.PP.constant' name)
@@ -308,12 +310,13 @@ and compile_pattern_matching :
                     } ->
                (* We assume that the interpreter will put the matched value on the stack *)
                let compiled =
-                 Grab :: other_compile (add_binder pattern environment) body ~k
+                 Grab
+                 :: other_compile (add_binder pattern environment) body ~k:[]
                in
                (Zinc_types.Types.Label label, compiled))
              cases)
       in
-      other_compile environment to_match.matchee ~k:[ code ]
+      other_compile environment to_match.matchee ~k:(code :: k)
   | _ ->
       failwith
         (Format.asprintf
