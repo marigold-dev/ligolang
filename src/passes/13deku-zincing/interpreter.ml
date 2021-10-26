@@ -34,7 +34,7 @@ let interpret_zinc :
     | EndLet :: c, _ :: env, s -> `Some (c, env, s)
     (* zinc extensions *)
     (* operations that jsut drop something on the stack haha *)
-    | ( ((Num _ | Address _ | Key _ | Hash _ | Bool _ | String _) as v) :: c,
+    | ( ((Num _ | Address _ | Key _ | Hash _ | Bool _ | String _ | Mutez _) as v) :: c,
         env,
         s ) ->
         `Some (c, env, `Z v :: s)
@@ -66,6 +66,8 @@ let interpret_zinc :
     (* Math *)
     | Add :: c, env, `Z (Num a) :: `Z (Num b) :: s ->
         `Some (c, env, `Z (Num (Z.add a b)) :: s)
+    | Add :: c, env, `Z (Mutez a) :: `Z (Mutez b) :: s ->
+        `Some (c, env, `Z (Mutez (Z.add a b)) :: s)
     (* Booleans *)
     | Eq :: c, env, a :: b :: s ->
         `Some (c, env, `Z (Bool (equal_stack_item a b)) :: s)
