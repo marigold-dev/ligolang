@@ -122,6 +122,7 @@ and other_compile :
       | Literal_bytes b -> Bytes b :: k
       | Literal_string (Standard b) -> String b :: k
       | Literal_string (Verbatim b) -> String b :: k
+      | Literal_mutez a -> Mutez a :: k
       | _ -> failwith "literal type not supported")
   | E_constant constant ->
       let compile_constant = compile_constant ~raise expr.type_expression in

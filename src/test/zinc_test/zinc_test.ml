@@ -289,14 +289,16 @@ let match_on_sum =
           (Extensions (Contract ("tz1TGu6TN5GSez2ndXXeDX6LgUDvLzPLqgYV", None)));
       ]
 
+
+
+let mutez_construction =
+  expect_simple_compile_to ~reason:true "mutez_construction"
+    [ ("a", [ Mutez (Z.of_int 1); Return ]) ]
+
 (* below this line are tests that fail because I haven't yet implemented the necessary primatives *)
 
 let create_transaction =
   expect_simple_compile_to ~reason:true "create_transaction"
-    [ ("a", [ Num (Z.of_int 1); Return ]) ]
-
-let mutez_construction =
-  expect_simple_compile_to ~reason:true "mutez_construction"
     [ ("a", [ Num (Z.of_int 1); Return ]) ]
 
 let list_construction =
@@ -321,7 +323,7 @@ let main =
       test_w "failwith_simple" failwith_simple;
       test_w "get_contract_opt" get_contract_opt;
       test_w "match_on_sum" match_on_sum;
-      test_w "create_transaction" create_transaction;
       test_w "mutez_construction" mutez_construction;
+      test_w "create_transaction" create_transaction;
       test_w "list_construction" list_construction;
     ]
