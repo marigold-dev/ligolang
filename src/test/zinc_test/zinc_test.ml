@@ -132,10 +132,7 @@ let chain_id =
     ~stack:
       [
         `Z
-          (let h =
-             Digestif.BLAKE2B.hmac_string ~key:"???" "chain id hash here!"
-           in
-           Zinc_types.Hash h);
+          (Zinc_types.Hash "not sure yet");
       ]
 
 let chain_id_func =
@@ -233,10 +230,7 @@ let check_hash_key =
           (LMap.empty
           |> LMap.add (Label "0")
                (`Z
-                 (let h =
-                    Digestif.BLAKE2B.hmac_string ~key:"???" "hashy hash!"
-                  in
-                  Zinc_types.Hash h))
+                 (Zinc_types.Hash "not sure yet"))
           |> LMap.add (Label "1") (`Z (Key "Hashy hash!")));
       ]
 

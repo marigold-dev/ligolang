@@ -17,12 +17,11 @@ depends: [
   "cstruct" {>= "6.0.0"}
   "asn1-combinators" {>= "0.2.0"}
   "ptime"
-  "base64" {>= "3.1.0"}
+  "base64" {>= "3.3.0"}
   "mirage-crypto"
   "mirage-crypto-pk"
   "mirage-crypto-ec" {>= "0.10.0"}
   "mirage-crypto-rng"
-  "rresult"
   "fmt" {>= "0.8.7"}
   "alcotest" {with-test}
   "cstruct-unix" {with-test & >= "3.0.0"}
@@ -51,10 +50,10 @@ namely PKCS 1, PKCS 5, PKCS 7, PKCS 8, PKCS 9, PKCS 10, and PKCS 12.
 """
 url {
   src:
-    "https://github.com/mirleft/ocaml-x509/releases/download/v0.15.0/x509-v0.15.0.tbz"
+    "https://github.com/mirleft/ocaml-x509/releases/download/v0.15.1/x509-v0.15.1.tbz"
   checksum: [
-    "sha256=d0971862f1c0f3362eac46691f45130b3517874e0226de44eacefff85f925eb9"
-    "sha512=5fd820271bca45254af055b8c4c62460677a43c8092c3d2b9cfa55ae7e7ad3f00e2616dd90eeadbf17e3441b962774edc0cbf2e562cc9dbb0cd39735cac5704a"
+    "sha256=b586dd46f0b55c1738d0c846509eb1b1e7a67d7b657c708e52c5e682f910deb8"
+    "sha512=6d836cfd96aee156b6793849fca2d14c25b8454a192f3fbc2ef0dcf6d0ff222358357b02cbf89d5dbd46b6e175b58032a201639405cd2dc6607417b36eb8c80b"
   ]
 }
-x-commit-hash: "25ca258afcff0e62d40a69d106950fea955bca03"
+x-commit-hash: "1a6e421fa71feeede0286dbf3a8ca9b09f89972d"
