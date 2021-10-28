@@ -73,7 +73,7 @@ let interpret_zinc :
     | Eq :: c, env, a :: b :: s ->
         `Some (c, env, `Z (Bool (equal_stack_item a b)) :: s)
     (* Crypto *)
-    | HashKey :: c, env, `Z (Key key) :: s ->
+    | HashKey :: c, env, `Z (Key _key) :: s ->
         let h = failwith "need to move this into interpreter_context" in
         `Some (c, env, `Z (Hash h) :: s)
     (* Tezos specific *)
