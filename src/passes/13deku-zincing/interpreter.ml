@@ -74,7 +74,7 @@ let interpret_zinc :
         `Some (c, env, `Z (Bool (equal_stack_item a b)) :: s)
     (* Crypto *)
     | HashKey :: c, env, `Z (Key key) :: s ->
-        let h = Digestif.BLAKE2B.hmac_string ~key:"???" key in
+        let h = failwith "need to move this into interpreter_context" in
         `Some (c, env, `Z (Hash h) :: s)
     (* Tezos specific *)
     | ChainID :: c, env, s ->
@@ -84,9 +84,7 @@ let interpret_zinc :
             `Z
               (* TODO: fix this usage of Digestif.BLAKE2B.hmac_string - should use an effect system or smth.
                  Also probably shouldn't use key like this. *)
-              (let h =
-                 Digestif.BLAKE2B.hmac_string ~key:"???" "chain id hash here!"
-               in
+              (let h = failwith "need to move this into interpreter_context" in
                Hash h)
             :: s )
     | Contract_opt :: c, env, `Z (Address address) :: s ->
