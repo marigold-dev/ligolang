@@ -62,8 +62,8 @@ let expect_simple_compile_to ?reason:(enabled = false) ?(index = 0)
   match
     ( expect_failure,
       List.nth_exn zinc index |> snd
-      |> Zincing.Interpreter.initial_state ~initial_stack
-      |> Zincing.Interpreter.interpret_zinc test_interpreter_context )
+      |> Zinc_interpreter.initial_state ~initial_stack
+      |> Zinc_interpreter.interpret_zinc test_interpreter_context )
   with
   | None, Success (output_env, output_stack) ->
       let () =
@@ -369,7 +369,7 @@ let list_construction =
   expect_simple_compile_to ~reason:true "list_construction"
     [ ("a", [ Num (Z.of_int 1); Return ]) ]
 
-let qmain =
+let main =
   test_suite "Zinc tests"
     [
       test_w "simple1" simple_1;

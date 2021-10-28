@@ -1,6 +1,6 @@
 (library
  (name zinc_test)
- (libraries zinc.types ligo alcotest test_helpers simple-utils digestif)
+ (libraries zinc.types zinc.interpreter ligo alcotest test_helpers simple-utils digestif)
  (preprocess
   (pps ppx_deriving.show ppx_deriving.ord ppx_deriving.eq))
  (flags
