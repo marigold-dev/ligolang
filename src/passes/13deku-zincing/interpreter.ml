@@ -1,4 +1,4 @@
-open Zinc_types.Types
+open Zinc_types
 
 let env_to_stack : env_item -> stack_item = function #env_item as x -> x
 
