@@ -129,11 +129,7 @@ let id =
 let chain_id =
   expect_simple_compile_to "chain_id"
     [ ("chain_id", [ ChainID; Return ]) ]
-    ~stack:
-      [
-        `Z
-          (Zinc_types.Hash "not sure yet");
-      ]
+    ~stack:[ `Z (Zinc_types.Hash "not sure yet") ]
 
 let chain_id_func =
   expect_simple_compile_to "chain_id_func"
@@ -227,9 +223,7 @@ let check_hash_key =
       [
         `Record
           (LMap.empty
-          |> LMap.add (Label "0")
-               (`Z
-                 (Zinc_types.Hash "not sure yet"))
+          |> LMap.add (Label "0") (`Z (Zinc_types.Hash "not sure yet"))
           |> LMap.add (Label "1") (`Z (Key "Hashy hash!")));
       ]
 
@@ -323,11 +317,58 @@ let create_transaction =
                    (Z.of_int 10, ("tz1TGu6TN5GSez2ndXXeDX6LgUDvLzPLqgYV", None)))));
       ]
 
+let create_transaction_in_tuple =
+  let open Zinc_types in
+  expect_simple_compile_to ~reason:true "create_transaction_in_tuple"
+    [
+      ( "a",
+        [
+          Address "tz1TGu6TN5GSez2ndXXeDX6LgUDvLzPLqgYV";
+          Grab;
+          Access 0;
+          Contract_opt;
+          Grab;
+          Access 0;
+          MatchVariant
+            [
+              (Label "Some", [ Grab; Access 0 ]);
+              (Label "None", [ Grab; String "Not a contract"; Failwith ]);
+            ];
+          EndLet;
+          Grab;
+          String "my string";
+          Key "edpkuBknW28nW72KG6RoHtYW7p12T6GKc7nAbwYX5m8Wd9sDVC9yav";
+          Access 0;
+          Mutez (Z.of_int 10);
+          MakeRecord [];
+          MakeTransaction;
+          MakeRecord [ Label "0"; Label "1"; Label "2" ];
+          Return;
+        ] );
+    ]
+    ~stack:
+      [
+        `Record
+          LMap.(
+            empty
+            |> add (Label "0")
+                 (`Z
+                   (Extensions
+                      (Operation
+                         (Transaction
+                            ( Z.of_int 10,
+                              ("tz1TGu6TN5GSez2ndXXeDX6LgUDvLzPLqgYV", None) )))))
+            |> add (Label "1")
+                 (`Z
+                   (Key "edpkuBknW28nW72KG6RoHtYW7p12T6GKc7nAbwYX5m8Wd9sDVC9yav"))
+            |> add (Label "2") (`Z (String "my string")));
+      ]
+
 let list_construction =
   expect_simple_compile_to ~reason:true "list_construction"
     [ ("a", [ Num (Z.of_int 1); Return ]) ]
 
-let main =
+let qmain =
   test_suite "Zinc tests"
     [
       test_w "simple1" simple_1;
@@ -346,6 +387,7 @@ let main =
       test_w "get_contract_opt" get_contract_opt;
       test_w "match_on_sum" match_on_sum;
       test_w "create_transaction" create_transaction;
+      test_w "create_transaction_in_tuple" create_transaction_in_tuple;
       test_w "mutez_construction" mutez_construction;
       test_w "list_construction" list_construction;
     ]
