@@ -190,8 +190,9 @@ let check_record_destructure =
     ~initial_stack:
       [
         `Record
-          (let one = `Z (Num Z.one) in
-           LMap.empty |> LMap.add (Label "0") one |> LMap.add (Label "1") one);
+          Zinc_types.LMap.(
+            let one = `Z (Num Z.one) in
+            empty |> add (Label "0") one |> add (Label "1") one);
       ]
 
 let check_hash_key =
@@ -329,6 +330,51 @@ let create_transaction =
                    (Z.of_int 10, ("tz1TGu6TN5GSez2ndXXeDX6LgUDvLzPLqgYV", None)))));
       ]
 
+let create_transaction_in_tuple =
+  let open Zinc_types in
+  expect_simple_compile_to ~reason:true "create_transaction_in_tuple"
+    [
+      ( "a",
+        [
+          Address "tz1TGu6TN5GSez2ndXXeDX6LgUDvLzPLqgYV";
+          Grab;
+          Access 0;
+          Contract_opt;
+          Grab;
+          Access 0;
+          MatchVariant
+            [
+              (Label "Some", [ Grab; Access 0 ]);
+              (Label "None", [ Grab; String "Not a contract"; Failwith ]);
+            ];
+          EndLet;
+          Grab;
+          Key "edpkuBknW28nW72KG6RoHtYW7p12T6GKc7nAbwYX5m8Wd9sDVC9yav";
+          Access 0;
+          Mutez (Z.of_int 10);
+          MakeRecord [];
+          MakeTransaction;
+          MakeRecord [ Label "0"; Label "1" ];
+          Return;
+        ] );
+    ]
+    ~stack:
+      [
+        `Record
+          Zinc_types.LMap.(
+            empty
+            |> add (Label "0")
+                 (`Z
+                   (Extensions
+                      (Operation
+                         (Transaction
+                            ( Z.of_int 10,
+                              ("tz1TGu6TN5GSez2ndXXeDX6LgUDvLzPLqgYV", None) )))))
+            |> add (Label "1")
+                 (`Z
+                   (Key "edpkuBknW28nW72KG6RoHtYW7p12T6GKc7nAbwYX5m8Wd9sDVC9yav")));
+      ]
+
 let list_construction =
   expect_simple_compile_to ~reason:true "list_construction"
     [ ("a", [ Num (Z.of_int 1); Return ]) ]
@@ -352,6 +398,7 @@ let main =
       test_w "get_contract_opt" get_contract_opt;
       test_w "match_on_sum" match_on_sum;
       test_w "create_transaction" create_transaction;
+      test_w "create_transaction_in_tuple" create_transaction_in_tuple;
       test_w "mutez_construction" mutez_construction;
       test_w "list_construction" list_construction;
     ]

@@ -123,7 +123,11 @@ and other_compile :
       | Literal_string (Standard b) -> String b :: k
       | Literal_string (Verbatim b) -> String b :: k
       | Literal_mutez a -> Mutez a :: k
-      | _ -> failwith "literal type not supported")
+      | Literal_key a -> Key a :: k
+      | x ->
+          failwith
+            (Format.asprintf "literal type %a not supported"
+               Ast_typed.PP.literal x))
   | E_constant constant ->
       let compile_constant = compile_constant ~raise expr.type_expression in
       compile_known_function_application environment
@@ -170,8 +174,7 @@ and other_compile :
       compile_known_function_application environment
         (MakeRecord
            (List.map
-              ~f:(fun (Stage_common.Types.Label k, _) ->
-                Zinc_types.Label k)
+              ~f:(fun (Stage_common.Types.Label k, _) -> Zinc_types.Label k)
               bindings)
          :: k)
         (List.map ~f:(fun (_, value) -> value) bindings)
