@@ -1,5 +1,5 @@
 {
-  "checksum": "5ab68e1d88044ffd59c4e456b81515c9",
+  "checksum": "5436dfc579a132176bdc3fd7c6454d8b",
   "root": "ligo@link-dev:./package.json",
   "node": {
     "yarn-pkg-config@github:esy-ocaml/yarn-pkg-config#db3a0b63883606dd57c54a7158d560d6cba8cd79@d41d8cd9": {
@@ -43,8 +43,7 @@
       },
       "overrides": [],
       "dependencies": [
-        "ocaml@4.10.2000@d41d8cd9",
-        "@opam/zinc-types@github:anchpop/zinc_types#fa4880e0ced4b0d3c05476e01125689307fc9776@d41d8cd9",
+        "ocaml@4.10.2000@d41d8cd9", "@opam/zinc-types@link:../zinc_types",
         "@opam/yojson@opam:1.7.0@69d87312",
         "@opam/tezos-rust-libs@opam:1.1@02945c1d",
         "@opam/tezos-micheline@opam:10.2@56ace82f",
@@ -152,18 +151,11 @@
       ],
       "devDependencies": []
     },
-    "@opam/zinc-types@github:anchpop/zinc_types#fa4880e0ced4b0d3c05476e01125689307fc9776@d41d8cd9": {
-      "id":
-        "@opam/zinc-types@github:anchpop/zinc_types#fa4880e0ced4b0d3c05476e01125689307fc9776@d41d8cd9",
+    "@opam/zinc-types@link:../zinc_types": {
+      "id": "@opam/zinc-types@link:../zinc_types",
       "name": "@opam/zinc-types",
-      "version":
-        "github:anchpop/zinc_types#fa4880e0ced4b0d3c05476e01125689307fc9776",
-      "source": {
-        "type": "install",
-        "source": [
-          "github:anchpop/zinc_types#fa4880e0ced4b0d3c05476e01125689307fc9776"
-        ]
-      },
+      "version": "link:../zinc_types",
+      "source": { "type": "link", "path": "../zinc_types" },
       "overrides": [],
       "dependencies": [
         "ocaml@4.10.2000@d41d8cd9", "@reason-native/pastel@0.3.0@d41d8cd9",
