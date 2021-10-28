@@ -3,7 +3,7 @@
 open Test_helpers
 
 let test_interpreter_context =
-  Zinc_types.Types.{ get_contract_opt = (fun address -> Some (address, None)) }
+  Zinc_types.{ get_contract_opt = (fun address -> Some (address, None)) }
 
 (* Helpers *)
 
@@ -21,34 +21,33 @@ let expect_program =
   Alcotest.(
     check
       (Alcotest.testable
-         (fun ppf program ->
-           Fmt.pf ppf "%a" Zinc_types.Types.pp_program program)
-         Zinc_types.Types.equal_program))
+         (fun ppf program -> Fmt.pf ppf "%a" Zinc_types.pp_program program)
+         Zinc_types.equal_program))
 
 let expect_code =
   Alcotest.(
     check
       (Alcotest.testable
-         (fun ppf zinc -> Fmt.pf ppf "%a" Zinc_types.Types.pp_zinc_code zinc)
-         Zinc_types.Types.equal_zinc_code))
+         (fun ppf zinc -> Fmt.pf ppf "%a" Zinc_types.pp_zinc_code zinc)
+         Zinc_types.equal_zinc_code))
 
 let expect_env =
   Alcotest.(
     check
       (Alcotest.testable
-         (fun ppf env -> Fmt.pf ppf "%a" Zinc_types.Types.pp_env env)
-         Zinc_types.Types.equal_env))
+         (fun ppf env -> Fmt.pf ppf "%a" Zinc_types.pp_env env)
+         Zinc_types.equal_env))
 
 let expect_stack =
   Alcotest.(
     check
       (Alcotest.testable
-         (fun ppf stack -> Fmt.pf ppf "%a" Zinc_types.Types.pp_stack stack)
-         Zinc_types.Types.equal_stack))
+         (fun ppf stack -> Fmt.pf ppf "%a" Zinc_types.pp_stack stack)
+         Zinc_types.equal_stack))
 
 let expect_simple_compile_to ?reason:(enabled = false) ?(index = 0)
     ?(initial_stack = []) ?expect_failure ?env ?stack ~raise ~add_warning
-    contract_file (expected_zinc : Zinc_types.Types.program) () =
+    contract_file (expected_zinc : Zinc_types.program) () =
   let to_zinc = to_zinc ~raise ~add_warning in
   let contract =
     Printf.sprintf "./contracts/%s.%s" contract_file
@@ -136,16 +135,16 @@ let chain_id =
           (let h =
              Digestif.BLAKE2B.hmac_string ~key:"???" "chain id hash here!"
            in
-           Zinc_types.Types.Hash h);
+           Zinc_types.Hash h);
       ]
 
 let chain_id_func =
   expect_simple_compile_to "chain_id_func"
     [ ("chain_id", [ Grab; ChainID; Return ]) ]
-    ~initial_stack:[ Zinc_types.Types.Utils.unit_record ]
+    ~initial_stack:[ Zinc_types.Utils.unit_record ]
 
 let tuple_creation =
-  let open Zinc_types.Types in
+  let open Zinc_types in
   expect_simple_compile_to "tuple_creation"
     [
       ( "dup",
@@ -163,7 +162,7 @@ let tuple_creation =
       ]
 
 let check_record_destructure =
-  let open Zinc_types.Types in
+  let open Zinc_types in
   expect_simple_compile_to "check_record_destructure"
     [
       ( "check_record_destructure",
@@ -196,7 +195,7 @@ let check_record_destructure =
       ]
 
 let check_hash_key =
-  let open Zinc_types.Types in
+  let open Zinc_types in
   expect_simple_compile_to "key_hash"
     [
       ( "check_hash_key",
@@ -236,7 +235,7 @@ let check_hash_key =
                  (let h =
                     Digestif.BLAKE2B.hmac_string ~key:"???" "hashy hash!"
                   in
-                  Zinc_types.Types.Hash h))
+                  Zinc_types.Hash h))
           |> LMap.add (Label "1") (`Z (Key "Hashy hash!")));
       ]
 

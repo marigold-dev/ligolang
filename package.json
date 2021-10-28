@@ -258,7 +258,7 @@
       "source": "https://gitlab.com/tezos/tezos/-/archive/v10.2/tezos-v10.2.tar.bz2#19dbe332c3d84ebdc8f9d2360a07f97302e66a58",
       "override": {}
     },
-    "@opam/zinc-types": "github:anchpop/zinc_types#3644b16a25a963655bd29bd2bacb45def4bb2e24",
+    "@opam/zinc-types": "github:anchpop/zinc_types#4626185da8cf10be1514660c2cd45f653f4f377b",
     "@opam/conf-libev": "esy-packages/libev:package.json#0817b2d"
   }
 }
