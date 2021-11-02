@@ -52,7 +52,7 @@ type test =
   unit
 
 let expect_simple_compile_to ?reason:(enabled = false) ?(index = 0)
-    ?(initial_stack = []) ?expect_failure ?env ?stack contract_file
+    ?(initial_stack = []) ?expect_failure ?expected_output_env ?expected_output contract_file
     (expected_zinc : Zinc_types.program) : test =
  fun ~raise ~add_warning () ->
   let to_zinc = to_zinc ~raise ~add_warning in
@@ -74,7 +74,7 @@ let expect_simple_compile_to ?reason:(enabled = false) ?(index = 0)
   with
   | None, Success (output_env, output_stack) ->
       let () =
-        match env with
+        match expected_output_env with
         | Some expected_zinc ->
             expect_env
               (Printf.sprintf "evaluating env for %s" contract_file)
@@ -82,7 +82,7 @@ let expect_simple_compile_to ?reason:(enabled = false) ?(index = 0)
         | None -> ()
       in
       let () =
-        match stack with
+        match expected_output with
         | Some expected_stack ->
             expect_stack
               (Printf.sprintf "evaluating stack for %s" contract_file)
@@ -102,30 +102,30 @@ let expect_simple_compile_to ?reason:(enabled = false) ?(index = 0)
 let simple_1 =
   expect_simple_compile_to "simple1"
     [ ("i", [ Num (Z.of_int 42); Return ]) ]
-    ~stack:[ `Z (Num (Z.of_int 42)) ]
+    ~expected_output:[ `Z (Num (Z.of_int 42)) ]
 
 let simple_2 =
   expect_simple_compile_to "simple2"
     [ ("i", [ Num (Z.of_int 42); Return ]) ]
-    ~stack:[ `Z (Num (Z.of_int 42)) ]
+    ~expected_output:[ `Z (Num (Z.of_int 42)) ]
 
 let simple_3 =
   expect_simple_compile_to "simple3"
     [
       ("my_address", [ Address "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx"; Return ]);
     ]
-    ~stack:[ `Z (Address "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx") ]
+    ~expected_output:[ `Z (Address "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx") ]
 
 let id =
   expect_simple_compile_to "id_func"
     [ ("id", [ Grab; Access 0; Return ]) ]
     ~initial_stack:[ `Z (Num (Z.of_int 42)) ]
-    ~stack:[ `Z (Num (Z.of_int 42)) ]
+    ~expected_output:[ `Z (Num (Z.of_int 42)) ]
 
 let chain_id =
   expect_simple_compile_to "chain_id"
     [ ("chain_id", [ ChainID; Return ]) ]
-    ~stack:[ `Z (Zinc_types.Hash "not sure yet") ]
+    ~expected_output:[ `Z (Zinc_types.Hash "not sure yet") ]
 
 let chain_id_func =
   expect_simple_compile_to "chain_id_func"
@@ -142,7 +142,7 @@ let tuple_creation =
         ] );
     ]
     ~initial_stack:[ `Z (Num Z.one) ]
-    ~stack:
+    ~expected_output:
       [
         `Record
           LMap.(
@@ -227,7 +227,7 @@ let check_hash_key =
 let basic_function_application =
   expect_simple_compile_to ~reason:true "basic_function_application"
     [ ("a", [ Num (Z.of_int 3); Grab; Access 0; Return ]) ]
-    ~stack:[ `Z (Num (Z.of_int 3)) ]
+    ~expected_output:[ `Z (Num (Z.of_int 3)) ]
 
 let basic_link =
   expect_simple_compile_to ~reason:true "basic_link"
@@ -236,7 +236,7 @@ let basic_link =
       ("b", [ Num (Z.of_int 1); Grab; Access 0; Return ]);
     ]
     ~index:1
-    ~stack:[ `Z (Num (Z.of_int 1)) ]
+    ~expected_output:[ `Z (Num (Z.of_int 1)) ]
 
 let failwith_simple =
   expect_simple_compile_to ~reason:true "failwith_simple"
@@ -246,7 +246,7 @@ let failwith_simple =
 let get_contract_opt =
   expect_simple_compile_to ~reason:true "get_contract_opt"
     [ ("a", [ Address "whatever"; Contract_opt; Return ]) ]
-    ~stack:
+    ~expected_output:
       [ `Variant (Label "Some", `Z (Extensions (Contract ("whatever", None)))) ]
 
 let match_on_sum =
@@ -268,7 +268,7 @@ let match_on_sum =
           Return;
         ] );
     ]
-    ~stack:
+    ~expected_output:
       [
         `Z
           (Extensions (Contract ("tz1TGu6TN5GSez2ndXXeDX6LgUDvLzPLqgYV", None)));
@@ -305,7 +305,7 @@ let create_transaction =
           Return;
         ] );
     ]
-    ~stack:
+    ~expected_output:
       [
         `Z
           (Extensions
@@ -343,7 +343,7 @@ let create_transaction_in_tuple =
           Return;
         ] );
     ]
-    ~stack:
+    ~expected_output:
       [
         `Record
           LMap.(
