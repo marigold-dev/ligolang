@@ -45,9 +45,16 @@ let expect_stack =
          (fun ppf stack -> Fmt.pf ppf "%a" Zinc_types.pp_stack stack)
          Zinc_types.equal_stack))
 
+type test =
+  raise:Main_errors.all Trace.raise ->
+  add_warning:(Main_warnings.all -> unit) ->
+  unit ->
+  unit
+
 let expect_simple_compile_to ?reason:(enabled = false) ?(index = 0)
-    ?(initial_stack = []) ?expect_failure ?env ?stack ~raise ~add_warning
-    contract_file (expected_zinc : Zinc_types.program) () =
+    ?(initial_stack = []) ?expect_failure ?env ?stack contract_file
+    (expected_zinc : Zinc_types.program) : test =
+ fun ~raise ~add_warning () ->
   let to_zinc = to_zinc ~raise ~add_warning in
   let contract =
     Printf.sprintf "./contracts/%s.%s" contract_file
@@ -108,17 +115,6 @@ let simple_3 =
       ("my_address", [ Address "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx"; Return ]);
     ]
     ~stack:[ `Z (Address "tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx") ]
-
-(*let simple_4 =
-  expect_simple_compile_to "simple4"
-    [
-      ( "my_option_string",
-        [
-          Bytes (Bytes.of_string "\202\254\186\190");
-          Unpack (T_base TB_string);
-          Return;
-        ] );
-    ]*)
 
 let id =
   expect_simple_compile_to "id_func"
@@ -375,7 +371,6 @@ let main =
       test_w "simple1" simple_1;
       test_w "simple2" simple_2;
       test_w "simple3" simple_3;
-      (*test_w "simple4" simple_4;*)
       test_w "id" id;
       test_w "chain_id" chain_id;
       test_w "chain_id_func" chain_id_func;
