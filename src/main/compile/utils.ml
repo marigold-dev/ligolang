@@ -37,8 +37,8 @@ let to_mini_c ~raise ~add_warning ~options f stx env =
   mini_c
 
 let to_zinc ~raise ~add_warning ~options f stx env =
-  let typed, _ = type_file ~raise ~add_warning ~options f stx env in
-  let zinc = Zinc_of_typed.compile ~raise typed in
+  let typed, environment = type_file ~raise ~add_warning ~options f stx env in
+  let zinc = Zinc_of_typed.compile ~raise typed environment in
   zinc
 
 let compile_file ~raise ~add_warning ~options f stx ep =

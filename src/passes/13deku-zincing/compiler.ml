@@ -16,13 +16,13 @@ open Ast_typed.Types
 
 (* Types defined in ../../stages/6deku-zinc/types.ml *)
 
-type environment = { binders : AST.expression_ Var.t list }
+type environment = { binders : AST.expression_ Var.t list; ast_env: Ast_typed.environment }
 
-let empty_environment = { binders = [] }
+let empty_environment ast_env = { binders = []; ast_env }
 
 (*** Adds a binder to the environment. 
      For example, in `let a=b in c`, `a` is a binder and it needs to be added to the environment when compiling `c` *)
-let add_binder x = function { binders } -> { binders = x :: binders }
+let add_binder x = function { binders; ast_env } -> { binders = x :: binders; ast_env }
 
 (*** Adds a declaration name to the environment. 
      For example, in `let a=b; let c=d;`, `a` is a declaration name and it needs to be added to the environment when compiling `d` *)
@@ -171,6 +171,7 @@ and other_compile :
   (* Record *)
   | E_record expression_label_map ->
       let bindings = Stage_common.Types.LMap.bindings expression_label_map in
+      let a = expr.type_expression in 
       compile_known_function_application environment
         (MakeRecord
            (List.map
@@ -328,8 +329,8 @@ and compile_pattern_matching :
            (compile_type to_match.matchee.type_expression))
 
 let compile_module :
-    raise:Errors.zincing_error raise -> AST.module_fully_typed -> program =
- fun ~raise modul ->
+    raise:Errors.zincing_error raise -> AST.module_fully_typed -> Ast_typed.environment -> program =
+ fun ~raise modul ast_env ->
   let (Module_Fully_Typed ast) = modul in
   let constant_declaration_extractor :
       declaration_loc -> (module_variable * expression) option = function
@@ -355,7 +356,7 @@ let compile_module :
         in
         let let_wrapper, declaration =
           let compiled =
-            tail_compile ~raise empty_environment (let_wrapper expression)
+            tail_compile ~raise (empty_environment ast_env) (let_wrapper expression)
           in
           ( (fun a ->
               make_expression_with_dependencies [ (expr_var, expression) ]
