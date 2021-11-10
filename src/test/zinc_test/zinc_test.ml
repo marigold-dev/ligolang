@@ -365,7 +365,16 @@ let create_transaction_in_tuple =
 
 let list_construction =
   expect_simple_compile_to ~reason:true "list_construction" []
-(* necessary zinc_types primitives not yet implemented *)
+
+let create_unit =
+  expect_simple_compile_to ~reason:true "create_unit"
+    [ ("a", [ MakeRecord []; Return ]) ]
+    ~expected_output:[ Zinc_types.Utils.unit_record ]
+
+let pattern_match_string =
+  expect_simple_compile_to ~reason:true "pattern_match_string"
+    [ ("a", [ String "hello"; Grab; MakeRecord []; Return ]) ]
+    ~expected_output:[ Zinc_types.Utils.unit_record ]
 
 let main =
   test_suite "Zinc tests"
@@ -387,5 +396,7 @@ let main =
       test_w "create_transaction" create_transaction;
       test_w "create_transaction_in_tuple" create_transaction_in_tuple;
       test_w "mutez_construction" mutez_construction;
-      test_w "list_construction" list_construction;
+      test_w "list_construction" list_construction; 
+      test_w "create_unit" create_unit;
+      test_w "pattern_match_string" pattern_match_string;
     ]

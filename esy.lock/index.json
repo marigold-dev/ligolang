@@ -1,5 +1,5 @@
 {
-  "checksum": "363bdeccdd47b3ebc3d95b781e2617ba",
+  "checksum": "985037c4159e11533dabca1ac9ded94c",
   "root": "ligo@link-dev:./package.json",
   "node": {
     "yarn-pkg-config@github:esy-ocaml/yarn-pkg-config#db3a0b63883606dd57c54a7158d560d6cba8cd79@d41d8cd9": {
@@ -44,7 +44,7 @@
       "overrides": [],
       "dependencies": [
         "ocaml@4.10.2000@d41d8cd9",
-        "@opam/zinc@github:marigold-dev/zinc#353c7c91ca01002475373f4efa850b0f97e86615@d41d8cd9",
+        "@opam/zinc@github:marigold-dev/zinc#c7f96ff4cc64bd4455e37d3f055381f376758e58@d41d8cd9",
         "@opam/yojson@opam:1.7.0@69d87312",
         "@opam/tezos-rust-libs@opam:1.1@02945c1d",
         "@opam/tezos-micheline@opam:10.2@56ace82f",
@@ -119,16 +119,16 @@
       "dependencies": [],
       "devDependencies": []
     },
-    "@opam/zinc@github:marigold-dev/zinc#353c7c91ca01002475373f4efa850b0f97e86615@d41d8cd9": {
+    "@opam/zinc@github:marigold-dev/zinc#c7f96ff4cc64bd4455e37d3f055381f376758e58@d41d8cd9": {
       "id":
-        "@opam/zinc@github:marigold-dev/zinc#353c7c91ca01002475373f4efa850b0f97e86615@d41d8cd9",
+        "@opam/zinc@github:marigold-dev/zinc#c7f96ff4cc64bd4455e37d3f055381f376758e58@d41d8cd9",
       "name": "@opam/zinc",
       "version":
-        "github:marigold-dev/zinc#353c7c91ca01002475373f4efa850b0f97e86615",
+        "github:marigold-dev/zinc#c7f96ff4cc64bd4455e37d3f055381f376758e58",
       "source": {
         "type": "install",
         "source": [
-          "github:marigold-dev/zinc#353c7c91ca01002475373f4efa850b0f97e86615"
+          "github:marigold-dev/zinc#c7f96ff4cc64bd4455e37d3f055381f376758e58"
         ]
       },
       "overrides": [],
