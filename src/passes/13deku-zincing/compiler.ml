@@ -124,6 +124,7 @@ and other_compile :
       | Literal_string (Verbatim b) -> String b :: k
       | Literal_mutez a -> Mutez a :: k
       | Literal_key a -> Key a :: k
+      | Literal_unit -> MakeRecord [] :: k
       | x ->
           failwith
             (Format.asprintf "literal type %a not supported"
