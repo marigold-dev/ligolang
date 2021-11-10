@@ -71,7 +71,8 @@
     "@opam/tezos-010-PtGRANAD-test-helpers": "10.2",
     "@opam/sexplib": "v0.14.0",
     "@opam/irmin": "2.7.2",
-    "@opam/zinc-types": "*"
+    "@opam/domain-name": "0.3.0",
+    "@opam/zinc": "*"
   },
   "devDependencies": {
     "@opam/ocaml-lsp-server": "*",
@@ -259,7 +260,7 @@
       "source": "https://gitlab.com/tezos/tezos/-/archive/v10.2/tezos-v10.2.tar.bz2#19dbe332c3d84ebdc8f9d2360a07f97302e66a58",
       "override": {}
     },
-    "@opam/zinc-types": "link:../zinc_types",
+    "@opam/zinc": "marigold-dev/zinc#353c7c91ca01002475373f4efa850b0f97e86615",
     "@opam/conf-libev": "esy-packages/libev:package.json#0817b2d"
   }
 }

@@ -174,13 +174,13 @@ and other_compile :
       compile_known_function_application environment
         (MakeRecord
            (List.map
-              ~f:(fun (Stage_common.Types.Label k, _) -> Zinc_types.Label k)
+              ~f:(fun (Stage_common.Types.Label k, _) -> Zinc_utils.Label k)
               bindings)
          :: k)
         (List.map ~f:(fun (_, value) -> value) bindings)
   | E_record_accessor { record; path = Stage_common.Types.Label path } ->
       compile_known_function_application environment
-        (RecordAccess (Zinc_types.Label path) :: k)
+        (RecordAccess (Zinc_utils.Label path) :: k)
         [ record ]
   | E_record_update _record_update -> failwith "E_record_update unimplemented"
   | E_module_accessor _module_access ->
@@ -316,7 +316,7 @@ and compile_pattern_matching :
                  Grab
                  :: other_compile (add_binder pattern environment) body ~k:[]
                in
-               (Zinc_types.Label label, compiled))
+               (Zinc_utils.Label label, compiled))
              cases)
       in
       other_compile environment to_match.matchee ~k:(code :: k)
