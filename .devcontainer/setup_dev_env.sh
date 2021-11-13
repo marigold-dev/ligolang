@@ -4,6 +4,9 @@ echo "Setting up dev switch"
 opam update 
 ./scripts/setup_dev_switch.sh 
 
+
+export PATH=~/.cargo/bin:$PATH
+
 opam install -y --deps-only --with-test --locked=locked ./ligo.opam 
 
 

@@ -1,3 +1,5 @@
+# NOTE: dependencies added here are ignored in the LIGO build. Add
+# dependencies in /ligo.opam and run [opam lock].
 opam-version : "1.0"
 name         : "Michelson"
 version      : "1.0"
@@ -9,7 +11,7 @@ license      : "MIT"
 homepage     : "https://gitlab.com/ligolang/Michelson"
 bug-reports  : "https://gitlab.com/ligolang/Michelson/issues"
 # If you change the dependencies, run `opam lock` in the root
-depends      : ["dune" "base" "ocaml" "simple-utils" "bisect_ppx"
+depends      : ["dune" "base" "ocaml" "simple-utils"
                 "getopt" "LexerLib" "Preprocessor" "ParserLib"]
 build        : [
                 [ "sh" "-c" "printf 'let version = \"%s\"' \"$(git describe --always --dirty)\" > version.ml" ]

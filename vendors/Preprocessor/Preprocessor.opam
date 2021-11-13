@@ -1,3 +1,5 @@
+# NOTE: dependencies added here are ignored in the LIGO build. Add
+# dependencies in /ligo.opam and run [opam lock].
 opam-version : "2.0"
 name         : "Preprocessor"
 version      : "1.1"
@@ -10,7 +12,7 @@ homepage     : "https://gitlab.com/ligolang/Preprocessor"
 bug-reports  : "https://gitlab.com/ligolang/Preprocessor/issues"
 # If you change the dependencies, run `opam lock` in the root
 depends      : ["dune" "base" "ocaml" "simple-utils"
-                "bisect_ppx" "menhir" "getopt"]
+                "menhir" "getopt"]
 build        : [
                 [ "dune" "build" "-p" name "-j" jobs ]
                ]

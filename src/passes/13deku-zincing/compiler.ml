@@ -183,6 +183,7 @@ and other_compile :
         (RecordAccess (Zinc_utils.Label path) :: k)
         [ record ]
   | E_record_update _record_update -> failwith "E_record_update unimplemented"
+  | E_type_inst _ -> failwith "E_type_inst unimplemented"
   | E_module_accessor _module_access ->
       failwith "E_module_accessor unimplemented"
 
@@ -240,7 +241,8 @@ and make_expression_with_dependencies :
                  let_binder = binder;
                  rhs = expression;
                  let_result = result;
-                 attr = { inline = false; no_mutation = false };
+                 attr = { inline = false; no_mutation = false;   view =false;
+  public=false; };
                };
            location = loc;
            type_expression = expression.type_expression;
@@ -294,7 +296,8 @@ and compile_pattern_matching :
                 let_binder = { wrap_content = fresh; location = loc };
                 rhs = to_match.matchee;
                 let_result = lettified;
-                attr = { inline = false; no_mutation = false };
+                attr = { inline = false; no_mutation = false;   view =false;
+  public=false; };
               };
           type_expression = to_match.matchee.type_expression;
           location = loc;
