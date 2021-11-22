@@ -32,14 +32,15 @@
   },
   "license": "MIT",
   "scripts": {
-    "test": "dune build -w @zinctest --no-buffer",
+    "test": "dune build -w @runtest --no-buffer",
+    "zinctest": "dune build -w @zinctest --no-buffer",
     "format": "dune build @fmt --auto-promote"
   },
   "dependencies": {
     "ocaml": ">= 4.12.0",
     "@opam/dune": ">= 2.9.1",
     "@opam/hex": ">= 1.4.0",
-    "@opam/menhir": "20200624",
+    "@opam/menhir": "20211012",
     "@opam/ocamlgraph": ">= 2.0.0",
     "@opam/coq": "8.13.1",
     "@opam/ppx_deriving": ">= 5.2.1",
@@ -79,15 +80,13 @@
     "@opam/bls12-381-unix": "1.0.1",
     "@opam/bls12-381-legacy": "0.4.3",
     "@opam/ocaml-recovery-parser": "0.1",
-    "@opam/zarith": "1.11",
-    "@opam/zinc": "*"
+    "@opam/zarith": "1.11"
   },
   "devDependencies": {
     "@opam/ocaml-lsp-server": "*",
-    "@opam/ocamlformat": "*"
+    "@opam/ocamlformat": "0.19.0"
   },
   "resolutions": {
-    "@opam/zinc": "marigold-dev/zinc#c94bb7d165e8602136a1f658a5a0da9120784e6f",
     "@opam/ocaml-recovery-parser": "serokell/ocaml-recovery-parser:ocaml-recovery-parser.opam#7a759aed307f986d43006c50b8ced677e18b5a6d",
     "@opam/conf-libev": "esy-packages/libev:package.json#0817b2d",
     "@opam/coq": {
