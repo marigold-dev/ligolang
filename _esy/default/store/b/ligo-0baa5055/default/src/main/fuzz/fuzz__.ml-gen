@@ -1,0 +1,10 @@
+(** @canonical Fuzz.Fuzz_ast_aggregated *)
+module Fuzz_ast_aggregated = Fuzz__Fuzz_ast_aggregated
+
+
+(** @canonical Fuzz.Fuzz_ast_imperative *)
+module Fuzz_ast_imperative = Fuzz__Fuzz_ast_imperative
+
+
+(** @canonical Fuzz.Helpers_ast_imperative *)
+module Helpers_ast_imperative = Fuzz__Helpers_ast_imperative

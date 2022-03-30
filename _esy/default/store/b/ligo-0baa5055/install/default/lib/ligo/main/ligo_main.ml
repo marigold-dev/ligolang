@@ -1,0 +1,1 @@
+../../../../../default/src/main/ligo_main.ml-gen

@@ -1,0 +1,142 @@
+DIGEST d570ea87ea0e82cd91191dea79138c24
+Fligo_coq.types
+R93:98 Coq.Strings.String <> <> lib
+R100:103 Coq.Lists.List <> <> lib
+R158:166 ligo_coq.micheline <> <> lib
+sec 178:182 <> types
+binder 195:195 <> A:1
+ind 248:257 <> iter_class
+constr 305:313 <> Iter_list
+constr 362:369 <> Iter_set
+constr 417:424 <> Iter_map
+R274:277 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R261:264 ligo_coq.micheline <> node ind
+R268:273 Coq.Strings.String <> string ind
+R266:266 ligo_coq.types <> types.A var
+R291:294 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R278:281 ligo_coq.micheline <> node ind
+R285:290 Coq.Strings.String <> string ind
+R283:283 ligo_coq.types <> types.A var
+binder 316:316 <> l:4
+binder 318:318 <> a:5
+binder 320:320 <> n:6
+R325:334 ligo_coq.types <> iter_class:2 ind
+R339:342 ligo_coq.micheline <> Prim constr
+R357:357 ligo_coq.types <> n:6 var
+R353:353 Coq.Lists.List ListNotations ::list_scope:'['_x_']' not
+R355:355 Coq.Lists.List ListNotations ::list_scope:'['_x_']' not
+R354:354 ligo_coq.types <> a:5 var
+R344:344 ligo_coq.types <> l:4 var
+R336:336 ligo_coq.types <> a:5 var
+binder 372:372 <> l:7
+binder 374:374 <> a:8
+binder 376:376 <> n:9
+R381:390 ligo_coq.types <> iter_class:2 ind
+R395:398 ligo_coq.micheline <> Prim constr
+R412:412 ligo_coq.types <> n:9 var
+R408:408 Coq.Lists.List ListNotations ::list_scope:'['_x_']' not
+R410:410 Coq.Lists.List ListNotations ::list_scope:'['_x_']' not
+R409:409 ligo_coq.types <> a:8 var
+R400:400 ligo_coq.types <> l:7 var
+R392:392 ligo_coq.types <> a:8 var
+binder 427:428 <> l1:10
+binder 430:431 <> l2:11
+binder 433:433 <> k:12
+binder 435:435 <> v:13
+binder 437:438 <> n1:14
+binder 440:441 <> n2:15
+R446:455 ligo_coq.types <> iter_class:2 ind
+R485:488 ligo_coq.micheline <> Prim constr
+R506:507 ligo_coq.types <> n2:15 var
+R499:499 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R501:502 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R504:504 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R500:500 ligo_coq.types <> k:12 var
+R503:503 ligo_coq.types <> v:13 var
+R490:491 ligo_coq.types <> l2:11 var
+R458:461 ligo_coq.micheline <> Prim constr
+R480:481 ligo_coq.types <> n1:14 var
+R473:473 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R475:476 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R478:478 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R474:474 ligo_coq.types <> k:12 var
+R477:477 ligo_coq.types <> v:13 var
+R463:464 ligo_coq.types <> l1:10 var
+ind 523:531 <> map_class
+constr 613:620 <> Map_list
+constr 706:712 <> Map_map
+R548:551 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R535:538 ligo_coq.micheline <> node ind
+R542:547 Coq.Strings.String <> string ind
+R540:540 ligo_coq.types <> types.A var
+R565:568 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R552:555 ligo_coq.micheline <> node ind
+R559:564 Coq.Strings.String <> string ind
+R557:557 ligo_coq.types <> types.A var
+R582:585 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R569:572 ligo_coq.micheline <> node ind
+R576:581 Coq.Strings.String <> string ind
+R574:574 ligo_coq.types <> types.A var
+R599:602 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R586:589 ligo_coq.micheline <> node ind
+R593:598 Coq.Strings.String <> string ind
+R591:591 ligo_coq.types <> types.A var
+binder 623:624 <> l1:18
+binder 626:627 <> l2:19
+binder 629:629 <> a:20
+binder 631:631 <> b:21
+binder 633:634 <> n1:22
+binder 636:637 <> n2:23
+R642:650 ligo_coq.types <> map_class:16 ind
+R681:684 ligo_coq.micheline <> Prim constr
+R700:701 ligo_coq.types <> n2:23 var
+R696:696 Coq.Lists.List ListNotations ::list_scope:'['_x_']' not
+R698:698 Coq.Lists.List ListNotations ::list_scope:'['_x_']' not
+R697:697 ligo_coq.types <> b:21 var
+R686:687 ligo_coq.types <> l2:19 var
+R657:660 ligo_coq.micheline <> Prim constr
+R676:677 ligo_coq.types <> n1:22 var
+R672:672 Coq.Lists.List ListNotations ::list_scope:'['_x_']' not
+R674:674 Coq.Lists.List ListNotations ::list_scope:'['_x_']' not
+R673:673 ligo_coq.types <> a:20 var
+R662:663 ligo_coq.types <> l1:18 var
+R654:654 ligo_coq.types <> b:21 var
+R652:652 ligo_coq.types <> a:20 var
+binder 715:716 <> l1:24
+binder 718:719 <> l2:25
+binder 721:722 <> l3:26
+binder 724:724 <> k:27
+binder 726:726 <> v:28
+binder 728:728 <> r:29
+binder 730:731 <> n1:30
+binder 733:734 <> n2:31
+binder 736:737 <> n3:32
+R742:750 ligo_coq.types <> map_class:16 ind
+R808:811 ligo_coq.micheline <> Prim constr
+R829:830 ligo_coq.types <> n3:32 var
+R822:822 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R824:825 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R827:827 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R823:823 ligo_coq.types <> k:27 var
+R826:826 ligo_coq.types <> r:29 var
+R813:814 ligo_coq.types <> l3:26 var
+R782:785 ligo_coq.micheline <> Prim constr
+R803:804 ligo_coq.types <> n2:31 var
+R796:796 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R798:799 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R801:801 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R797:797 ligo_coq.types <> k:27 var
+R800:800 ligo_coq.types <> v:28 var
+R787:788 ligo_coq.types <> l2:25 var
+R779:779 ligo_coq.types <> r:29 var
+R753:756 ligo_coq.micheline <> Prim constr
+R775:776 ligo_coq.types <> n1:30 var
+R768:768 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R770:771 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R773:773 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R769:769 ligo_coq.types <> k:27 var
+R772:772 ligo_coq.types <> v:28 var
+R758:759 ligo_coq.types <> l1:24 var
+R854:863 ligo_coq.types <> iter_class ind
+R884:892 ligo_coq.types <> map_class ind
+R900:904 ligo_coq.types types <> sec

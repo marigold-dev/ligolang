@@ -1,0 +1,10 @@
+(** @canonical Cameligo.Compiler *)
+module Compiler = Cameligo__Compiler
+
+
+(** @canonical Cameligo.Decompiler *)
+module Decompiler = Cameligo__Decompiler
+
+
+(** @canonical Cameligo.Errors *)
+module Errors = Cameligo__Errors

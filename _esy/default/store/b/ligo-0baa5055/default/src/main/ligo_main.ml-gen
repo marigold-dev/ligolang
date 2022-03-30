@@ -1,0 +1,2 @@
+(** @canonical Ligo_main.Main *)
+module Main = Ligo_main__Main

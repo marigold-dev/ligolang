@@ -1,0 +1,30 @@
+(** @canonical Ast_aggregated.Combinators *)
+module Combinators = Ast_aggregated__Combinators
+
+
+(** @canonical Ast_aggregated.Compare *)
+module Compare = Ast_aggregated__Compare
+
+
+(** @canonical Ast_aggregated.Compare_enum *)
+module Compare_enum = Ast_aggregated__Compare_enum
+
+
+(** @canonical Ast_aggregated.Formatter *)
+module Formatter = Ast_aggregated__Formatter
+
+
+(** @canonical Ast_aggregated.Helpers *)
+module Helpers = Ast_aggregated__Helpers
+
+
+(** @canonical Ast_aggregated.PP *)
+module PP = Ast_aggregated__PP
+
+
+(** @canonical Ast_aggregated.To_yojson *)
+module To_yojson = Ast_aggregated__To_yojson
+
+
+(** @canonical Ast_aggregated.Types *)
+module Types = Ast_aggregated__Types

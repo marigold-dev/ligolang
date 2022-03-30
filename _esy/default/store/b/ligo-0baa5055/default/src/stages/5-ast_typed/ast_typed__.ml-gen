@@ -1,0 +1,38 @@
+(** @canonical Ast_typed.Combinators *)
+module Combinators = Ast_typed__Combinators
+
+
+(** @canonical Ast_typed.Compare *)
+module Compare = Ast_typed__Compare
+
+
+(** @canonical Ast_typed.Compare_enum *)
+module Compare_enum = Ast_typed__Compare_enum
+
+
+(** @canonical Ast_typed.Formatter *)
+module Formatter = Ast_typed__Formatter
+
+
+(** @canonical Ast_typed.Helpers *)
+module Helpers = Ast_typed__Helpers
+
+
+(** @canonical Ast_typed.Misc *)
+module Misc = Ast_typed__Misc
+
+
+(** @canonical Ast_typed.PP *)
+module PP = Ast_typed__PP
+
+
+(** @canonical Ast_typed.PP_annotated *)
+module PP_annotated = Ast_typed__PP_annotated
+
+
+(** @canonical Ast_typed.To_yojson *)
+module To_yojson = Ast_typed__To_yojson
+
+
+(** @canonical Ast_typed.Types *)
+module Types = Ast_typed__Types

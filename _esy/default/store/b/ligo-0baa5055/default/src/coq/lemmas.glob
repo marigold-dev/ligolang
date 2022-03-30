@@ -1,0 +1,90 @@
+DIGEST 3eea6bff9a976d3ca944316ccd5df767
+Fligo_coq.lemmas
+R48:51 Coq.Lists.List <> <> lib
+prf 83:95 <> snoc_list_ind
+binder 109:109 <> A:1
+R129:132 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R123:126 Coq.Init.Datatypes <> list ind
+R128:128 ligo_coq.lemmas <> A:1 var
+binder 119:119 <> P:2
+R148:151 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R144:144 ligo_coq.lemmas <> P:2 var
+R146:147 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+R152:152 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R187:195 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+binder 160:160 <> x:3
+binder 162:163 <> xs:4
+R170:173 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R166:166 ligo_coq.lemmas <> P:2 var
+R168:169 ligo_coq.lemmas <> xs:4 var
+R174:174 ligo_coq.lemmas <> P:2 var
+R179:182 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R177:178 ligo_coq.lemmas <> xs:4 var
+R183:183 Coq.Lists.List ListNotations ::list_scope:'['_x_']' not
+R185:185 Coq.Lists.List ListNotations ::list_scope:'['_x_']' not
+R184:184 ligo_coq.lemmas <> x:3 var
+binder 203:204 <> xs:5
+R207:207 ligo_coq.lemmas <> P:2 var
+R209:210 ligo_coq.lemmas <> xs:5 var
+R262:264 Coq.Lists.List <> rev def
+R267:269 Coq.Lists.List <> rev def
+R262:264 Coq.Lists.List <> rev def
+R267:269 Coq.Lists.List <> rev def
+R286:299 Coq.Lists.List <> rev_involutive thm
+R286:299 Coq.Lists.List <> rev_involutive thm
+R286:299 Coq.Lists.List <> rev_involutive thm
+R327:338 Coq.Lists.List <> rev_list_ind thm
+R327:338 Coq.Lists.List <> rev_list_ind thm
+binder 376:376 <> a:6
+binder 378:378 <> l:7
+R396:399 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R384:386 Coq.Lists.List <> rev def
+R389:391 Coq.Lists.List <> rev def
+R393:393 ligo_coq.lemmas <> l:7 var
+R403:405 Coq.Lists.List <> rev def
+R409:412 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R408:408 ligo_coq.lemmas <> a:6 var
+R413:415 Coq.Lists.List <> rev def
+R417:417 ligo_coq.lemmas <> l:7 var
+binder 376:376 <> a:8
+binder 378:378 <> l:9
+R396:399 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R384:386 Coq.Lists.List <> rev def
+R389:391 Coq.Lists.List <> rev def
+R393:393 ligo_coq.lemmas <> l:9 var
+R403:405 Coq.Lists.List <> rev def
+R409:412 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R408:408 ligo_coq.lemmas <> a:8 var
+R413:415 Coq.Lists.List <> rev def
+R417:417 ligo_coq.lemmas <> l:9 var
+R462:464 Coq.Lists.List <> rev def
+R462:464 Coq.Lists.List <> rev def
+R485:498 Coq.Lists.List <> rev_involutive thm
+R485:498 Coq.Lists.List <> rev_involutive thm
+R485:498 Coq.Lists.List <> rev_involutive thm
+R540:553 Coq.Lists.List <> rev_involutive thm
+R540:553 Coq.Lists.List <> rev_involutive thm
+R540:553 Coq.Lists.List <> rev_involutive thm
+R602:615 Coq.Lists.List <> rev_involutive thm
+R602:615 Coq.Lists.List <> rev_involutive thm
+R602:615 Coq.Lists.List <> rev_involutive thm
+R643:656 Coq.Lists.List <> rev_involutive thm
+R643:656 Coq.Lists.List <> rev_involutive thm
+R643:656 Coq.Lists.List <> rev_involutive thm
+prf 700:710 <> length_snoc
+binder 713:713 <> A:10
+R729:732 Coq.Init.Datatypes <> list ind
+R734:734 ligo_coq.lemmas <> A:10 var
+binder 724:725 <> xs:11
+R742:742 ligo_coq.lemmas <> A:10 var
+binder 738:738 <> x:12
+R767:769 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R749:754 Coq.Init.Datatypes <> length def
+R759:762 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R757:758 ligo_coq.lemmas <> xs:11 var
+R763:763 Coq.Lists.List ListNotations ::list_scope:'['_x_']' not
+R765:765 Coq.Lists.List ListNotations ::list_scope:'['_x_']' not
+R764:764 ligo_coq.lemmas <> x:12 var
+R770:770 Coq.Init.Datatypes <> S constr
+R773:778 Coq.Init.Datatypes <> length def
+R780:781 ligo_coq.lemmas <> xs:11 var

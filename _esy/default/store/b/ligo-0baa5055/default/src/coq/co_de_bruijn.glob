@@ -1,0 +1,1256 @@
+DIGEST a2a4b2cde1ecf40368c83def352c4956
+Fligo_coq.co_de_bruijn
+R93:96 Coq.Lists.List <> <> lib
+R98:113 Coq.Program.Equality <> <> lib
+ind 150:154 <> usage
+constr 165:168 <> Drop
+constr 172:175 <> Keep
+ind 189:192 <> used
+constr 251:258 <> Used_nil
+constr 278:286 <> Used_drop
+constr 353:361 <> Used_keep
+binder 195:195 <> A:3
+R217:220 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R207:210 Coq.Init.Datatypes <> list ind
+R212:216 ligo_coq.co_de_bruijn <> usage ind
+R227:230 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R221:224 Coq.Init.Datatypes <> list ind
+R237:240 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R231:234 Coq.Init.Datatypes <> list ind
+R262:265 ligo_coq.co_de_bruijn <> used:4 ind
+R273:274 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+R270:271 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+R267:268 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+binder 289:290 <> us:6
+binder 292:292 <> y:7
+binder 294:295 <> xs:8
+binder 297:298 <> ys:9
+R316:319 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R303:306 ligo_coq.co_de_bruijn <> used:4 ind
+R314:315 ligo_coq.co_de_bruijn <> ys:9 var
+R311:312 ligo_coq.co_de_bruijn <> xs:8 var
+R308:309 ligo_coq.co_de_bruijn <> us:6 var
+R320:323 ligo_coq.co_de_bruijn <> used:4 ind
+R343:346 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R342:342 ligo_coq.co_de_bruijn <> y:7 var
+R347:348 ligo_coq.co_de_bruijn <> ys:9 var
+R338:339 ligo_coq.co_de_bruijn <> xs:8 var
+R330:333 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R326:329 ligo_coq.co_de_bruijn <> Drop constr
+R334:335 ligo_coq.co_de_bruijn <> us:6 var
+binder 364:365 <> us:10
+binder 367:367 <> y:11
+binder 369:370 <> xs:12
+binder 372:373 <> ys:13
+R391:394 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R378:381 ligo_coq.co_de_bruijn <> used:4 ind
+R389:390 ligo_coq.co_de_bruijn <> ys:13 var
+R386:387 ligo_coq.co_de_bruijn <> xs:12 var
+R383:384 ligo_coq.co_de_bruijn <> us:10 var
+R395:398 ligo_coq.co_de_bruijn <> used:4 ind
+R425:428 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R424:424 ligo_coq.co_de_bruijn <> y:11 var
+R429:430 ligo_coq.co_de_bruijn <> ys:13 var
+R415:418 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R414:414 ligo_coq.co_de_bruijn <> y:11 var
+R419:420 ligo_coq.co_de_bruijn <> xs:12 var
+R405:408 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R401:404 ligo_coq.co_de_bruijn <> Keep constr
+R409:410 ligo_coq.co_de_bruijn <> us:10 var
+R464:467 ligo_coq.co_de_bruijn <> used ind
+prf 477:484 <> used_app
+binder 487:487 <> A:14
+R508:511 Coq.Init.Datatypes <> list ind
+R513:517 ligo_coq.co_de_bruijn <> usage ind
+binder 498:500 <> us1:15
+binder 502:504 <> us2:16
+R539:542 Coq.Init.Datatypes <> list ind
+R544:544 ligo_coq.co_de_bruijn <> A:14 var
+binder 521:523 <> xs1:17
+binder 525:527 <> xs2:18
+binder 529:531 <> ys1:19
+binder 533:535 <> ys2:20
+R567:572 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R551:554 ligo_coq.co_de_bruijn <> used ind
+R564:566 ligo_coq.co_de_bruijn <> ys1:19 var
+R560:562 ligo_coq.co_de_bruijn <> xs1:17 var
+R556:558 ligo_coq.co_de_bruijn <> us1:15 var
+R589:594 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R573:576 ligo_coq.co_de_bruijn <> used ind
+R586:588 ligo_coq.co_de_bruijn <> ys2:20 var
+R582:584 ligo_coq.co_de_bruijn <> xs2:18 var
+R578:580 ligo_coq.co_de_bruijn <> us2:16 var
+R595:598 ligo_coq.co_de_bruijn <> used ind
+R630:633 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R627:629 ligo_coq.co_de_bruijn <> ys1:19 var
+R634:636 ligo_coq.co_de_bruijn <> ys2:20 var
+R617:620 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R614:616 ligo_coq.co_de_bruijn <> xs1:17 var
+R621:623 ligo_coq.co_de_bruijn <> xs2:18 var
+R604:607 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R601:603 ligo_coq.co_de_bruijn <> us1:15 var
+R608:610 ligo_coq.co_de_bruijn <> us2:16 var
+prf 741:750 <> used_drops
+binder 753:753 <> A:21
+R769:772 Coq.Init.Datatypes <> list ind
+R774:774 ligo_coq.co_de_bruijn <> A:21 var
+binder 764:765 <> xs:22
+R781:784 ligo_coq.co_de_bruijn <> used ind
+R815:816 ligo_coq.co_de_bruijn <> xs:22 var
+R812:813 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+R787:792 Coq.Lists.List <> repeat def
+R800:805 Coq.Init.Datatypes <> length def
+R807:808 ligo_coq.co_de_bruijn <> xs:22 var
+R794:797 ligo_coq.co_de_bruijn <> Drop constr
+prf 867:876 <> used_keeps
+binder 879:879 <> A:23
+R895:898 Coq.Init.Datatypes <> list ind
+R900:900 ligo_coq.co_de_bruijn <> A:23 var
+binder 890:891 <> xs:24
+R907:910 ligo_coq.co_de_bruijn <> used ind
+R941:942 ligo_coq.co_de_bruijn <> xs:24 var
+R938:939 ligo_coq.co_de_bruijn <> xs:24 var
+R913:918 Coq.Lists.List <> repeat def
+R926:931 Coq.Init.Datatypes <> length def
+R933:934 ligo_coq.co_de_bruijn <> xs:24 var
+R920:923 ligo_coq.co_de_bruijn <> Keep constr
+def 1102:1113 <> filter_keeps
+R1121:1124 Coq.Init.Datatypes <> list ind
+R1126:1130 ligo_coq.co_de_bruijn <> usage ind
+binder 1116:1117 <> us:25
+R1135:1138 Coq.Init.Datatypes <> list ind
+R1140:1144 ligo_coq.co_de_bruijn <> usage ind
+R1151:1156 Coq.Lists.List <> filter def
+R1217:1218 ligo_coq.co_de_bruijn <> us:25 var
+binder 1163:1163 <> u:26
+R1174:1174 ligo_coq.co_de_bruijn <> u:26 var
+R1183:1186 ligo_coq.co_de_bruijn <> Keep constr
+R1191:1194 Coq.Init.Datatypes <> true constr
+R1198:1201 ligo_coq.co_de_bruijn <> Drop constr
+R1206:1210 Coq.Init.Datatypes <> false constr
+def 1231:1236 <> select
+binder 1239:1239 <> A:28
+R1255:1258 Coq.Init.Datatypes <> list ind
+R1260:1264 ligo_coq.co_de_bruijn <> usage ind
+binder 1250:1251 <> us:29
+R1273:1276 Coq.Init.Datatypes <> list ind
+R1278:1278 ligo_coq.co_de_bruijn <> A:28 var
+binder 1268:1269 <> xs:30
+R1283:1286 Coq.Init.Datatypes <> list ind
+R1288:1288 ligo_coq.co_de_bruijn <> A:28 var
+R1301:1301 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R1304:1305 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R1308:1308 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R1302:1303 ligo_coq.co_de_bruijn <> us:29 var
+R1306:1307 ligo_coq.co_de_bruijn <> xs:30 var
+R1319:1319 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R1322:1323 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R1325:1325 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R1320:1321 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+R1330:1331 ligo_coq.co_de_bruijn <> xs:30 var
+R1337:1337 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R1339:1340 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R1343:1343 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R1341:1342 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+R1348:1349 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+R1355:1355 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R1366:1367 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R1375:1375 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R1360:1363 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R1356:1359 ligo_coq.co_de_bruijn <> Drop constr
+R1369:1372 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R1380:1385 ligo_coq.co_de_bruijn <> select:31 def
+R1390:1391 ligo_coq.co_de_bruijn <> xs:30 var
+R1387:1388 ligo_coq.co_de_bruijn <> us:29 var
+R1397:1397 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R1408:1409 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R1417:1417 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R1402:1405 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R1398:1401 ligo_coq.co_de_bruijn <> Keep constr
+R1411:1414 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R1423:1426 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R1427:1432 ligo_coq.co_de_bruijn <> select:31 def
+R1437:1438 ligo_coq.co_de_bruijn <> xs:30 var
+R1434:1435 ligo_coq.co_de_bruijn <> us:29 var
+prf 1454:1463 <> select_app
+binder 1477:1477 <> A:32
+R1498:1501 Coq.Init.Datatypes <> list ind
+R1503:1507 ligo_coq.co_de_bruijn <> usage ind
+binder 1488:1490 <> us1:33
+binder 1492:1494 <> us2:34
+R1521:1524 Coq.Init.Datatypes <> list ind
+R1526:1526 ligo_coq.co_de_bruijn <> A:32 var
+binder 1511:1513 <> xs1:35
+binder 1515:1517 <> xs2:36
+R1557:1564 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1544:1546 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R1534:1539 Coq.Init.Datatypes <> length def
+R1541:1543 ligo_coq.co_de_bruijn <> us1:33 var
+R1547:1552 Coq.Init.Datatypes <> length def
+R1554:1556 ligo_coq.co_de_bruijn <> xs1:35 var
+R1588:1595 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1575:1577 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R1565:1570 Coq.Init.Datatypes <> length def
+R1572:1574 ligo_coq.co_de_bruijn <> us2:34 var
+R1578:1583 Coq.Init.Datatypes <> length def
+R1585:1587 ligo_coq.co_de_bruijn <> xs2:36 var
+R1628:1630 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R1596:1601 ligo_coq.co_de_bruijn <> select def
+R1620:1623 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R1617:1619 ligo_coq.co_de_bruijn <> xs1:35 var
+R1624:1626 ligo_coq.co_de_bruijn <> xs2:36 var
+R1607:1610 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R1604:1606 ligo_coq.co_de_bruijn <> us1:33 var
+R1611:1613 ligo_coq.co_de_bruijn <> us2:34 var
+R1645:1648 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R1631:1636 ligo_coq.co_de_bruijn <> select def
+R1642:1644 ligo_coq.co_de_bruijn <> xs1:35 var
+R1638:1640 ligo_coq.co_de_bruijn <> us1:33 var
+R1649:1654 ligo_coq.co_de_bruijn <> select def
+R1660:1662 ligo_coq.co_de_bruijn <> xs2:36 var
+R1656:1658 ligo_coq.co_de_bruijn <> us2:34 var
+R1836:1842 Coq.Init.Logic <> f_equal thm
+R1836:1842 Coq.Init.Logic <> f_equal thm
+R1836:1842 Coq.Init.Logic <> f_equal thm
+ind 1868:1871 <> side
+constr 1882:1885 <> Left
+constr 1889:1893 <> Right
+constr 1897:1900 <> Both
+def 1915:1923 <> splitting
+R1928:1931 Coq.Init.Datatypes <> list ind
+R1933:1936 ligo_coq.co_de_bruijn <> side ind
+ind 1950:1955 <> splits
+constr 2023:2032 <> Splits_nil
+constr 2057:2067 <> Splits_left
+constr 2154:2165 <> Splits_right
+constr 2253:2263 <> Splits_both
+binder 1958:1958 <> A:39
+R1979:1982 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1970:1973 Coq.Init.Datatypes <> list ind
+R1975:1978 ligo_coq.co_de_bruijn <> side ind
+R1989:1992 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1983:1986 Coq.Init.Datatypes <> list ind
+R1999:2002 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1993:1996 Coq.Init.Datatypes <> list ind
+R2009:2012 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R2003:2006 Coq.Init.Datatypes <> list ind
+R2036:2041 ligo_coq.co_de_bruijn <> splits:40 ind
+R2052:2053 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+R2049:2050 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+R2046:2047 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+R2043:2044 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+binder 2070:2071 <> ss:42
+binder 2073:2074 <> zs:43
+binder 2076:2076 <> x:44
+binder 2078:2079 <> xs:45
+binder 2081:2082 <> ys:46
+R2105:2108 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R2087:2092 ligo_coq.co_de_bruijn <> splits:40 ind
+R2103:2104 ligo_coq.co_de_bruijn <> ys:46 var
+R2100:2101 ligo_coq.co_de_bruijn <> xs:45 var
+R2097:2098 ligo_coq.co_de_bruijn <> zs:43 var
+R2094:2095 ligo_coq.co_de_bruijn <> ss:42 var
+R2109:2114 ligo_coq.co_de_bruijn <> splits:40 ind
+R2149:2150 ligo_coq.co_de_bruijn <> ys:46 var
+R2141:2144 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R2140:2140 ligo_coq.co_de_bruijn <> x:44 var
+R2145:2146 ligo_coq.co_de_bruijn <> xs:45 var
+R2131:2134 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R2130:2130 ligo_coq.co_de_bruijn <> x:44 var
+R2135:2136 ligo_coq.co_de_bruijn <> zs:43 var
+R2121:2124 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R2117:2120 ligo_coq.co_de_bruijn <> Left constr
+R2125:2126 ligo_coq.co_de_bruijn <> ss:42 var
+binder 2168:2169 <> ss:47
+binder 2171:2172 <> zs:48
+binder 2174:2175 <> xs:49
+binder 2177:2177 <> y:50
+binder 2179:2180 <> ys:51
+R2203:2206 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R2185:2190 ligo_coq.co_de_bruijn <> splits:40 ind
+R2201:2202 ligo_coq.co_de_bruijn <> ys:51 var
+R2198:2199 ligo_coq.co_de_bruijn <> xs:49 var
+R2195:2196 ligo_coq.co_de_bruijn <> zs:48 var
+R2192:2193 ligo_coq.co_de_bruijn <> ss:47 var
+R2207:2212 ligo_coq.co_de_bruijn <> splits:40 ind
+R2243:2246 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R2242:2242 ligo_coq.co_de_bruijn <> y:50 var
+R2247:2248 ligo_coq.co_de_bruijn <> ys:51 var
+R2238:2239 ligo_coq.co_de_bruijn <> xs:49 var
+R2230:2233 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R2229:2229 ligo_coq.co_de_bruijn <> y:50 var
+R2234:2235 ligo_coq.co_de_bruijn <> zs:48 var
+R2220:2223 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R2215:2219 ligo_coq.co_de_bruijn <> Right constr
+R2224:2225 ligo_coq.co_de_bruijn <> ss:47 var
+binder 2266:2267 <> ss:52
+binder 2269:2269 <> z:53
+binder 2271:2272 <> zs:54
+binder 2274:2275 <> xs:55
+binder 2277:2278 <> ys:56
+R2301:2304 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R2283:2288 ligo_coq.co_de_bruijn <> splits:40 ind
+R2299:2300 ligo_coq.co_de_bruijn <> ys:56 var
+R2296:2297 ligo_coq.co_de_bruijn <> xs:55 var
+R2293:2294 ligo_coq.co_de_bruijn <> zs:54 var
+R2290:2291 ligo_coq.co_de_bruijn <> ss:52 var
+R2305:2310 ligo_coq.co_de_bruijn <> splits:40 ind
+R2347:2350 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R2346:2346 ligo_coq.co_de_bruijn <> z:53 var
+R2351:2352 ligo_coq.co_de_bruijn <> ys:56 var
+R2337:2340 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R2336:2336 ligo_coq.co_de_bruijn <> z:53 var
+R2341:2342 ligo_coq.co_de_bruijn <> xs:55 var
+R2327:2330 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R2326:2326 ligo_coq.co_de_bruijn <> z:53 var
+R2331:2332 ligo_coq.co_de_bruijn <> zs:54 var
+R2317:2320 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R2313:2316 ligo_coq.co_de_bruijn <> Both constr
+R2321:2322 ligo_coq.co_de_bruijn <> ss:52 var
+R2386:2391 ligo_coq.co_de_bruijn <> splits ind
+prf 2401:2412 <> splits_right
+binder 2415:2415 <> A:57
+R2445:2453 ligo_coq.co_de_bruijn <> splitting def
+binder 2437:2441 <> outer:58
+R2465:2468 Coq.Init.Datatypes <> list ind
+R2470:2470 ligo_coq.co_de_bruijn <> A:57 var
+binder 2457:2458 <> d1:59
+binder 2460:2461 <> d2:60
+R2499:2506 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R2478:2483 ligo_coq.co_de_bruijn <> splits ind
+R2497:2498 ligo_coq.co_de_bruijn <> d2:60 var
+R2494:2495 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+R2491:2492 ligo_coq.co_de_bruijn <> d1:59 var
+R2485:2489 ligo_coq.co_de_bruijn <> outer:58 var
+R2509:2511 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R2507:2508 ligo_coq.co_de_bruijn <> d1:59 var
+R2512:2513 ligo_coq.co_de_bruijn <> d2:60 var
+prf 2618:2636 <> splits_right_rights
+binder 2639:2639 <> A:61
+R2669:2677 ligo_coq.co_de_bruijn <> splitting def
+binder 2661:2665 <> outer:62
+R2689:2692 Coq.Init.Datatypes <> list ind
+R2694:2694 ligo_coq.co_de_bruijn <> A:61 var
+binder 2681:2682 <> d1:63
+binder 2684:2685 <> d2:64
+R2723:2730 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R2702:2707 ligo_coq.co_de_bruijn <> splits ind
+R2721:2722 ligo_coq.co_de_bruijn <> d2:64 var
+R2718:2719 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+R2715:2716 ligo_coq.co_de_bruijn <> d1:63 var
+R2709:2713 ligo_coq.co_de_bruijn <> outer:62 var
+R2736:2738 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R2731:2735 ligo_coq.co_de_bruijn <> outer:62 var
+R2739:2744 Coq.Lists.List <> repeat def
+R2753:2758 Coq.Init.Datatypes <> length def
+R2760:2761 ligo_coq.co_de_bruijn <> d1:63 var
+R2746:2750 ligo_coq.co_de_bruijn <> Right constr
+prf 2870:2881 <> splits_lefts
+binder 2884:2884 <> A:65
+R2914:2922 ligo_coq.co_de_bruijn <> splitting def
+binder 2906:2910 <> outer:66
+R2939:2942 Coq.Init.Datatypes <> list ind
+R2944:2944 ligo_coq.co_de_bruijn <> A:65 var
+binder 2926:2926 <> g:67
+binder 2928:2929 <> g':68
+binder 2931:2932 <> d1:69
+binder 2934:2935 <> d2:70
+R2972:2979 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R2952:2957 ligo_coq.co_de_bruijn <> splits ind
+R2970:2971 ligo_coq.co_de_bruijn <> d2:70 var
+R2968:2968 ligo_coq.co_de_bruijn <> g:67 var
+R2965:2966 ligo_coq.co_de_bruijn <> d1:69 var
+R2959:2963 ligo_coq.co_de_bruijn <> outer:66 var
+R2980:2985 ligo_coq.co_de_bruijn <> splits ind
+R3043:3044 ligo_coq.co_de_bruijn <> d2:70 var
+R3036:3039 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R3034:3035 ligo_coq.co_de_bruijn <> g':68 var
+R3040:3040 ligo_coq.co_de_bruijn <> g:67 var
+R3025:3028 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R3023:3024 ligo_coq.co_de_bruijn <> g':68 var
+R3029:3030 ligo_coq.co_de_bruijn <> d1:69 var
+R3011:3014 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R2988:2993 Coq.Lists.List <> repeat def
+R3001:3006 Coq.Init.Datatypes <> length def
+R3008:3009 ligo_coq.co_de_bruijn <> g':68 var
+R2995:2998 ligo_coq.co_de_bruijn <> Left constr
+R3015:3019 ligo_coq.co_de_bruijn <> outer:66 var
+prf 3245:3257 <> splits_lefts'
+binder 3260:3260 <> A:71
+R3286:3289 Coq.Init.Datatypes <> list ind
+R3291:3291 ligo_coq.co_de_bruijn <> A:71 var
+binder 3282:3282 <> g:72
+R3299:3304 ligo_coq.co_de_bruijn <> splits ind
+R3335:3336 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+R3333:3333 ligo_coq.co_de_bruijn <> g:72 var
+R3331:3331 ligo_coq.co_de_bruijn <> g:72 var
+R3307:3312 Coq.Lists.List <> repeat def
+R3320:3325 Coq.Init.Datatypes <> length def
+R3327:3327 ligo_coq.co_de_bruijn <> g:72 var
+R3314:3317 ligo_coq.co_de_bruijn <> Left constr
+R3368:3373 ligo_coq.co_de_bruijn <> splits ind
+R3426:3427 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+R3418:3421 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R3422:3423 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+R3408:3411 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R3412:3413 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+R3398:3401 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R3376:3381 Coq.Lists.List <> repeat def
+R3389:3394 Coq.Init.Datatypes <> length def
+R3383:3386 ligo_coq.co_de_bruijn <> Left constr
+R3402:3403 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+R3453:3461 Coq.Lists.List <> app_nil_r thm
+R3487:3498 ligo_coq.co_de_bruijn <> splits_lefts thm
+R3368:3373 ligo_coq.co_de_bruijn <> splits ind
+R3426:3427 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+R3418:3421 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R3422:3423 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+R3408:3411 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R3412:3413 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+R3398:3401 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R3376:3381 Coq.Lists.List <> repeat def
+R3389:3394 Coq.Init.Datatypes <> length def
+R3383:3386 ligo_coq.co_de_bruijn <> Left constr
+R3402:3403 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+R3453:3461 Coq.Lists.List <> app_nil_r thm
+R3453:3461 Coq.Lists.List <> app_nil_r thm
+R3453:3461 Coq.Lists.List <> app_nil_r thm
+R3453:3461 Coq.Lists.List <> app_nil_r thm
+R3453:3461 Coq.Lists.List <> app_nil_r thm
+R3487:3498 ligo_coq.co_de_bruijn <> splits_lefts thm
+def 3563:3572 <> keep_right
+R3579:3583 ligo_coq.co_de_bruijn <> usage ind
+binder 3575:3575 <> u:73
+R3588:3591 ligo_coq.co_de_bruijn <> side ind
+R3604:3604 ligo_coq.co_de_bruijn <> u:73 var
+R3615:3618 ligo_coq.co_de_bruijn <> Drop constr
+R3623:3627 ligo_coq.co_de_bruijn <> Right constr
+R3633:3636 ligo_coq.co_de_bruijn <> Keep constr
+R3641:3644 ligo_coq.co_de_bruijn <> Both constr
+def 3665:3675 <> keep_rights
+R3683:3686 Coq.Init.Datatypes <> list ind
+R3688:3692 ligo_coq.co_de_bruijn <> usage ind
+binder 3678:3679 <> us:75
+R3697:3700 Coq.Init.Datatypes <> list ind
+R3702:3705 ligo_coq.co_de_bruijn <> side ind
+R3712:3719 Coq.Lists.List <> map def
+R3732:3733 ligo_coq.co_de_bruijn <> us:75 var
+R3721:3730 ligo_coq.co_de_bruijn <> keep_right def
+def 3748:3756 <> keep_left
+R3763:3767 ligo_coq.co_de_bruijn <> usage ind
+binder 3759:3759 <> u:76
+R3772:3775 ligo_coq.co_de_bruijn <> side ind
+R3788:3788 ligo_coq.co_de_bruijn <> u:76 var
+R3799:3802 ligo_coq.co_de_bruijn <> Drop constr
+R3807:3810 ligo_coq.co_de_bruijn <> Left constr
+R3816:3819 ligo_coq.co_de_bruijn <> Keep constr
+R3824:3827 ligo_coq.co_de_bruijn <> Both constr
+def 3848:3857 <> keep_lefts
+R3865:3868 Coq.Init.Datatypes <> list ind
+R3870:3874 ligo_coq.co_de_bruijn <> usage ind
+binder 3860:3861 <> us:78
+R3879:3882 Coq.Init.Datatypes <> list ind
+R3884:3887 ligo_coq.co_de_bruijn <> side ind
+R3894:3901 Coq.Lists.List <> map def
+R3913:3914 ligo_coq.co_de_bruijn <> us:78 var
+R3903:3911 ligo_coq.co_de_bruijn <> keep_left def
+def 3929:3938 <> left_usage
+R3945:3948 ligo_coq.co_de_bruijn <> side ind
+binder 3941:3941 <> s:79
+R3953:3957 ligo_coq.co_de_bruijn <> usage ind
+R3970:3970 ligo_coq.co_de_bruijn <> s:79 var
+R3981:3984 ligo_coq.co_de_bruijn <> Left constr
+R3989:3992 ligo_coq.co_de_bruijn <> Keep constr
+R3998:4002 ligo_coq.co_de_bruijn <> Right constr
+R4007:4010 ligo_coq.co_de_bruijn <> Drop constr
+R4016:4019 ligo_coq.co_de_bruijn <> Both constr
+R4024:4027 ligo_coq.co_de_bruijn <> Keep constr
+def 4048:4058 <> right_usage
+R4065:4068 ligo_coq.co_de_bruijn <> side ind
+binder 4061:4061 <> s:81
+R4073:4077 ligo_coq.co_de_bruijn <> usage ind
+R4090:4090 ligo_coq.co_de_bruijn <> s:81 var
+R4101:4104 ligo_coq.co_de_bruijn <> Left constr
+R4109:4112 ligo_coq.co_de_bruijn <> Drop constr
+R4118:4122 ligo_coq.co_de_bruijn <> Right constr
+R4127:4130 ligo_coq.co_de_bruijn <> Keep constr
+R4136:4139 ligo_coq.co_de_bruijn <> Both constr
+R4144:4147 ligo_coq.co_de_bruijn <> Keep constr
+def 4168:4178 <> left_usages
+R4186:4194 ligo_coq.co_de_bruijn <> splitting def
+binder 4181:4182 <> ss:83
+R4199:4202 Coq.Init.Datatypes <> list ind
+R4204:4208 ligo_coq.co_de_bruijn <> usage ind
+R4213:4220 Coq.Lists.List <> map def
+R4233:4234 ligo_coq.co_de_bruijn <> ss:83 var
+R4222:4231 ligo_coq.co_de_bruijn <> left_usage def
+def 4249:4260 <> right_usages
+R4268:4276 ligo_coq.co_de_bruijn <> splitting def
+binder 4263:4264 <> ss:84
+R4281:4284 Coq.Init.Datatypes <> list ind
+R4286:4290 ligo_coq.co_de_bruijn <> usage ind
+R4295:4302 Coq.Lists.List <> map def
+R4316:4317 ligo_coq.co_de_bruijn <> ss:84 var
+R4304:4314 ligo_coq.co_de_bruijn <> right_usage def
+def 4332:4337 <> usages
+R4345:4353 ligo_coq.co_de_bruijn <> splitting def
+binder 4340:4341 <> ss:85
+R4368:4370 Coq.Init.Datatypes <> ::type_scope:x_'*'_x not
+R4358:4361 Coq.Init.Datatypes <> list ind
+R4363:4367 ligo_coq.co_de_bruijn <> usage ind
+R4371:4374 Coq.Init.Datatypes <> list ind
+R4376:4380 ligo_coq.co_de_bruijn <> usage ind
+R4387:4387 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R4402:4403 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R4419:4419 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R4388:4398 ligo_coq.co_de_bruijn <> left_usages def
+R4400:4401 ligo_coq.co_de_bruijn <> ss:85 var
+R4404:4415 ligo_coq.co_de_bruijn <> right_usages def
+R4417:4418 ligo_coq.co_de_bruijn <> ss:85 var
+def 4434:4438 <> split
+binder 4441:4441 <> A:86
+R4457:4465 ligo_coq.co_de_bruijn <> splitting def
+binder 4452:4453 <> ss:87
+R4474:4477 Coq.Init.Datatypes <> list ind
+R4479:4479 ligo_coq.co_de_bruijn <> A:86 var
+binder 4469:4470 <> xs:88
+R4490:4492 Coq.Init.Datatypes <> ::type_scope:x_'*'_x not
+R4484:4487 Coq.Init.Datatypes <> list ind
+R4489:4489 ligo_coq.co_de_bruijn <> A:86 var
+R4493:4496 Coq.Init.Datatypes <> list ind
+R4498:4498 ligo_coq.co_de_bruijn <> A:86 var
+R4505:4505 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R4532:4533 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R4561:4561 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R4506:4511 ligo_coq.co_de_bruijn <> select def
+R4530:4531 ligo_coq.co_de_bruijn <> xs:88 var
+R4514:4524 ligo_coq.co_de_bruijn <> left_usages def
+R4526:4527 ligo_coq.co_de_bruijn <> ss:87 var
+R4534:4539 ligo_coq.co_de_bruijn <> select def
+R4559:4560 ligo_coq.co_de_bruijn <> xs:88 var
+R4542:4553 ligo_coq.co_de_bruijn <> right_usages def
+R4555:4556 ligo_coq.co_de_bruijn <> ss:87 var
+prf 4571:4585 <> left_usages_app
+R4597:4605 ligo_coq.co_de_bruijn <> splitting def
+binder 4588:4589 <> ss:89
+binder 4591:4593 <> ss':90
+R4635:4637 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R4612:4622 ligo_coq.co_de_bruijn <> left_usages def
+R4627:4630 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R4625:4626 ligo_coq.co_de_bruijn <> ss:89 var
+R4631:4633 ligo_coq.co_de_bruijn <> ss':90 var
+R4652:4655 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R4638:4648 ligo_coq.co_de_bruijn <> left_usages def
+R4650:4651 ligo_coq.co_de_bruijn <> ss:89 var
+R4656:4666 ligo_coq.co_de_bruijn <> left_usages def
+R4668:4670 ligo_coq.co_de_bruijn <> ss':90 var
+R4687:4697 ligo_coq.co_de_bruijn <> left_usages def
+R4706:4712 Coq.Lists.List <> map_app thm
+R4706:4712 Coq.Lists.List <> map_app thm
+prf 4727:4742 <> right_usages_app
+R4754:4762 ligo_coq.co_de_bruijn <> splitting def
+binder 4745:4746 <> ss:91
+binder 4748:4750 <> ss':92
+R4793:4795 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R4769:4780 ligo_coq.co_de_bruijn <> right_usages def
+R4785:4788 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R4783:4784 ligo_coq.co_de_bruijn <> ss:91 var
+R4789:4791 ligo_coq.co_de_bruijn <> ss':92 var
+R4811:4814 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R4796:4807 ligo_coq.co_de_bruijn <> right_usages def
+R4809:4810 ligo_coq.co_de_bruijn <> ss:91 var
+R4815:4826 ligo_coq.co_de_bruijn <> right_usages def
+R4828:4830 ligo_coq.co_de_bruijn <> ss':92 var
+R4847:4858 ligo_coq.co_de_bruijn <> right_usages def
+R4867:4873 Coq.Lists.List <> map_app thm
+R4867:4873 Coq.Lists.List <> map_app thm
+prf 4888:4905 <> left_usages_length
+R4913:4921 ligo_coq.co_de_bruijn <> splitting def
+binder 4908:4909 <> ss:93
+R4951:4953 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R4928:4933 Coq.Init.Datatypes <> length def
+R4936:4946 ligo_coq.co_de_bruijn <> left_usages def
+R4948:4949 ligo_coq.co_de_bruijn <> ss:93 var
+R4954:4959 Coq.Init.Datatypes <> length def
+R4961:4962 ligo_coq.co_de_bruijn <> ss:93 var
+R4979:4989 ligo_coq.co_de_bruijn <> left_usages def
+R4998:5007 Coq.Lists.List <> map_length thm
+R4998:5007 Coq.Lists.List <> map_length thm
+prf 5022:5040 <> right_usages_length
+R5048:5056 ligo_coq.co_de_bruijn <> splitting def
+binder 5043:5044 <> ss:94
+R5087:5089 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R5063:5068 Coq.Init.Datatypes <> length def
+R5071:5082 ligo_coq.co_de_bruijn <> right_usages def
+R5084:5085 ligo_coq.co_de_bruijn <> ss:94 var
+R5090:5095 Coq.Init.Datatypes <> length def
+R5097:5098 ligo_coq.co_de_bruijn <> ss:94 var
+R5115:5126 ligo_coq.co_de_bruijn <> right_usages def
+R5135:5144 Coq.Lists.List <> map_length thm
+R5135:5144 Coq.Lists.List <> map_length thm
+prf 5159:5175 <> used_splits_right
+binder 5178:5178 <> A:95
+R5194:5202 ligo_coq.co_de_bruijn <> splitting def
+binder 5189:5190 <> ss:96
+R5217:5220 Coq.Init.Datatypes <> list ind
+R5222:5222 ligo_coq.co_de_bruijn <> A:95 var
+binder 5206:5207 <> xs:97
+binder 5209:5210 <> ys:98
+binder 5212:5213 <> zs:99
+R5247:5252 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R5229:5234 ligo_coq.co_de_bruijn <> splits ind
+R5245:5246 ligo_coq.co_de_bruijn <> ys:98 var
+R5242:5243 ligo_coq.co_de_bruijn <> xs:97 var
+R5239:5240 ligo_coq.co_de_bruijn <> zs:99 var
+R5236:5237 ligo_coq.co_de_bruijn <> ss:96 var
+R5253:5256 ligo_coq.co_de_bruijn <> used ind
+R5279:5280 ligo_coq.co_de_bruijn <> zs:99 var
+R5276:5277 ligo_coq.co_de_bruijn <> ys:98 var
+R5259:5270 ligo_coq.co_de_bruijn <> right_usages def
+R5272:5273 ligo_coq.co_de_bruijn <> ss:96 var
+prf 5379:5408 <> splits_keep_rights_left_usages
+binder 5411:5411 <> A:100
+R5427:5430 Coq.Init.Datatypes <> list ind
+R5432:5435 ligo_coq.co_de_bruijn <> side ind
+binder 5422:5423 <> ss:101
+R5449:5452 Coq.Init.Datatypes <> list ind
+R5454:5454 ligo_coq.co_de_bruijn <> A:100 var
+binder 5439:5439 <> g:102
+binder 5441:5442 <> g1:103
+binder 5444:5445 <> g2:104
+R5478:5483 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R5461:5466 ligo_coq.co_de_bruijn <> splits ind
+R5476:5477 ligo_coq.co_de_bruijn <> g2:104 var
+R5473:5474 ligo_coq.co_de_bruijn <> g1:103 var
+R5471:5471 ligo_coq.co_de_bruijn <> g:102 var
+R5468:5469 ligo_coq.co_de_bruijn <> ss:101 var
+R5484:5489 ligo_coq.co_de_bruijn <> splits ind
+R5527:5527 ligo_coq.co_de_bruijn <> g:102 var
+R5524:5525 ligo_coq.co_de_bruijn <> g1:103 var
+R5522:5522 ligo_coq.co_de_bruijn <> g:102 var
+R5492:5502 ligo_coq.co_de_bruijn <> keep_rights def
+R5505:5515 ligo_coq.co_de_bruijn <> left_usages def
+R5517:5518 ligo_coq.co_de_bruijn <> ss:101 var
+prf 5586:5615 <> used_filter_keeps_right_usages
+binder 5618:5618 <> A:105
+R5634:5637 Coq.Init.Datatypes <> list ind
+R5639:5642 ligo_coq.co_de_bruijn <> side ind
+binder 5629:5630 <> ss:106
+R5656:5659 Coq.Init.Datatypes <> list ind
+R5661:5661 ligo_coq.co_de_bruijn <> A:105 var
+binder 5646:5646 <> g:107
+binder 5648:5649 <> g1:108
+binder 5651:5652 <> g2:109
+R5685:5690 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R5668:5673 ligo_coq.co_de_bruijn <> splits ind
+R5683:5684 ligo_coq.co_de_bruijn <> g2:109 var
+R5680:5681 ligo_coq.co_de_bruijn <> g1:108 var
+R5678:5678 ligo_coq.co_de_bruijn <> g:107 var
+R5675:5676 ligo_coq.co_de_bruijn <> ss:106 var
+R5691:5694 ligo_coq.co_de_bruijn <> used ind
+R5732:5733 ligo_coq.co_de_bruijn <> g2:109 var
+R5729:5730 ligo_coq.co_de_bruijn <> g2:109 var
+R5697:5708 ligo_coq.co_de_bruijn <> filter_keeps def
+R5711:5722 ligo_coq.co_de_bruijn <> right_usages def
+R5724:5725 ligo_coq.co_de_bruijn <> ss:106 var
+prf 5791:5805 <> select_iff_used
+binder 5819:5819 <> A:110
+R5835:5838 Coq.Init.Datatypes <> list ind
+R5840:5844 ligo_coq.co_de_bruijn <> usage ind
+binder 5830:5831 <> us:111
+R5856:5859 Coq.Init.Datatypes <> list ind
+R5861:5861 ligo_coq.co_de_bruijn <> A:110 var
+binder 5848:5849 <> xs:112
+binder 5851:5852 <> ys:113
+R5869:5869 Coq.Init.Logic <> ::type_scope:x_'<->'_x not
+R5912:5917 Coq.Init.Logic <> ::type_scope:x_'<->'_x not
+R5891:5894 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R5879:5881 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R5870:5875 Coq.Init.Datatypes <> length def
+R5877:5878 ligo_coq.co_de_bruijn <> us:111 var
+R5882:5887 Coq.Init.Datatypes <> length def
+R5889:5890 ligo_coq.co_de_bruijn <> xs:112 var
+R5907:5909 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R5895:5900 ligo_coq.co_de_bruijn <> select def
+R5905:5906 ligo_coq.co_de_bruijn <> xs:112 var
+R5902:5903 ligo_coq.co_de_bruijn <> us:111 var
+R5910:5911 ligo_coq.co_de_bruijn <> ys:113 var
+R5918:5921 ligo_coq.co_de_bruijn <> used ind
+R5929:5930 ligo_coq.co_de_bruijn <> xs:112 var
+R5926:5927 ligo_coq.co_de_bruijn <> ys:113 var
+R5923:5924 ligo_coq.co_de_bruijn <> us:111 var
+R6274:6277 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R6261:6263 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R6252:6257 Coq.Init.Datatypes <> length def
+R6264:6269 Coq.Init.Datatypes <> length def
+R6291:6293 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R6278:6283 ligo_coq.co_de_bruijn <> select def
+R6274:6277 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R6261:6263 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R6252:6257 Coq.Init.Datatypes <> length def
+R6264:6269 Coq.Init.Datatypes <> length def
+R6291:6293 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R6278:6283 ligo_coq.co_de_bruijn <> select def
+R6274:6277 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R6261:6263 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R6252:6257 Coq.Init.Datatypes <> length def
+R6264:6269 Coq.Init.Datatypes <> length def
+R6291:6293 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R6278:6283 ligo_coq.co_de_bruijn <> select def
+R6420:6434 ligo_coq.co_de_bruijn <> select_iff_used thm
+prf 6444:6454 <> used_select
+binder 6468:6468 <> A:114
+R6484:6487 Coq.Init.Datatypes <> list ind
+R6489:6493 ligo_coq.co_de_bruijn <> usage ind
+binder 6479:6480 <> us:115
+R6502:6505 Coq.Init.Datatypes <> list ind
+R6507:6507 ligo_coq.co_de_bruijn <> A:114 var
+binder 6497:6498 <> xs:116
+R6536:6543 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R6524:6526 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R6515:6520 Coq.Init.Datatypes <> length def
+R6522:6523 ligo_coq.co_de_bruijn <> us:115 var
+R6527:6532 Coq.Init.Datatypes <> length def
+R6534:6535 ligo_coq.co_de_bruijn <> xs:116 var
+R6544:6547 ligo_coq.co_de_bruijn <> used ind
+R6567:6568 ligo_coq.co_de_bruijn <> xs:116 var
+R6553:6558 ligo_coq.co_de_bruijn <> select def
+R6563:6564 ligo_coq.co_de_bruijn <> xs:116 var
+R6560:6561 ligo_coq.co_de_bruijn <> us:115 var
+R6549:6550 ligo_coq.co_de_bruijn <> us:115 var
+R6597:6611 ligo_coq.co_de_bruijn <> select_iff_used thm
+R6597:6611 ligo_coq.co_de_bruijn <> select_iff_used thm
+R6597:6611 ligo_coq.co_de_bruijn <> select_iff_used thm
+prf 6669:6685 <> select_iff_splits
+binder 6699:6699 <> A:117
+R6715:6723 ligo_coq.co_de_bruijn <> splitting def
+binder 6710:6711 <> ss:118
+R6738:6741 Coq.Init.Datatypes <> list ind
+R6743:6743 ligo_coq.co_de_bruijn <> A:117 var
+binder 6727:6728 <> zs:119
+binder 6730:6731 <> xs:120
+binder 6733:6734 <> ys:121
+R6751:6751 Coq.Init.Logic <> ::type_scope:x_'<->'_x not
+R6864:6869 Coq.Init.Logic <> ::type_scope:x_'<->'_x not
+R6783:6791 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R6766:6768 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R6752:6762 Coq.Lists.List <> length syndef
+R6764:6765 ligo_coq.co_de_bruijn <> ss:118 var
+R6769:6779 Coq.Lists.List <> length syndef
+R6781:6782 ligo_coq.co_de_bruijn <> zs:119 var
+R6823:6831 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R6818:6820 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R6792:6797 ligo_coq.co_de_bruijn <> select def
+R6816:6817 ligo_coq.co_de_bruijn <> zs:119 var
+R6800:6810 ligo_coq.co_de_bruijn <> left_usages def
+R6812:6813 ligo_coq.co_de_bruijn <> ss:118 var
+R6821:6822 ligo_coq.co_de_bruijn <> xs:120 var
+R6859:6861 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R6832:6837 ligo_coq.co_de_bruijn <> select def
+R6857:6858 ligo_coq.co_de_bruijn <> zs:119 var
+R6840:6851 ligo_coq.co_de_bruijn <> right_usages def
+R6853:6854 ligo_coq.co_de_bruijn <> ss:118 var
+R6862:6863 ligo_coq.co_de_bruijn <> ys:121 var
+R6870:6875 ligo_coq.co_de_bruijn <> splits ind
+R6886:6887 ligo_coq.co_de_bruijn <> ys:121 var
+R6883:6884 ligo_coq.co_de_bruijn <> xs:120 var
+R6880:6881 ligo_coq.co_de_bruijn <> zs:119 var
+R6877:6878 ligo_coq.co_de_bruijn <> ss:118 var
+R7223:7241 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R7210:7212 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R7201:7206 Coq.Init.Datatypes <> length def
+R7213:7218 Coq.Init.Datatypes <> length def
+R7273:7291 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R7269:7271 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R7242:7247 ligo_coq.co_de_bruijn <> select def
+R7250:7260 ligo_coq.co_de_bruijn <> left_usages def
+R7320:7322 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R7292:7297 ligo_coq.co_de_bruijn <> select def
+R7300:7311 ligo_coq.co_de_bruijn <> right_usages def
+R7223:7241 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R7210:7212 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R7201:7206 Coq.Init.Datatypes <> length def
+R7213:7218 Coq.Init.Datatypes <> length def
+R7273:7291 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R7269:7271 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R7242:7247 ligo_coq.co_de_bruijn <> select def
+R7250:7260 ligo_coq.co_de_bruijn <> left_usages def
+R7320:7322 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R7292:7297 ligo_coq.co_de_bruijn <> select def
+R7300:7311 ligo_coq.co_de_bruijn <> right_usages def
+R7223:7241 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R7210:7212 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R7201:7206 Coq.Init.Datatypes <> length def
+R7213:7218 Coq.Init.Datatypes <> length def
+R7273:7291 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R7269:7271 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R7242:7247 ligo_coq.co_de_bruijn <> select def
+R7250:7260 ligo_coq.co_de_bruijn <> left_usages def
+R7320:7322 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R7292:7297 ligo_coq.co_de_bruijn <> select def
+R7300:7311 ligo_coq.co_de_bruijn <> right_usages def
+R7223:7241 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R7210:7212 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R7201:7206 Coq.Init.Datatypes <> length def
+R7213:7218 Coq.Init.Datatypes <> length def
+R7273:7291 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R7269:7271 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R7242:7247 ligo_coq.co_de_bruijn <> select def
+R7250:7260 ligo_coq.co_de_bruijn <> left_usages def
+R7320:7322 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R7292:7297 ligo_coq.co_de_bruijn <> select def
+R7300:7311 ligo_coq.co_de_bruijn <> right_usages def
+R7447:7463 ligo_coq.co_de_bruijn <> select_iff_splits thm
+prf 7473:7485 <> splits_select
+binder 7499:7499 <> A:122
+R7515:7523 ligo_coq.co_de_bruijn <> splitting def
+binder 7510:7511 <> ss:123
+R7532:7535 Coq.Init.Datatypes <> list ind
+R7537:7537 ligo_coq.co_de_bruijn <> A:122 var
+binder 7527:7528 <> zs:124
+R7566:7573 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R7554:7556 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R7545:7550 Coq.Init.Datatypes <> length def
+R7552:7553 ligo_coq.co_de_bruijn <> ss:123 var
+R7557:7562 Coq.Init.Datatypes <> length def
+R7564:7565 ligo_coq.co_de_bruijn <> zs:124 var
+R7574:7579 ligo_coq.co_de_bruijn <> splits ind
+R7617:7622 ligo_coq.co_de_bruijn <> select def
+R7642:7643 ligo_coq.co_de_bruijn <> zs:124 var
+R7625:7636 ligo_coq.co_de_bruijn <> right_usages def
+R7638:7639 ligo_coq.co_de_bruijn <> ss:123 var
+R7588:7593 ligo_coq.co_de_bruijn <> select def
+R7612:7613 ligo_coq.co_de_bruijn <> zs:124 var
+R7596:7606 ligo_coq.co_de_bruijn <> left_usages def
+R7608:7609 ligo_coq.co_de_bruijn <> ss:123 var
+R7584:7585 ligo_coq.co_de_bruijn <> zs:124 var
+R7581:7582 ligo_coq.co_de_bruijn <> ss:123 var
+R7673:7689 ligo_coq.co_de_bruijn <> select_iff_splits thm
+R7673:7689 ligo_coq.co_de_bruijn <> select_iff_splits thm
+R7673:7689 ligo_coq.co_de_bruijn <> select_iff_splits thm
+def 7752:7767 <> assoc_splitting1
+R7784:7792 ligo_coq.co_de_bruijn <> splitting def
+binder 7770:7774 <> outer:125
+binder 7776:7780 <> inner:126
+R7797:7805 ligo_coq.co_de_bruijn <> splitting def
+R7818:7818 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R7824:7825 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R7831:7831 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R7819:7823 ligo_coq.co_de_bruijn <> outer:125 var
+R7826:7830 ligo_coq.co_de_bruijn <> inner:126 var
+R7842:7842 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R7857:7858 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R7873:7873 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R7847:7851 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R7843:7846 ligo_coq.co_de_bruijn <> Left constr
+R7863:7867 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R7859:7862 ligo_coq.co_de_bruijn <> Left constr
+R7882:7886 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R7878:7881 ligo_coq.co_de_bruijn <> Left constr
+R7887:7902 ligo_coq.co_de_bruijn <> assoc_splitting1:127 def
+R7910:7914 ligo_coq.co_de_bruijn <> inner:126 var
+R7904:7908 ligo_coq.co_de_bruijn <> outer:125 var
+R7920:7920 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R7935:7936 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R7951:7951 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R7925:7929 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R7921:7924 ligo_coq.co_de_bruijn <> Left constr
+R7942:7945 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R7937:7941 ligo_coq.co_de_bruijn <> Right constr
+R7961:7964 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R7956:7960 ligo_coq.co_de_bruijn <> Right constr
+R7965:7980 ligo_coq.co_de_bruijn <> assoc_splitting1:127 def
+R7988:7992 ligo_coq.co_de_bruijn <> inner:126 var
+R7982:7986 ligo_coq.co_de_bruijn <> outer:125 var
+R7998:7998 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R8013:8014 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R8029:8029 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R8003:8007 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R7999:8002 ligo_coq.co_de_bruijn <> Left constr
+R8019:8023 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R8015:8018 ligo_coq.co_de_bruijn <> Both constr
+R8038:8042 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R8034:8037 ligo_coq.co_de_bruijn <> Both constr
+R8043:8058 ligo_coq.co_de_bruijn <> assoc_splitting1:127 def
+R8066:8070 ligo_coq.co_de_bruijn <> inner:126 var
+R8060:8064 ligo_coq.co_de_bruijn <> outer:125 var
+R8076:8076 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R8091:8101 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R8107:8107 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R8082:8085 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R8077:8081 ligo_coq.co_de_bruijn <> Right constr
+R8117:8120 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R8112:8116 ligo_coq.co_de_bruijn <> Right constr
+R8121:8136 ligo_coq.co_de_bruijn <> assoc_splitting1:127 def
+R8144:8148 ligo_coq.co_de_bruijn <> inner:126 var
+R8138:8142 ligo_coq.co_de_bruijn <> outer:125 var
+R8154:8154 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R8169:8170 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R8185:8185 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R8159:8163 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R8155:8158 ligo_coq.co_de_bruijn <> Both constr
+R8175:8179 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R8171:8174 ligo_coq.co_de_bruijn <> Left constr
+R8194:8198 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R8190:8193 ligo_coq.co_de_bruijn <> Both constr
+R8199:8214 ligo_coq.co_de_bruijn <> assoc_splitting1:127 def
+R8222:8226 ligo_coq.co_de_bruijn <> inner:126 var
+R8216:8220 ligo_coq.co_de_bruijn <> outer:125 var
+R8232:8232 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R8247:8248 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R8263:8263 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R8237:8241 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R8233:8236 ligo_coq.co_de_bruijn <> Both constr
+R8254:8257 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R8249:8253 ligo_coq.co_de_bruijn <> Right constr
+R8273:8276 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R8268:8272 ligo_coq.co_de_bruijn <> Right constr
+R8277:8292 ligo_coq.co_de_bruijn <> assoc_splitting1:127 def
+R8300:8304 ligo_coq.co_de_bruijn <> inner:126 var
+R8294:8298 ligo_coq.co_de_bruijn <> outer:125 var
+R8310:8310 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R8325:8326 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R8341:8341 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R8315:8319 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R8311:8314 ligo_coq.co_de_bruijn <> Both constr
+R8331:8335 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R8327:8330 ligo_coq.co_de_bruijn <> Both constr
+R8350:8354 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R8346:8349 ligo_coq.co_de_bruijn <> Both constr
+R8355:8370 ligo_coq.co_de_bruijn <> assoc_splitting1:127 def
+R8378:8382 ligo_coq.co_de_bruijn <> inner:126 var
+R8372:8376 ligo_coq.co_de_bruijn <> outer:125 var
+R8388:8388 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R8391:8392 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R8398:8398 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R8389:8390 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+R8403:8404 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+R8410:8410 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R8412:8413 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R8416:8416 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R8414:8415 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+R8421:8422 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+def 8441:8456 <> assoc_splitting2
+R8473:8481 ligo_coq.co_de_bruijn <> splitting def
+binder 8459:8463 <> outer:128
+binder 8465:8469 <> inner:129
+R8486:8494 ligo_coq.co_de_bruijn <> splitting def
+R8507:8507 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R8513:8514 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R8520:8520 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R8508:8512 ligo_coq.co_de_bruijn <> outer:128 var
+R8515:8519 ligo_coq.co_de_bruijn <> inner:129 var
+R8531:8531 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R8546:8547 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R8562:8562 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R8536:8540 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R8532:8535 ligo_coq.co_de_bruijn <> Left constr
+R8552:8556 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R8548:8551 ligo_coq.co_de_bruijn <> Left constr
+R8576:8591 ligo_coq.co_de_bruijn <> assoc_splitting2:130 def
+R8599:8603 ligo_coq.co_de_bruijn <> inner:129 var
+R8593:8597 ligo_coq.co_de_bruijn <> outer:128 var
+R8609:8609 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R8624:8625 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R8640:8640 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R8614:8618 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R8610:8613 ligo_coq.co_de_bruijn <> Left constr
+R8631:8634 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R8626:8630 ligo_coq.co_de_bruijn <> Right constr
+R8649:8653 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R8645:8648 ligo_coq.co_de_bruijn <> Left constr
+R8654:8669 ligo_coq.co_de_bruijn <> assoc_splitting2:130 def
+R8677:8681 ligo_coq.co_de_bruijn <> inner:129 var
+R8671:8675 ligo_coq.co_de_bruijn <> outer:128 var
+R8687:8687 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R8702:8703 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R8718:8718 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R8692:8696 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R8688:8691 ligo_coq.co_de_bruijn <> Left constr
+R8708:8712 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R8704:8707 ligo_coq.co_de_bruijn <> Both constr
+R8727:8731 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R8723:8726 ligo_coq.co_de_bruijn <> Left constr
+R8732:8747 ligo_coq.co_de_bruijn <> assoc_splitting2:130 def
+R8755:8759 ligo_coq.co_de_bruijn <> inner:129 var
+R8749:8753 ligo_coq.co_de_bruijn <> outer:128 var
+R8765:8765 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R8780:8790 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R8796:8796 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R8771:8774 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R8766:8770 ligo_coq.co_de_bruijn <> Right constr
+R8806:8809 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R8801:8805 ligo_coq.co_de_bruijn <> Right constr
+R8810:8825 ligo_coq.co_de_bruijn <> assoc_splitting2:130 def
+R8833:8837 ligo_coq.co_de_bruijn <> inner:129 var
+R8827:8831 ligo_coq.co_de_bruijn <> outer:128 var
+R8843:8843 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R8858:8859 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R8874:8874 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R8848:8852 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R8844:8847 ligo_coq.co_de_bruijn <> Both constr
+R8864:8868 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R8860:8863 ligo_coq.co_de_bruijn <> Left constr
+R8884:8887 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R8879:8883 ligo_coq.co_de_bruijn <> Right constr
+R8888:8903 ligo_coq.co_de_bruijn <> assoc_splitting2:130 def
+R8911:8915 ligo_coq.co_de_bruijn <> inner:129 var
+R8905:8909 ligo_coq.co_de_bruijn <> outer:128 var
+R8921:8921 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R8936:8937 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R8952:8952 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R8926:8930 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R8922:8925 ligo_coq.co_de_bruijn <> Both constr
+R8943:8946 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R8938:8942 ligo_coq.co_de_bruijn <> Right constr
+R8961:8965 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R8957:8960 ligo_coq.co_de_bruijn <> Both constr
+R8966:8981 ligo_coq.co_de_bruijn <> assoc_splitting2:130 def
+R8989:8993 ligo_coq.co_de_bruijn <> inner:129 var
+R8983:8987 ligo_coq.co_de_bruijn <> outer:128 var
+R8999:8999 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R9014:9015 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R9030:9030 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R9004:9008 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R9000:9003 ligo_coq.co_de_bruijn <> Both constr
+R9020:9024 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R9016:9019 ligo_coq.co_de_bruijn <> Both constr
+R9039:9043 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R9035:9038 ligo_coq.co_de_bruijn <> Both constr
+R9044:9059 ligo_coq.co_de_bruijn <> assoc_splitting2:130 def
+R9067:9071 ligo_coq.co_de_bruijn <> inner:129 var
+R9061:9065 ligo_coq.co_de_bruijn <> outer:128 var
+R9077:9077 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R9080:9081 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R9087:9087 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R9078:9079 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+R9092:9093 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+R9099:9099 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R9101:9102 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R9105:9105 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R9103:9104 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+R9110:9111 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+def 9132:9146 <> assoc_splitting
+R9163:9171 ligo_coq.co_de_bruijn <> splitting def
+binder 9149:9153 <> outer:131
+binder 9155:9159 <> inner:132
+R9185:9187 Coq.Init.Datatypes <> ::type_scope:x_'*'_x not
+R9176:9184 ligo_coq.co_de_bruijn <> splitting def
+R9188:9196 ligo_coq.co_de_bruijn <> splitting def
+R9203:9203 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R9232:9233 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R9262:9262 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R9204:9219 ligo_coq.co_de_bruijn <> assoc_splitting1 def
+R9227:9231 ligo_coq.co_de_bruijn <> inner:132 var
+R9221:9225 ligo_coq.co_de_bruijn <> outer:131 var
+R9234:9249 ligo_coq.co_de_bruijn <> assoc_splitting2 def
+R9257:9261 ligo_coq.co_de_bruijn <> inner:132 var
+R9251:9255 ligo_coq.co_de_bruijn <> outer:131 var
+def 9277:9285 <> flip_side
+R9292:9295 ligo_coq.co_de_bruijn <> side ind
+binder 9288:9288 <> s:133
+R9300:9303 ligo_coq.co_de_bruijn <> side ind
+R9316:9316 ligo_coq.co_de_bruijn <> s:133 var
+R9327:9330 ligo_coq.co_de_bruijn <> Left constr
+R9335:9339 ligo_coq.co_de_bruijn <> Right constr
+R9345:9349 ligo_coq.co_de_bruijn <> Right constr
+R9354:9357 ligo_coq.co_de_bruijn <> Left constr
+R9363:9366 ligo_coq.co_de_bruijn <> Both constr
+R9371:9374 ligo_coq.co_de_bruijn <> Both constr
+def 9395:9408 <> flip_splitting
+R9416:9424 ligo_coq.co_de_bruijn <> splitting def
+binder 9411:9412 <> ss:135
+R9429:9437 ligo_coq.co_de_bruijn <> splitting def
+R9444:9451 Coq.Lists.List <> map def
+R9463:9464 ligo_coq.co_de_bruijn <> ss:135 var
+R9453:9461 ligo_coq.co_de_bruijn <> flip_side def
+prf 9474:9485 <> assoc_splits
+R9513:9521 ligo_coq.co_de_bruijn <> splitting def
+binder 9499:9503 <> outer:136
+binder 9505:9509 <> inner:137
+binder 9535:9535 <> A:138
+R9562:9565 Coq.Init.Datatypes <> list ind
+R9567:9567 ligo_coq.co_de_bruijn <> A:138 var
+binder 9546:9547 <> d1:139
+binder 9549:9549 <> g:140
+binder 9551:9552 <> d2:141
+binder 9554:9555 <> g1:142
+binder 9557:9558 <> g2:143
+R9595:9602 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R9575:9580 ligo_coq.co_de_bruijn <> splits ind
+R9593:9594 ligo_coq.co_de_bruijn <> d2:141 var
+R9591:9591 ligo_coq.co_de_bruijn <> g:140 var
+R9588:9589 ligo_coq.co_de_bruijn <> d1:139 var
+R9582:9586 ligo_coq.co_de_bruijn <> outer:136 var
+R9623:9630 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R9603:9608 ligo_coq.co_de_bruijn <> splits ind
+R9621:9622 ligo_coq.co_de_bruijn <> g2:143 var
+R9618:9619 ligo_coq.co_de_bruijn <> g1:142 var
+R9616:9616 ligo_coq.co_de_bruijn <> g:140 var
+R9610:9614 ligo_coq.co_de_bruijn <> inner:137 var
+R9631:9637 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+R9640:9647 Coq.Init.Logic <> ::type_scope:'exists'_x_'..'_x_','_x not
+binder 9638:9639 <> d':144
+R9699:9708 Coq.Init.Logic <> ::type_scope:x_'/\'_x not
+R9648:9653 ligo_coq.co_de_bruijn <> splits ind
+R9697:9698 ligo_coq.co_de_bruijn <> d':144 var
+R9694:9695 ligo_coq.co_de_bruijn <> g1:142 var
+R9691:9692 ligo_coq.co_de_bruijn <> d1:139 var
+R9656:9658 Coq.Init.Datatypes <> fst def
+R9661:9675 ligo_coq.co_de_bruijn <> assoc_splitting def
+R9683:9687 ligo_coq.co_de_bruijn <> inner:137 var
+R9677:9681 ligo_coq.co_de_bruijn <> outer:136 var
+R9709:9714 ligo_coq.co_de_bruijn <> splits ind
+R9758:9759 ligo_coq.co_de_bruijn <> d2:141 var
+R9755:9756 ligo_coq.co_de_bruijn <> g2:143 var
+R9752:9753 ligo_coq.co_de_bruijn <> d':144 var
+R9717:9719 Coq.Init.Datatypes <> snd def
+R9722:9736 ligo_coq.co_de_bruijn <> assoc_splitting def
+R9744:9748 ligo_coq.co_de_bruijn <> inner:137 var
+R9738:9742 ligo_coq.co_de_bruijn <> outer:136 var
+prf 10101:10111 <> flip_splits
+binder 10125:10125 <> A:145
+R10141:10149 ligo_coq.co_de_bruijn <> splitting def
+binder 10136:10137 <> ss:146
+R10173:10176 Coq.Init.Datatypes <> list ind
+R10178:10178 ligo_coq.co_de_bruijn <> A:145 var
+binder 10163:10163 <> g:147
+binder 10165:10166 <> g1:148
+binder 10168:10169 <> g2:149
+R10203:10210 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R10186:10191 ligo_coq.co_de_bruijn <> splits ind
+R10201:10202 ligo_coq.co_de_bruijn <> g2:149 var
+R10198:10199 ligo_coq.co_de_bruijn <> g1:148 var
+R10196:10196 ligo_coq.co_de_bruijn <> g:147 var
+R10193:10194 ligo_coq.co_de_bruijn <> ss:146 var
+R10211:10216 ligo_coq.co_de_bruijn <> splits ind
+R10243:10244 ligo_coq.co_de_bruijn <> g1:148 var
+R10240:10241 ligo_coq.co_de_bruijn <> g2:149 var
+R10238:10238 ligo_coq.co_de_bruijn <> g:147 var
+R10219:10232 ligo_coq.co_de_bruijn <> flip_splitting def
+R10234:10235 ligo_coq.co_de_bruijn <> ss:146 var
+prf 10300:10317 <> splits_flip_select
+binder 10331:10331 <> A:150
+R10347:10355 ligo_coq.co_de_bruijn <> splitting def
+binder 10342:10343 <> ss:151
+R10364:10367 Coq.Init.Datatypes <> list ind
+R10369:10369 ligo_coq.co_de_bruijn <> A:150 var
+binder 10359:10360 <> zs:152
+R10398:10405 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R10386:10388 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R10377:10382 Coq.Init.Datatypes <> length def
+R10384:10385 ligo_coq.co_de_bruijn <> ss:151 var
+R10389:10394 Coq.Init.Datatypes <> length def
+R10396:10397 ligo_coq.co_de_bruijn <> zs:152 var
+R10406:10411 ligo_coq.co_de_bruijn <> splits ind
+R10467:10472 ligo_coq.co_de_bruijn <> select def
+R10491:10492 ligo_coq.co_de_bruijn <> zs:152 var
+R10475:10485 ligo_coq.co_de_bruijn <> left_usages def
+R10487:10488 ligo_coq.co_de_bruijn <> ss:151 var
+R10437:10442 ligo_coq.co_de_bruijn <> select def
+R10462:10463 ligo_coq.co_de_bruijn <> zs:152 var
+R10445:10456 ligo_coq.co_de_bruijn <> right_usages def
+R10458:10459 ligo_coq.co_de_bruijn <> ss:151 var
+R10433:10434 ligo_coq.co_de_bruijn <> zs:152 var
+R10414:10427 ligo_coq.co_de_bruijn <> flip_splitting def
+R10429:10430 ligo_coq.co_de_bruijn <> ss:151 var
+R10519:10529 ligo_coq.co_de_bruijn <> flip_splits thm
+R10532:10544 ligo_coq.co_de_bruijn <> splits_select thm
+R10519:10529 ligo_coq.co_de_bruijn <> flip_splits thm
+R10532:10544 ligo_coq.co_de_bruijn <> splits_select thm
+def 10710:10714 <> union
+R10725:10728 Coq.Init.Datatypes <> list ind
+R10730:10734 ligo_coq.co_de_bruijn <> usage ind
+binder 10717:10718 <> ls:153
+binder 10720:10721 <> rs:154
+R10748:10750 Coq.Init.Datatypes <> ::type_scope:x_'*'_x not
+R10739:10747 ligo_coq.co_de_bruijn <> splitting def
+R10751:10754 Coq.Init.Datatypes <> list ind
+R10756:10760 ligo_coq.co_de_bruijn <> usage ind
+R10773:10773 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R10776:10777 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R10780:10780 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R10774:10775 ligo_coq.co_de_bruijn <> ls:153 var
+R10778:10779 ligo_coq.co_de_bruijn <> rs:154 var
+R10791:10791 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R10794:10795 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R10798:10798 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R10792:10793 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+R10796:10797 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+R10807:10807 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R10810:10811 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R10814:10814 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R10808:10809 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+R10812:10813 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+R10820:10820 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R10828:10829 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R10837:10837 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R10822:10825 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R10831:10834 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R10862:10866 ligo_coq.co_de_bruijn <> union:155 def
+R10871:10872 ligo_coq.co_de_bruijn <> rs:154 var
+R10868:10869 ligo_coq.co_de_bruijn <> ls:153 var
+binder 10851:10852 <> ss:156
+binder 10855:10856 <> us:157
+R10887:10887 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R10889:10890 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R10892:10892 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R10905:10905 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R10910:10911 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R10916:10916 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R10906:10909 ligo_coq.co_de_bruijn <> Drop constr
+R10912:10915 ligo_coq.co_de_bruijn <> Drop constr
+R10921:10921 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R10924:10925 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R10936:10936 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R10922:10923 ligo_coq.co_de_bruijn <> ss:156 var
+R10930:10933 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R10926:10929 ligo_coq.co_de_bruijn <> Drop constr
+R10934:10935 ligo_coq.co_de_bruijn <> us:157 var
+R10944:10944 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R10949:10950 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R10955:10955 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R10945:10948 ligo_coq.co_de_bruijn <> Drop constr
+R10951:10954 ligo_coq.co_de_bruijn <> Keep constr
+R10960:10960 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R10972:10973 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R10984:10984 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R10966:10969 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R10961:10965 ligo_coq.co_de_bruijn <> Right constr
+R10970:10971 ligo_coq.co_de_bruijn <> ss:156 var
+R10978:10981 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R10974:10977 ligo_coq.co_de_bruijn <> Keep constr
+R10982:10983 ligo_coq.co_de_bruijn <> us:157 var
+R10992:10992 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R10997:10998 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R11003:11003 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R10993:10996 ligo_coq.co_de_bruijn <> Keep constr
+R10999:11002 ligo_coq.co_de_bruijn <> Drop constr
+R11008:11008 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R11019:11020 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R11031:11031 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R11013:11016 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R11009:11012 ligo_coq.co_de_bruijn <> Left constr
+R11017:11018 ligo_coq.co_de_bruijn <> ss:156 var
+R11025:11028 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R11021:11024 ligo_coq.co_de_bruijn <> Keep constr
+R11029:11030 ligo_coq.co_de_bruijn <> us:157 var
+R11039:11039 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R11044:11045 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R11050:11050 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R11040:11043 ligo_coq.co_de_bruijn <> Keep constr
+R11046:11049 ligo_coq.co_de_bruijn <> Keep constr
+R11055:11055 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R11066:11067 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R11078:11078 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R11060:11063 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R11056:11059 ligo_coq.co_de_bruijn <> Both constr
+R11064:11065 ligo_coq.co_de_bruijn <> ss:156 var
+R11072:11075 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R11068:11071 ligo_coq.co_de_bruijn <> Keep constr
+R11076:11077 ligo_coq.co_de_bruijn <> us:157 var
+R11521:11521 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R11524:11525 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R11528:11528 Coq.Init.Datatypes <> ::core_scope:'('_x_','_x_','_'..'_','_x_')' not
+R11522:11523 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+R11526:11527 Coq.Lists.List ListNotations ::list_scope:'['_']' not

@@ -1,0 +1,1 @@
+src/passes/02-parsing/pascaligo.ml: Buffer ContractParser Cst_pascaligo Cst_shared Lexing_pascaligo Parsing_pascaligo Parsing_shared Preprocessing_pascaligo Simple_utils

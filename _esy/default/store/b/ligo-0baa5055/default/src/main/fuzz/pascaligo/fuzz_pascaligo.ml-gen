@@ -1,0 +1,6 @@
+(** @canonical Fuzz_pascaligo.Fuzz *)
+module Fuzz = Fuzz_pascaligo__Fuzz
+
+
+(** @canonical Fuzz_pascaligo.Helpers *)
+module Helpers = Fuzz_pascaligo__Helpers

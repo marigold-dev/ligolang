@@ -1,0 +1,2 @@
+(** @canonical Tezos_lwt_result_stdlib.Lwtreslib *)
+module Lwtreslib = Tezos_lwt_result_stdlib__Lwtreslib

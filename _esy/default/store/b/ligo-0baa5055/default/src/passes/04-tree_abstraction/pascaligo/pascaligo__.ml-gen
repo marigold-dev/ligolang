@@ -1,0 +1,10 @@
+(** @canonical Pascaligo.Compiler *)
+module Compiler = Pascaligo__Compiler
+
+
+(** @canonical Pascaligo.Decompiler *)
+module Decompiler = Pascaligo__Decompiler
+
+
+(** @canonical Pascaligo.Errors *)
+module Errors = Pascaligo__Errors

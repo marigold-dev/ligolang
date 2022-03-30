@@ -1,0 +1,6 @@
+(** @canonical Fuzz_jsligo.Fuzz *)
+module Fuzz = Fuzz_jsligo__Fuzz
+
+
+(** @canonical Fuzz_jsligo.Helpers *)
+module Helpers = Fuzz_jsligo__Helpers

@@ -1,0 +1,42 @@
+(** @canonical Ast_core.Combinators *)
+module Combinators = Ast_core__Combinators
+
+
+(** @canonical Ast_core.Compare *)
+module Compare = Ast_core__Compare
+
+
+(** @canonical Ast_core.Compare_enum *)
+module Compare_enum = Ast_core__Compare_enum
+
+
+(** @canonical Ast_core.Environment *)
+module Environment = Ast_core__Environment
+
+
+(** @canonical Ast_core.Formatter *)
+module Formatter = Ast_core__Formatter
+
+
+(** @canonical Ast_core.Helpers *)
+module Helpers = Ast_core__Helpers
+
+
+(** @canonical Ast_core.Misc *)
+module Misc = Ast_core__Misc
+
+
+(** @canonical Ast_core.PP *)
+module PP = Ast_core__PP
+
+
+(** @canonical Ast_core.Reasons *)
+module Reasons = Ast_core__Reasons
+
+
+(** @canonical Ast_core.To_yojson *)
+module To_yojson = Ast_core__To_yojson
+
+
+(** @canonical Ast_core.Types *)
+module Types = Ast_core__Types

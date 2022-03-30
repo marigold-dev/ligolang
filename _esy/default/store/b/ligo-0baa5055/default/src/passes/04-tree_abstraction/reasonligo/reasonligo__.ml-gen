@@ -1,0 +1,10 @@
+(** @canonical Reasonligo.Compiler *)
+module Compiler = Reasonligo__Compiler
+
+
+(** @canonical Reasonligo.Decompiler *)
+module Decompiler = Reasonligo__Decompiler
+
+
+(** @canonical Reasonligo.Errors *)
+module Errors = Reasonligo__Errors

@@ -1,0 +1,10 @@
+(** @canonical Bare_functor_outputs.Hashtbl *)
+module Hashtbl = Bare_functor_outputs__Hashtbl
+
+
+(** @canonical Bare_functor_outputs.Map *)
+module Map = Bare_functor_outputs__Map
+
+
+(** @canonical Bare_functor_outputs.Set *)
+module Set = Bare_functor_outputs__Set

@@ -1,15 +1,23 @@
 type z = Z.t [@@deriving ord]
+
 type ligo_string = Simple_utils.Ligo_string.t [@@deriving yojson, ord]
 
-let [@warning "-32"] z_to_yojson x = `String (Z.to_string x)
-let [@warning "-32"] z_of_yojson x =
-  try match x with
-    | `String s -> Ok (Z.of_string s)
-    | _ -> Simple_utils.Utils.error_yojson_format "JSON string"
+let[@warning "-32"] z_to_yojson x = `String (Z.to_string x)
+
+let[@warning "-32"] z_of_yojson x =
+  try
+    match x with
+    | `String s ->
+        Ok (Z.of_string s)
+    | _ ->
+        Simple_utils.Utils.error_yojson_format "JSON string"
   with
   | Invalid_argument _ ->
-    Error "Invalid formatting.
-            The Zarith library does not know how to handle this formatting."
+      Error
+        "Invalid formatting.\n\
+        \            The Zarith library does not know how to handle this \
+         formatting."
+
 
 let bytes_to_yojson b = `String (Bytes.to_string b)
 
@@ -39,24 +47,43 @@ type literal =
 [@@deriving yojson, ord]
 
 let literal_to_enum = function
-  | Literal_unit        ->  1
-  | Literal_int _       ->  2
-  | Literal_nat _       ->  3
-  | Literal_timestamp _ ->  4
-  | Literal_mutez _     ->  5
-  | Literal_string _    ->  6
-  | Literal_bytes _     ->  7
-  | Literal_address _   ->  8
-  | Literal_signature _ ->  9
-  | Literal_key _       -> 10
-  | Literal_key_hash _  -> 11
-  | Literal_chain_id _  -> 12
-  | Literal_operation _ -> 13
-  | Literal_bls12_381_g1 _ -> 14
-  | Literal_bls12_381_g2 _ -> 15
-  | Literal_bls12_381_fr _ -> 16
-  | Literal_chest _ -> 17
-  | Literal_chest_key _ -> 18
+  | Literal_unit ->
+      1
+  | Literal_int _ ->
+      2
+  | Literal_nat _ ->
+      3
+  | Literal_timestamp _ ->
+      4
+  | Literal_mutez _ ->
+      5
+  | Literal_string _ ->
+      6
+  | Literal_bytes _ ->
+      7
+  | Literal_address _ ->
+      8
+  | Literal_signature _ ->
+      9
+  | Literal_key _ ->
+      10
+  | Literal_key_hash _ ->
+      11
+  | Literal_chain_id _ ->
+      12
+  | Literal_operation _ ->
+      13
+  | Literal_bls12_381_g1 _ ->
+      14
+  | Literal_bls12_381_g2 _ ->
+      15
+  | Literal_bls12_381_fr _ ->
+      16
+  | Literal_chest _ ->
+      17
+  | Literal_chest_key _ ->
+      18
+
 
 type constant' =
   | C_INT
@@ -252,12 +279,12 @@ type constant' =
   | C_GLOBAL_CONSTANT
   (* JsLIGO *)
   | C_POLYMORPHIC_ADD [@print "C_POLYMORPHIC_ADD"]
-[@@deriving enum, yojson, print_constant, only_interpreter_tags ]
+[@@deriving enum, yojson, print_constant, only_interpreter_tags]
 
-type deprecated = {
-  name : string ;
-  const : constant' ;
-}
+type deprecated =
+  { name : string
+  ; const : constant'
+  }
 
 type rich_constant =
   | Deprecated of deprecated

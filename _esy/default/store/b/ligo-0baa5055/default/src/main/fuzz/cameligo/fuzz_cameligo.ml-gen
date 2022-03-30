@@ -1,0 +1,6 @@
+(** @canonical Fuzz_cameligo.Fuzz *)
+module Fuzz = Fuzz_cameligo__Fuzz
+
+
+(** @canonical Fuzz_cameligo.Helpers *)
+module Helpers = Fuzz_cameligo__Helpers

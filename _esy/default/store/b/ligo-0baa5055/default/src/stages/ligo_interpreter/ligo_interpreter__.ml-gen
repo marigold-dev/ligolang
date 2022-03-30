@@ -1,0 +1,18 @@
+(** @canonical Ligo_interpreter.Combinators *)
+module Combinators = Ligo_interpreter__Combinators
+
+
+(** @canonical Ligo_interpreter.Environment *)
+module Environment = Ligo_interpreter__Environment
+
+
+(** @canonical Ligo_interpreter.Formatter *)
+module Formatter = Ligo_interpreter__Formatter
+
+
+(** @canonical Ligo_interpreter.PP *)
+module PP = Ligo_interpreter__PP
+
+
+(** @canonical Ligo_interpreter.Types *)
+module Types = Ligo_interpreter__Types

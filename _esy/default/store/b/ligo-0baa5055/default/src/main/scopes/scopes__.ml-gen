@@ -1,0 +1,14 @@
+(** @canonical Scopes.Formatter *)
+module Formatter = Scopes__Formatter
+
+
+(** @canonical Scopes.Misc *)
+module Misc = Scopes__Misc
+
+
+(** @canonical Scopes.PP *)
+module PP = Scopes__PP
+
+
+(** @canonical Scopes.Types *)
+module Types = Scopes__Types

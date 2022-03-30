@@ -1,0 +1,2 @@
+(** @canonical Menhir_jsligo_tokens.MenhirToken *)
+module MenhirToken = Menhir_jsligo_tokens__MenhirToken

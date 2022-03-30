@@ -1,0 +1,22 @@
+(** @canonical Checking.Constant_typers *)
+module Constant_typers = Checking__Constant_typers
+
+
+(** @canonical Checking.Context *)
+module Context = Checking__Context
+
+
+(** @canonical Checking.Errors *)
+module Errors = Checking__Errors
+
+
+(** @canonical Checking.Helpers *)
+module Helpers = Checking__Helpers
+
+
+(** @canonical Checking.Pattern_matching *)
+module Pattern_matching = Checking__Pattern_matching
+
+
+(** @canonical Checking.Untyper *)
+module Untyper = Checking__Untyper

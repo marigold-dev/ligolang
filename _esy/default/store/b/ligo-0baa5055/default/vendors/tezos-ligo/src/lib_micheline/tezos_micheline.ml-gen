@@ -1,0 +1,14 @@
+(** @canonical Tezos_micheline.Micheline *)
+module Micheline = Tezos_micheline__Micheline
+
+
+(** @canonical Tezos_micheline.Micheline_encoding *)
+module Micheline_encoding = Tezos_micheline__Micheline_encoding
+
+
+(** @canonical Tezos_micheline.Micheline_parser *)
+module Micheline_parser = Tezos_micheline__Micheline_parser
+
+
+(** @canonical Tezos_micheline.Micheline_printer *)
+module Micheline_printer = Tezos_micheline__Micheline_printer

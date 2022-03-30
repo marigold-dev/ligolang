@@ -1,0 +1,6 @@
+(** @canonical Preprocessing_jsligo.Comments *)
+module Comments = Preprocessing_jsligo__Comments
+
+
+(** @canonical Preprocessing_jsligo.File *)
+module File = Preprocessing_jsligo__File

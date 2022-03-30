@@ -1,0 +1,1512 @@
+DIGEST 9b4071ff199d87452a84569046fa692b
+Fligo_coq.ligo
+R48:53 Coq.Strings.String <> <> lib
+R55:58 Coq.Lists.List <> <> lib
+R60:65 Coq.ZArith.ZArith <> <> lib
+R120:131 ligo_coq.co_de_bruijn <> <> lib
+R133:137 ligo_coq.types <> <> lib
+R139:147 ligo_coq.michelson <> <> lib
+R149:157 ligo_coq.micheline <> <> lib
+R159:163 ligo_coq.bytes <> <> lib
+sec 175:178 <> expr
+binder 190:190 <> A:1
+binder 209:210 <> op:2
+binder 229:231 <> lit:3
+ind 252:255 <> expr
+constr 268:272 <> E_var
+constr 288:295 <> E_let_in
+constr 342:348 <> E_tuple
+constr 372:382 <> E_let_tuple
+constr 428:433 <> E_proj
+constr 471:478 <> E_update
+constr 517:521 <> E_app
+constr 545:549 <> E_lam
+constr 592:601 <> E_operator
+constr 646:654 <> E_literal
+constr 678:683 <> E_pair
+constr 707:711 <> E_car
+constr 735:739 <> E_cdr
+constr 764:769 <> E_unit
+constr 786:791 <> E_left
+constr 832:838 <> E_right
+constr 880:888 <> E_if_left
+constr 912:920 <> E_if_bool
+constr 944:952 <> E_if_none
+constr 976:984 <> E_if_cons
+constr 1009:1014 <> E_iter
+constr 1060:1064 <> E_map
+constr 1110:1120 <> E_loop_left
+constr 1183:1188 <> E_fold
+constr 1255:1266 <> E_fold_right
+constr 1351:1360 <> E_failwith
+constr 1385:1399 <> E_raw_michelson
+constr 1788:1804 <> E_global_constant
+ind 1859:1862 <> args
+constr 1875:1882 <> Args_nil
+constr 1893:1901 <> Args_cons
+ind 1945:1949 <> binds
+constr 1962:1966 <> Binds
+ind 2028:2031 <> cond
+constr 2044:2047 <> Cond
+ind 2132:2142 <> static_args
+constr 2155:2163 <> Type_args
+constr 2222:2230 <> Instr_arg
+constr 2257:2266 <> Script_arg
+ind 2298:2303 <> script
+constr 2316:2321 <> Script
+R277:280 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R276:276 ligo_coq.ligo <> expr.A var
+R281:284 ligo_coq.ligo <> expr:4 ind
+R300:303 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R299:299 ligo_coq.ligo <> expr.A var
+R313:316 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R304:312 ligo_coq.co_de_bruijn <> splitting def
+R321:324 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R317:320 ligo_coq.ligo <> expr:4 ind
+R330:333 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R325:329 ligo_coq.ligo <> binds:6 ind
+R334:337 ligo_coq.ligo <> expr:4 ind
+R353:356 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R352:352 ligo_coq.ligo <> expr.A var
+R361:364 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R357:360 ligo_coq.ligo <> args:5 ind
+R365:368 ligo_coq.ligo <> expr:4 ind
+R387:390 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R386:386 ligo_coq.ligo <> expr.A var
+R400:403 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R391:399 ligo_coq.co_de_bruijn <> splitting def
+R408:411 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R404:407 ligo_coq.ligo <> expr:4 ind
+R417:420 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R412:416 ligo_coq.ligo <> binds:6 ind
+R421:424 ligo_coq.ligo <> expr:4 ind
+R438:441 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R437:437 ligo_coq.ligo <> expr.A var
+R446:449 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R442:445 ligo_coq.ligo <> expr:4 ind
+R453:456 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R450:452 Coq.Init.Datatypes <> nat ind
+R460:463 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R457:459 Coq.Init.Datatypes <> nat ind
+R464:467 ligo_coq.ligo <> expr:4 ind
+R483:486 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R482:482 ligo_coq.ligo <> expr.A var
+R491:494 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R487:490 ligo_coq.ligo <> args:5 ind
+R498:501 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R495:497 Coq.Init.Datatypes <> nat ind
+R505:508 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R502:504 Coq.Init.Datatypes <> nat ind
+R509:512 ligo_coq.ligo <> expr:4 ind
+R526:529 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R525:525 ligo_coq.ligo <> expr.A var
+R534:537 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R530:533 ligo_coq.ligo <> args:5 ind
+R538:541 ligo_coq.ligo <> expr:4 ind
+R554:557 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R553:553 ligo_coq.ligo <> expr.A var
+R563:566 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R558:562 ligo_coq.ligo <> binds:6 ind
+R580:583 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R567:570 ligo_coq.micheline <> node ind
+R574:579 Coq.Strings.String <> string ind
+R572:572 ligo_coq.ligo <> expr.A var
+R584:587 ligo_coq.ligo <> expr:4 ind
+R606:609 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R605:605 ligo_coq.ligo <> expr.A var
+R612:615 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R610:611 ligo_coq.ligo <> expr.op var
+R627:630 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R616:626 ligo_coq.ligo <> static_args:8 ind
+R635:638 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R631:634 ligo_coq.ligo <> args:5 ind
+R639:642 ligo_coq.ligo <> expr:4 ind
+R659:662 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R658:658 ligo_coq.ligo <> expr.A var
+R666:669 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R663:665 ligo_coq.ligo <> expr.lit var
+R670:673 ligo_coq.ligo <> expr:4 ind
+R688:691 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R687:687 ligo_coq.ligo <> expr.A var
+R696:699 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R692:695 ligo_coq.ligo <> args:5 ind
+R700:703 ligo_coq.ligo <> expr:4 ind
+R716:719 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R715:715 ligo_coq.ligo <> expr.A var
+R724:727 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R720:723 ligo_coq.ligo <> expr:4 ind
+R728:731 ligo_coq.ligo <> expr:4 ind
+R744:747 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R743:743 ligo_coq.ligo <> expr.A var
+R752:755 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R748:751 ligo_coq.ligo <> expr:4 ind
+R756:759 ligo_coq.ligo <> expr:4 ind
+R774:777 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R773:773 ligo_coq.ligo <> expr.A var
+R778:781 ligo_coq.ligo <> expr:4 ind
+R796:799 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R795:795 ligo_coq.ligo <> expr.A var
+R813:816 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R800:803 ligo_coq.micheline <> node ind
+R807:812 Coq.Strings.String <> string ind
+R805:805 ligo_coq.ligo <> expr.A var
+R821:824 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R817:820 ligo_coq.ligo <> expr:4 ind
+R825:828 ligo_coq.ligo <> expr:4 ind
+R843:846 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R842:842 ligo_coq.ligo <> expr.A var
+R860:863 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R847:850 ligo_coq.micheline <> node ind
+R854:859 Coq.Strings.String <> string ind
+R852:852 ligo_coq.ligo <> expr.A var
+R868:871 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R864:867 ligo_coq.ligo <> expr:4 ind
+R872:875 ligo_coq.ligo <> expr:4 ind
+R893:896 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R892:892 ligo_coq.ligo <> expr.A var
+R901:904 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R897:900 ligo_coq.ligo <> cond:7 ind
+R905:908 ligo_coq.ligo <> expr:4 ind
+R925:928 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R924:924 ligo_coq.ligo <> expr.A var
+R933:936 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R929:932 ligo_coq.ligo <> cond:7 ind
+R937:940 ligo_coq.ligo <> expr:4 ind
+R957:960 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R956:956 ligo_coq.ligo <> expr.A var
+R965:968 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R961:964 ligo_coq.ligo <> cond:7 ind
+R969:972 ligo_coq.ligo <> expr:4 ind
+R989:992 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R988:988 ligo_coq.ligo <> expr.A var
+R997:1000 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R993:996 ligo_coq.ligo <> cond:7 ind
+R1001:1004 ligo_coq.ligo <> expr:4 ind
+R1019:1022 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1018:1018 ligo_coq.ligo <> expr.A var
+R1032:1035 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1023:1031 ligo_coq.co_de_bruijn <> splitting def
+R1041:1044 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1036:1040 ligo_coq.ligo <> binds:6 ind
+R1049:1052 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1045:1048 ligo_coq.ligo <> expr:4 ind
+R1053:1056 ligo_coq.ligo <> expr:4 ind
+R1069:1072 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1068:1068 ligo_coq.ligo <> expr.A var
+R1082:1085 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1073:1081 ligo_coq.co_de_bruijn <> splitting def
+R1091:1094 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1086:1090 ligo_coq.ligo <> binds:6 ind
+R1099:1102 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1095:1098 ligo_coq.ligo <> expr:4 ind
+R1103:1106 ligo_coq.ligo <> expr:4 ind
+R1125:1128 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1124:1124 ligo_coq.ligo <> expr.A var
+R1138:1141 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1129:1137 ligo_coq.co_de_bruijn <> splitting def
+R1147:1150 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1142:1146 ligo_coq.ligo <> binds:6 ind
+R1164:1167 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1151:1154 ligo_coq.micheline <> node ind
+R1158:1163 Coq.Strings.String <> string ind
+R1156:1156 ligo_coq.ligo <> expr.A var
+R1172:1175 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1168:1171 ligo_coq.ligo <> expr:4 ind
+R1176:1179 ligo_coq.ligo <> expr:4 ind
+R1193:1196 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1192:1192 ligo_coq.ligo <> expr.A var
+R1206:1209 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1197:1205 ligo_coq.co_de_bruijn <> splitting def
+R1214:1217 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1210:1213 ligo_coq.ligo <> expr:4 ind
+R1227:1230 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1218:1226 ligo_coq.co_de_bruijn <> splitting def
+R1235:1238 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1231:1234 ligo_coq.ligo <> expr:4 ind
+R1244:1247 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1239:1243 ligo_coq.ligo <> binds:6 ind
+R1248:1251 ligo_coq.ligo <> expr:4 ind
+R1271:1274 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1270:1270 ligo_coq.ligo <> expr.A var
+R1288:1291 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1275:1278 ligo_coq.micheline <> node ind
+R1282:1287 Coq.Strings.String <> string ind
+R1280:1280 ligo_coq.ligo <> expr.A var
+R1301:1304 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1292:1300 ligo_coq.co_de_bruijn <> splitting def
+R1309:1312 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1305:1308 ligo_coq.ligo <> expr:4 ind
+R1322:1325 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1313:1321 ligo_coq.co_de_bruijn <> splitting def
+R1330:1333 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1326:1329 ligo_coq.ligo <> expr:4 ind
+R1339:1342 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1334:1338 ligo_coq.ligo <> binds:6 ind
+R1343:1346 ligo_coq.ligo <> expr:4 ind
+R1365:1368 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1364:1364 ligo_coq.ligo <> expr.A var
+R1373:1376 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1369:1372 ligo_coq.ligo <> expr:4 ind
+R1377:1380 ligo_coq.ligo <> expr:4 ind
+R1404:1407 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1403:1403 ligo_coq.ligo <> expr.A var
+R1421:1424 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1408:1411 ligo_coq.micheline <> node ind
+R1415:1420 Coq.Strings.String <> string ind
+R1413:1413 ligo_coq.ligo <> expr.A var
+R1438:1441 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1425:1428 ligo_coq.micheline <> node ind
+R1432:1437 Coq.Strings.String <> string ind
+R1430:1430 ligo_coq.ligo <> expr.A var
+R1462:1465 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1442:1445 Coq.Init.Datatypes <> list ind
+R1448:1451 ligo_coq.micheline <> node ind
+R1455:1460 Coq.Strings.String <> string ind
+R1453:1453 ligo_coq.ligo <> expr.A var
+R1466:1469 ligo_coq.ligo <> expr:4 ind
+R1809:1812 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1808:1808 ligo_coq.ligo <> expr.A var
+R1826:1829 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1813:1816 ligo_coq.micheline <> node ind
+R1820:1825 Coq.Strings.String <> string ind
+R1818:1818 ligo_coq.ligo <> expr.A var
+R1836:1839 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1830:1835 Coq.Strings.String <> string ind
+R1844:1847 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1840:1843 ligo_coq.ligo <> args:5 ind
+R1848:1851 ligo_coq.ligo <> expr:4 ind
+R1886:1889 ligo_coq.ligo <> args:5 ind
+R1914:1917 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1905:1913 ligo_coq.co_de_bruijn <> splitting def
+R1922:1925 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1918:1921 ligo_coq.ligo <> expr:4 ind
+R1930:1933 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1926:1929 ligo_coq.ligo <> args:5 ind
+R1934:1937 ligo_coq.ligo <> args:5 ind
+R1980:1983 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1970:1973 Coq.Init.Datatypes <> list ind
+R1975:1979 ligo_coq.co_de_bruijn <> usage ind
+R2004:2007 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1984:1987 Coq.Init.Datatypes <> list ind
+R1990:1993 ligo_coq.micheline <> node ind
+R1997:2002 Coq.Strings.String <> string ind
+R1995:1995 ligo_coq.ligo <> expr.A var
+R2012:2015 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R2008:2011 ligo_coq.ligo <> expr:4 ind
+R2016:2020 ligo_coq.ligo <> binds:6 ind
+R2060:2063 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R2051:2059 ligo_coq.co_de_bruijn <> splitting def
+R2068:2071 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R2064:2067 ligo_coq.ligo <> expr:4 ind
+R2081:2093 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R2072:2080 ligo_coq.co_de_bruijn <> splitting def
+R2099:2102 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R2094:2098 ligo_coq.ligo <> binds:6 ind
+R2108:2120 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R2103:2107 ligo_coq.ligo <> binds:6 ind
+R2121:2124 ligo_coq.ligo <> cond:7 ind
+R2180:2183 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R2167:2172 Coq.Init.Datatypes <> option ind
+R2174:2179 Coq.Strings.String <> string ind
+R2204:2207 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R2184:2187 Coq.Init.Datatypes <> list ind
+R2190:2193 ligo_coq.micheline <> node ind
+R2197:2202 Coq.Strings.String <> string ind
+R2195:2195 ligo_coq.ligo <> expr.A var
+R2208:2218 ligo_coq.ligo <> static_args:8 ind
+R2239:2242 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R2234:2238 ligo_coq.ligo <> binds:6 ind
+R2243:2253 ligo_coq.ligo <> static_args:8 ind
+R2276:2279 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R2270:2275 ligo_coq.ligo <> script:9 ind
+R2280:2290 ligo_coq.ligo <> static_args:8 ind
+R2338:2341 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R2325:2328 ligo_coq.micheline <> node ind
+R2332:2337 Coq.Strings.String <> string ind
+R2330:2330 ligo_coq.ligo <> expr.A var
+R2355:2358 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R2342:2345 ligo_coq.micheline <> node ind
+R2349:2354 Coq.Strings.String <> string ind
+R2347:2347 ligo_coq.ligo <> expr.A var
+R2364:2367 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R2359:2363 ligo_coq.ligo <> binds:6 ind
+R2368:2373 ligo_coq.ligo <> script:9 ind
+def 2385:2393 <> expr_ind'
+R2412:2415 ligo_coq.ligo <> expr ind
+def 2432:2440 <> args_ind'
+R2459:2462 ligo_coq.ligo <> args ind
+def 2479:2488 <> binds_ind'
+R2507:2511 ligo_coq.ligo <> binds ind
+def 2528:2536 <> cond_ind'
+R2555:2558 ligo_coq.ligo <> cond ind
+def 2575:2590 <> static_args_ind'
+R2609:2619 ligo_coq.ligo <> static_args ind
+def 2636:2646 <> script_ind'
+R2665:2670 ligo_coq.ligo <> script ind
+def 2701:2711 <> expr_mutind
+R2718:2726 ligo_coq.ligo <> expr_ind' scheme
+R2729:2737 ligo_coq.ligo <> args_ind' scheme
+R2740:2749 ligo_coq.ligo <> binds_ind' scheme
+R2752:2760 ligo_coq.ligo <> cond_ind' scheme
+R2763:2778 ligo_coq.ligo <> static_args_ind' scheme
+R2781:2791 ligo_coq.ligo <> script_ind' scheme
+R2817:2820 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R2815:2816 ligo_coq.ligo <> expr.op var
+R2832:2835 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R2821:2831 ligo_coq.ligo <> static_args ind
+R2856:2859 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R2836:2839 Coq.Init.Datatypes <> list ind
+R2842:2845 ligo_coq.micheline <> node ind
+R2849:2854 Coq.Strings.String <> string ind
+R2847:2847 ligo_coq.ligo <> expr.A var
+R2873:2876 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R2860:2863 ligo_coq.micheline <> node ind
+R2867:2872 Coq.Strings.String <> string ind
+R2865:2865 ligo_coq.ligo <> expr.A var
+binder 2804:2811 <> op_typed:16
+R2907:2910 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R2904:2906 ligo_coq.ligo <> expr.lit var
+R2911:2914 ligo_coq.micheline <> node ind
+R2918:2923 Coq.Strings.String <> string ind
+R2916:2916 ligo_coq.ligo <> expr.A var
+binder 2893:2900 <> lit_type:17
+ind 3261:3265 <> tuple
+constr 3320:3328 <> Tuple_nil
+constr 3371:3379 <> Tuple_one
+constr 3408:3417 <> Tuple_cons
+R3289:3292 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R3269:3272 Coq.Init.Datatypes <> list ind
+R3275:3278 ligo_coq.micheline <> node ind
+R3282:3287 Coq.Strings.String <> string ind
+R3280:3280 ligo_coq.ligo <> expr.A var
+R3306:3309 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R3293:3296 ligo_coq.micheline <> node ind
+R3300:3305 Coq.Strings.String <> string ind
+R3298:3298 ligo_coq.ligo <> expr.A var
+R3338:3342 ligo_coq.ligo <> tuple:18 ind
+R3348:3351 ligo_coq.micheline <> Prim constr
+R3362:3363 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+R3344:3345 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+binder 3382:3382 <> a:22
+R3393:3397 ligo_coq.ligo <> tuple:18 ind
+R3403:3403 ligo_coq.ligo <> a:22 var
+R3399:3399 Coq.Lists.List ListNotations ::list_scope:'['_x_']' not
+R3401:3401 Coq.Lists.List ListNotations ::list_scope:'['_x_']' not
+R3400:3400 ligo_coq.ligo <> a:22 var
+binder 3420:3421 <> a1:23
+binder 3423:3424 <> a2:24
+binder 3426:3427 <> az:25
+binder 3429:3432 <> a2z':26
+R3462:3469 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R3441:3445 ligo_coq.ligo <> tuple:18 ind
+R3458:3461 ligo_coq.ligo <> a2z':26 var
+R3450:3453 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R3448:3449 ligo_coq.ligo <> a2:24 var
+R3454:3455 ligo_coq.ligo <> az:25 var
+R3472:3476 ligo_coq.ligo <> tuple:18 ind
+R3496:3499 ligo_coq.micheline <> Prim constr
+R3510:3510 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R3513:3514 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R3519:3519 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R3511:3512 ligo_coq.ligo <> a1:23 var
+R3515:3518 ligo_coq.ligo <> a2z':26 var
+R3481:3484 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R3479:3480 ligo_coq.ligo <> a1:23 var
+R3487:3490 Coq.Init.Datatypes <> ::list_scope:x_'::'_x not
+R3485:3486 ligo_coq.ligo <> a2:24 var
+R3491:3492 ligo_coq.ligo <> az:25 var
+ind 3538:3547 <> expr_typed
+constr 3610:3620 <> E_var_typed
+constr 3664:3677 <> E_let_in_typed
+constr 3838:3850 <> E_tuple_typed
+constr 3960:3976 <> E_let_tuple_typed
+constr 4169:4180 <> E_proj_typed
+constr 4361:4374 <> E_update_typed
+constr 4573:4583 <> E_app_typed
+constr 4699:4709 <> E_lam_typed
+constr 4820:4835 <> E_operator_typed
+constr 5010:5024 <> E_literal_typed
+constr 5105:5116 <> E_pair_typed
+constr 5233:5243 <> E_car_typed
+constr 5345:5355 <> E_cdr_typed
+constr 5457:5468 <> E_unit_typed
+constr 5530:5541 <> E_left_typed
+constr 5644:5656 <> E_right_typed
+constr 5760:5774 <> E_if_left_typed
+constr 5890:5904 <> E_if_bool_typed
+constr 6012:6026 <> E_if_none_typed
+constr 6140:6154 <> E_if_cons_typed
+constr 6289:6300 <> E_iter_typed
+constr 6544:6554 <> E_map_typed
+constr 6785:6801 <> E_loop_left_typed
+constr 6991:7002 <> E_fold_typed
+constr 7367:7384 <> E_fold_right_typed
+constr 7712:7727 <> E_failwith_typed
+constr 7809:7829 <> E_raw_michelson_typed
+constr 7959:7981 <> E_global_constant_typed
+ind 8170:8179 <> args_typed
+constr 8249:8262 <> Args_nil_typed
+constr 8298:8312 <> Args_cons_typed
+ind 8491:8501 <> binds_typed
+constr 8589:8599 <> Binds_typed
+ind 8726:8735 <> cond_typed
+constr 8863:8872 <> Cond_typed
+ind 9144:9160 <> static_args_typed
+constr 9189:9203 <> Type_args_typed
+constr 9259:9274 <> Script_arg_typed
+ind 9346:9357 <> script_typed
+constr 9381:9392 <> Script_typed
+R3571:3574 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R3551:3554 Coq.Init.Datatypes <> list ind
+R3557:3560 ligo_coq.micheline <> node ind
+R3564:3569 Coq.Strings.String <> string ind
+R3562:3562 ligo_coq.ligo <> expr.A var
+R3579:3582 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R3575:3578 ligo_coq.ligo <> expr ind
+R3596:3599 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R3583:3586 ligo_coq.micheline <> node ind
+R3590:3595 Coq.Strings.String <> string ind
+R3588:3588 ligo_coq.ligo <> expr.A var
+R8203:8206 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R8183:8186 Coq.Init.Datatypes <> list ind
+R8189:8192 ligo_coq.micheline <> node ind
+R8196:8201 Coq.Strings.String <> string ind
+R8194:8194 ligo_coq.ligo <> expr.A var
+R8211:8214 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R8207:8210 ligo_coq.ligo <> args ind
+R8235:8238 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R8215:8218 Coq.Init.Datatypes <> list ind
+R8221:8224 ligo_coq.micheline <> node ind
+R8228:8233 Coq.Strings.String <> string ind
+R8226:8226 ligo_coq.ligo <> expr.A var
+R8525:8528 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R8505:8508 Coq.Init.Datatypes <> list ind
+R8511:8514 ligo_coq.micheline <> node ind
+R8518:8523 Coq.Strings.String <> string ind
+R8516:8516 ligo_coq.ligo <> expr.A var
+R8534:8537 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R8529:8533 ligo_coq.ligo <> binds ind
+R8558:8561 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R8538:8541 Coq.Init.Datatypes <> list ind
+R8544:8547 ligo_coq.micheline <> node ind
+R8551:8556 Coq.Strings.String <> string ind
+R8549:8549 ligo_coq.ligo <> expr.A var
+R8575:8578 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R8562:8565 ligo_coq.micheline <> node ind
+R8569:8574 Coq.Strings.String <> string ind
+R8567:8567 ligo_coq.ligo <> expr.A var
+R8759:8762 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R8739:8742 Coq.Init.Datatypes <> list ind
+R8745:8748 ligo_coq.micheline <> node ind
+R8752:8757 Coq.Strings.String <> string ind
+R8750:8750 ligo_coq.ligo <> expr.A var
+R8767:8770 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R8763:8766 ligo_coq.ligo <> cond ind
+R8784:8787 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R8771:8774 ligo_coq.micheline <> node ind
+R8778:8783 Coq.Strings.String <> string ind
+R8776:8776 ligo_coq.ligo <> expr.A var
+R8808:8811 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R8788:8791 Coq.Init.Datatypes <> list ind
+R8794:8797 ligo_coq.micheline <> node ind
+R8801:8806 Coq.Strings.String <> string ind
+R8799:8799 ligo_coq.ligo <> expr.A var
+R8832:8835 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R8812:8815 Coq.Init.Datatypes <> list ind
+R8818:8821 ligo_coq.micheline <> node ind
+R8825:8830 Coq.Strings.String <> string ind
+R8823:8823 ligo_coq.ligo <> expr.A var
+R8849:8852 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R8836:8839 ligo_coq.micheline <> node ind
+R8843:8848 Coq.Strings.String <> string ind
+R8841:8841 ligo_coq.ligo <> expr.A var
+R9175:9178 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R9164:9174 ligo_coq.ligo <> static_args ind
+R9367:9370 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R9361:9366 ligo_coq.ligo <> script ind
+binder 3623:3623 <> a:41
+R3634:3643 ligo_coq.ligo <> expr_typed:29 ind
+R3659:3659 ligo_coq.ligo <> a:41 var
+R3650:3654 ligo_coq.ligo <> E_var constr
+R3645:3645 Coq.Lists.List ListNotations ::list_scope:'['_x_']' not
+R3647:3647 Coq.Lists.List ListNotations ::list_scope:'['_x_']' not
+R3646:3646 ligo_coq.ligo <> a:41 var
+binder 3680:3681 <> ss:43
+binder 3683:3684 <> e1:44
+binder 3686:3687 <> e2:45
+binder 3689:3689 <> g:46
+binder 3691:3692 <> g1:47
+binder 3694:3695 <> g2:48
+binder 3697:3697 <> a:49
+binder 3699:3699 <> b:50
+R3727:3736 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R3710:3715 ligo_coq.co_de_bruijn <> splits ind
+R3725:3726 ligo_coq.ligo <> g2:48 var
+R3722:3723 ligo_coq.ligo <> g1:47 var
+R3720:3720 ligo_coq.ligo <> g:46 var
+R3717:3718 ligo_coq.ligo <> ss:43 var
+R3755:3764 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R3737:3746 ligo_coq.ligo <> expr_typed:29 ind
+R3754:3754 ligo_coq.ligo <> a:49 var
+R3751:3752 ligo_coq.ligo <> e1:44 var
+R3748:3749 ligo_coq.ligo <> g1:47 var
+R3788:3797 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R3765:3775 ligo_coq.ligo <> binds_typed:31 ind
+R3787:3787 ligo_coq.ligo <> b:50 var
+R3783:3783 Coq.Lists.List ListNotations ::list_scope:'['_x_']' not
+R3785:3785 Coq.Lists.List ListNotations ::list_scope:'['_x_']' not
+R3784:3784 ligo_coq.ligo <> a:49 var
+R3780:3781 ligo_coq.ligo <> e2:45 var
+R3777:3778 ligo_coq.ligo <> g2:48 var
+R3798:3807 ligo_coq.ligo <> expr_typed:29 ind
+R3833:3833 ligo_coq.ligo <> b:50 var
+R3812:3819 ligo_coq.ligo <> E_let_in constr
+R3829:3830 ligo_coq.ligo <> e2:45 var
+R3826:3827 ligo_coq.ligo <> e1:44 var
+R3823:3824 ligo_coq.ligo <> ss:43 var
+R3809:3809 ligo_coq.ligo <> g:46 var
+binder 3853:3853 <> g:52
+binder 3855:3858 <> args:53
+binder 3860:3861 <> az:54
+binder 3863:3863 <> t:55
+R3884:3893 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R3874:3878 ligo_coq.ligo <> tuple ind
+R3883:3883 ligo_coq.ligo <> t:55 var
+R3880:3881 ligo_coq.ligo <> az:54 var
+R3914:3923 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R3894:3903 ligo_coq.ligo <> args_typed:30 ind
+R3912:3913 ligo_coq.ligo <> az:54 var
+R3907:3910 ligo_coq.ligo <> args:53 var
+R3905:3905 ligo_coq.ligo <> g:52 var
+R3924:3933 ligo_coq.ligo <> expr_typed:29 ind
+R3955:3955 ligo_coq.ligo <> t:55 var
+R3938:3944 ligo_coq.ligo <> E_tuple constr
+R3949:3952 ligo_coq.ligo <> args:53 var
+R3935:3935 ligo_coq.ligo <> g:52 var
+binder 3979:3980 <> ss:57
+binder 3982:3982 <> g:58
+binder 3984:3985 <> g1:59
+binder 3987:3988 <> g2:60
+binder 3990:3991 <> az:61
+binder 3993:3995 <> azt:62
+binder 3997:3997 <> c:63
+binder 3999:4000 <> e1:64
+binder 4002:4003 <> e2:65
+R4031:4040 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R4014:4019 ligo_coq.co_de_bruijn <> splits ind
+R4029:4030 ligo_coq.ligo <> g2:60 var
+R4026:4027 ligo_coq.ligo <> g1:59 var
+R4024:4024 ligo_coq.ligo <> g:58 var
+R4021:4022 ligo_coq.ligo <> ss:57 var
+R4053:4062 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R4041:4045 ligo_coq.ligo <> tuple ind
+R4050:4052 ligo_coq.ligo <> azt:62 var
+R4047:4048 ligo_coq.ligo <> az:61 var
+R4083:4092 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R4063:4072 ligo_coq.ligo <> expr_typed:29 ind
+R4080:4082 ligo_coq.ligo <> azt:62 var
+R4077:4078 ligo_coq.ligo <> e1:64 var
+R4074:4075 ligo_coq.ligo <> g1:59 var
+R4115:4124 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R4093:4103 ligo_coq.ligo <> binds_typed:31 ind
+R4114:4114 ligo_coq.ligo <> c:63 var
+R4111:4112 ligo_coq.ligo <> az:61 var
+R4108:4109 ligo_coq.ligo <> e2:65 var
+R4105:4106 ligo_coq.ligo <> g2:60 var
+R4125:4134 ligo_coq.ligo <> expr_typed:29 ind
+R4164:4164 ligo_coq.ligo <> c:63 var
+R4139:4149 ligo_coq.ligo <> E_let_tuple constr
+R4160:4161 ligo_coq.ligo <> e2:65 var
+R4157:4158 ligo_coq.ligo <> e1:64 var
+R4154:4155 ligo_coq.ligo <> ss:57 var
+R4136:4136 ligo_coq.ligo <> g:58 var
+binder 4183:4183 <> g:67
+binder 4185:4186 <> az:68
+binder 4188:4190 <> azt:69
+binder 4192:4192 <> a:70
+binder 4194:4194 <> e:71
+binder 4196:4196 <> i:72
+binder 4198:4198 <> n:73
+R4221:4230 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R4209:4213 ligo_coq.ligo <> tuple ind
+R4218:4220 ligo_coq.ligo <> azt:69 var
+R4215:4216 ligo_coq.ligo <> az:68 var
+R4259:4268 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R4250:4252 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R4231:4244 Coq.Lists.List <> nth_error def
+R4249:4249 ligo_coq.ligo <> i:72 var
+R4246:4247 ligo_coq.ligo <> az:68 var
+R4253:4256 Coq.Init.Datatypes <> Some constr
+R4258:4258 ligo_coq.ligo <> a:70 var
+R4287:4296 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R4283:4285 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R4269:4279 Coq.Lists.List <> length syndef
+R4281:4282 ligo_coq.ligo <> az:68 var
+R4286:4286 ligo_coq.ligo <> n:73 var
+R4315:4324 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R4297:4306 ligo_coq.ligo <> expr_typed:29 ind
+R4312:4314 ligo_coq.ligo <> azt:69 var
+R4310:4310 ligo_coq.ligo <> e:71 var
+R4308:4308 ligo_coq.ligo <> g:67 var
+R4325:4334 ligo_coq.ligo <> expr_typed:29 ind
+R4356:4356 ligo_coq.ligo <> a:70 var
+R4339:4344 ligo_coq.ligo <> E_proj constr
+R4353:4353 ligo_coq.ligo <> n:73 var
+R4351:4351 ligo_coq.ligo <> i:72 var
+R4349:4349 ligo_coq.ligo <> e:71 var
+R4336:4336 ligo_coq.ligo <> g:67 var
+binder 4377:4377 <> g:75
+binder 4379:4379 <> a:76
+binder 4381:4382 <> az:77
+binder 4384:4386 <> azt:78
+binder 4388:4391 <> args:79
+binder 4393:4393 <> i:80
+binder 4395:4395 <> n:81
+R4418:4427 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R4406:4410 ligo_coq.ligo <> tuple ind
+R4415:4417 ligo_coq.ligo <> azt:78 var
+R4412:4413 ligo_coq.ligo <> az:77 var
+R4456:4465 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R4447:4449 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R4428:4441 Coq.Lists.List <> nth_error def
+R4446:4446 ligo_coq.ligo <> i:80 var
+R4443:4444 ligo_coq.ligo <> az:77 var
+R4450:4453 Coq.Init.Datatypes <> Some constr
+R4455:4455 ligo_coq.ligo <> a:76 var
+R4484:4493 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R4480:4482 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R4466:4476 Coq.Lists.List <> length syndef
+R4478:4479 ligo_coq.ligo <> az:77 var
+R4483:4483 ligo_coq.ligo <> n:81 var
+R4520:4529 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R4494:4503 ligo_coq.ligo <> args_typed:30 ind
+R4512:4512 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R4516:4517 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R4519:4519 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R4513:4515 ligo_coq.ligo <> azt:78 var
+R4518:4518 ligo_coq.ligo <> a:76 var
+R4507:4510 ligo_coq.ligo <> args:79 var
+R4505:4505 ligo_coq.ligo <> g:75 var
+R4530:4539 ligo_coq.ligo <> expr_typed:29 ind
+R4566:4568 ligo_coq.ligo <> azt:78 var
+R4544:4551 ligo_coq.ligo <> E_update constr
+R4563:4563 ligo_coq.ligo <> n:81 var
+R4561:4561 ligo_coq.ligo <> i:80 var
+R4556:4559 ligo_coq.ligo <> args:79 var
+R4541:4541 ligo_coq.ligo <> g:75 var
+binder 4586:4586 <> g:83
+binder 4588:4591 <> args:84
+binder 4593:4593 <> a:85
+binder 4595:4595 <> b:86
+R4655:4664 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R4606:4615 ligo_coq.ligo <> args_typed:30 ind
+R4624:4624 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R4651:4652 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R4654:4654 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R4625:4628 ligo_coq.micheline <> Prim constr
+R4642:4642 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R4644:4645 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R4647:4647 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R4643:4643 ligo_coq.ligo <> a:85 var
+R4646:4646 ligo_coq.ligo <> b:86 var
+R4653:4653 ligo_coq.ligo <> a:85 var
+R4619:4622 ligo_coq.ligo <> args:84 var
+R4617:4617 ligo_coq.ligo <> g:83 var
+R4665:4674 ligo_coq.ligo <> expr_typed:29 ind
+R4694:4694 ligo_coq.ligo <> b:86 var
+R4679:4683 ligo_coq.ligo <> E_app constr
+R4688:4691 ligo_coq.ligo <> args:84 var
+R4676:4676 ligo_coq.ligo <> g:83 var
+binder 4712:4712 <> g:90
+binder 4714:4714 <> a:91
+binder 4716:4716 <> b:92
+binder 4718:4718 <> e:93
+R4750:4759 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R4729:4739 ligo_coq.ligo <> binds_typed:31 ind
+R4749:4749 ligo_coq.ligo <> b:92 var
+R4745:4745 Coq.Lists.List ListNotations ::list_scope:'['_x_']' not
+R4747:4747 Coq.Lists.List ListNotations ::list_scope:'['_x_']' not
+R4746:4746 ligo_coq.ligo <> a:91 var
+R4743:4743 ligo_coq.ligo <> e:93 var
+R4741:4741 ligo_coq.ligo <> g:90 var
+R4760:4769 ligo_coq.ligo <> expr_typed:29 ind
+R4789:4792 ligo_coq.micheline <> Prim constr
+R4806:4806 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R4808:4809 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R4811:4811 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R4807:4807 ligo_coq.ligo <> a:91 var
+R4810:4810 ligo_coq.ligo <> b:92 var
+R4774:4778 ligo_coq.ligo <> E_lam constr
+R4785:4785 ligo_coq.ligo <> b:92 var
+R4783:4783 ligo_coq.ligo <> e:93 var
+R4771:4771 ligo_coq.ligo <> g:90 var
+binder 4838:4839 <> op:97
+binder 4841:4845 <> sargs:98
+binder 4847:4850 <> args:99
+binder 4852:4852 <> g:100
+binder 4854:4855 <> az:101
+binder 4857:4857 <> b:102
+R4891:4900 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R4868:4884 ligo_coq.ligo <> static_args_typed:33 ind
+R4886:4890 ligo_coq.ligo <> sargs:98 var
+R4921:4930 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R4901:4910 ligo_coq.ligo <> args_typed:30 ind
+R4919:4920 ligo_coq.ligo <> az:101 var
+R4914:4917 ligo_coq.ligo <> args:99 var
+R4912:4912 ligo_coq.ligo <> g:100 var
+R4953:4962 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R4931:4938 ligo_coq.ligo <> expr.op_typed var
+R4952:4952 ligo_coq.ligo <> b:102 var
+R4949:4950 ligo_coq.ligo <> az:101 var
+R4943:4947 ligo_coq.ligo <> sargs:98 var
+R4940:4941 ligo_coq.ligo <> op:97 var
+R4963:4972 ligo_coq.ligo <> expr_typed:29 ind
+R5005:5005 ligo_coq.ligo <> b:102 var
+R4977:4986 ligo_coq.ligo <> E_operator constr
+R4999:5002 ligo_coq.ligo <> args:99 var
+R4993:4997 ligo_coq.ligo <> sargs:98 var
+R4990:4991 ligo_coq.ligo <> op:97 var
+R4974:4974 ligo_coq.ligo <> g:100 var
+binder 5027:5029 <> lit:104
+binder 5031:5031 <> a:105
+R5058:5067 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R5054:5056 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R5042:5049 ligo_coq.ligo <> expr.lit_type var
+R5051:5053 ligo_coq.ligo <> lit:104 var
+R5057:5057 ligo_coq.ligo <> a:105 var
+R5068:5077 ligo_coq.ligo <> expr_typed:29 ind
+R5100:5100 ligo_coq.ligo <> a:105 var
+R5083:5091 ligo_coq.ligo <> E_literal constr
+R5095:5097 ligo_coq.ligo <> lit:104 var
+R5079:5080 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+binder 5119:5119 <> g:107
+binder 5121:5124 <> args:108
+binder 5126:5126 <> a:109
+binder 5128:5128 <> b:110
+R5163:5172 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R5139:5148 ligo_coq.ligo <> args_typed:30 ind
+R5157:5157 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R5159:5160 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R5162:5162 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R5158:5158 ligo_coq.ligo <> a:109 var
+R5161:5161 ligo_coq.ligo <> b:110 var
+R5152:5155 ligo_coq.ligo <> args:108 var
+R5150:5150 ligo_coq.ligo <> g:107 var
+R5173:5182 ligo_coq.ligo <> expr_typed:29 ind
+R5204:5207 ligo_coq.micheline <> Prim constr
+R5219:5219 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R5221:5222 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R5224:5224 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R5220:5220 ligo_coq.ligo <> a:109 var
+R5223:5223 ligo_coq.ligo <> b:110 var
+R5187:5192 ligo_coq.ligo <> E_pair constr
+R5197:5200 ligo_coq.ligo <> args:108 var
+R5184:5184 ligo_coq.ligo <> g:107 var
+binder 5246:5246 <> g:114
+binder 5248:5248 <> e:115
+binder 5250:5250 <> a:116
+binder 5252:5252 <> b:117
+R5304:5313 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R5263:5272 ligo_coq.ligo <> expr_typed:29 ind
+R5279:5282 ligo_coq.micheline <> Prim constr
+R5294:5294 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R5296:5297 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R5299:5299 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R5295:5295 ligo_coq.ligo <> a:116 var
+R5298:5298 ligo_coq.ligo <> b:117 var
+R5276:5276 ligo_coq.ligo <> e:115 var
+R5274:5274 ligo_coq.ligo <> g:114 var
+R5314:5323 ligo_coq.ligo <> expr_typed:29 ind
+R5340:5340 ligo_coq.ligo <> a:116 var
+R5328:5332 ligo_coq.ligo <> E_car constr
+R5337:5337 ligo_coq.ligo <> e:115 var
+R5325:5325 ligo_coq.ligo <> g:114 var
+binder 5358:5358 <> g:121
+binder 5360:5360 <> e:122
+binder 5362:5362 <> a:123
+binder 5364:5364 <> b:124
+R5416:5425 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R5375:5384 ligo_coq.ligo <> expr_typed:29 ind
+R5391:5394 ligo_coq.micheline <> Prim constr
+R5406:5406 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R5408:5409 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R5411:5411 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R5407:5407 ligo_coq.ligo <> a:123 var
+R5410:5410 ligo_coq.ligo <> b:124 var
+R5388:5388 ligo_coq.ligo <> e:122 var
+R5386:5386 ligo_coq.ligo <> g:121 var
+R5426:5435 ligo_coq.ligo <> expr_typed:29 ind
+R5452:5452 ligo_coq.ligo <> b:124 var
+R5440:5444 ligo_coq.ligo <> E_cdr constr
+R5449:5449 ligo_coq.ligo <> e:122 var
+R5437:5437 ligo_coq.ligo <> g:121 var
+R5478:5487 ligo_coq.ligo <> expr_typed:29 ind
+R5505:5508 ligo_coq.micheline <> Prim constr
+R5520:5521 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+R5493:5498 ligo_coq.ligo <> E_unit constr
+R5489:5490 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+binder 5544:5544 <> g:131
+binder 5546:5546 <> e:132
+binder 5548:5548 <> a:133
+binder 5550:5550 <> b:134
+R5577:5586 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R5561:5570 ligo_coq.ligo <> expr_typed:29 ind
+R5576:5576 ligo_coq.ligo <> a:133 var
+R5574:5574 ligo_coq.ligo <> e:132 var
+R5572:5572 ligo_coq.ligo <> g:131 var
+R5587:5596 ligo_coq.ligo <> expr_typed:29 ind
+R5617:5620 ligo_coq.micheline <> Prim constr
+R5630:5630 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R5632:5633 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R5635:5635 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R5631:5631 ligo_coq.ligo <> a:133 var
+R5634:5634 ligo_coq.ligo <> b:134 var
+R5601:5606 ligo_coq.ligo <> E_left constr
+R5613:5613 ligo_coq.ligo <> e:132 var
+R5611:5611 ligo_coq.ligo <> b:134 var
+R5598:5598 ligo_coq.ligo <> g:131 var
+binder 5659:5659 <> g:138
+binder 5661:5661 <> e:139
+binder 5663:5663 <> a:140
+binder 5665:5665 <> b:141
+R5692:5701 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R5676:5685 ligo_coq.ligo <> expr_typed:29 ind
+R5691:5691 ligo_coq.ligo <> b:141 var
+R5689:5689 ligo_coq.ligo <> e:139 var
+R5687:5687 ligo_coq.ligo <> g:138 var
+R5702:5711 ligo_coq.ligo <> expr_typed:29 ind
+R5733:5736 ligo_coq.micheline <> Prim constr
+R5746:5746 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R5748:5749 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R5751:5751 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R5747:5747 ligo_coq.ligo <> a:140 var
+R5750:5750 ligo_coq.ligo <> b:141 var
+R5716:5722 ligo_coq.ligo <> E_right constr
+R5729:5729 ligo_coq.ligo <> e:139 var
+R5727:5727 ligo_coq.ligo <> a:140 var
+R5713:5713 ligo_coq.ligo <> g:138 var
+binder 5777:5777 <> g:145
+binder 5779:5779 <> e:146
+binder 5781:5781 <> a:147
+binder 5783:5783 <> b:148
+binder 5785:5785 <> c:149
+R5845:5854 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R5796:5805 ligo_coq.ligo <> cond_typed:32 ind
+R5844:5844 ligo_coq.ligo <> c:149 var
+R5840:5840 Coq.Lists.List ListNotations ::list_scope:'['_x_']' not
+R5842:5842 Coq.Lists.List ListNotations ::list_scope:'['_x_']' not
+R5841:5841 ligo_coq.ligo <> b:148 var
+R5836:5836 Coq.Lists.List ListNotations ::list_scope:'['_x_']' not
+R5838:5838 Coq.Lists.List ListNotations ::list_scope:'['_x_']' not
+R5837:5837 ligo_coq.ligo <> a:147 var
+R5812:5815 ligo_coq.micheline <> Prim constr
+R5825:5825 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R5827:5828 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R5830:5830 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R5826:5826 ligo_coq.ligo <> a:147 var
+R5829:5829 ligo_coq.ligo <> b:148 var
+R5809:5809 ligo_coq.ligo <> e:146 var
+R5807:5807 ligo_coq.ligo <> g:145 var
+R5855:5864 ligo_coq.ligo <> expr_typed:29 ind
+R5885:5885 ligo_coq.ligo <> c:149 var
+R5869:5877 ligo_coq.ligo <> E_if_left constr
+R5882:5882 ligo_coq.ligo <> e:146 var
+R5866:5866 ligo_coq.ligo <> g:145 var
+binder 5907:5907 <> g:153
+binder 5909:5909 <> e:154
+binder 5911:5911 <> c:155
+R5967:5976 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R5922:5931 ligo_coq.ligo <> cond_typed:32 ind
+R5966:5966 ligo_coq.ligo <> c:155 var
+R5963:5964 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+R5960:5961 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+R5938:5941 ligo_coq.micheline <> Prim constr
+R5953:5954 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+R5935:5935 ligo_coq.ligo <> e:154 var
+R5933:5933 ligo_coq.ligo <> g:153 var
+R5977:5986 ligo_coq.ligo <> expr_typed:29 ind
+R6007:6007 ligo_coq.ligo <> c:155 var
+R5991:5999 ligo_coq.ligo <> E_if_bool constr
+R6004:6004 ligo_coq.ligo <> e:154 var
+R5988:5988 ligo_coq.ligo <> g:153 var
+binder 6029:6029 <> g:159
+binder 6031:6031 <> e:160
+binder 6033:6033 <> a:161
+binder 6035:6035 <> c:162
+R6095:6104 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R6046:6055 ligo_coq.ligo <> cond_typed:32 ind
+R6094:6094 ligo_coq.ligo <> c:162 var
+R6090:6090 Coq.Lists.List ListNotations ::list_scope:'['_x_']' not
+R6092:6092 Coq.Lists.List ListNotations ::list_scope:'['_x_']' not
+R6091:6091 ligo_coq.ligo <> a:161 var
+R6087:6088 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+R6062:6065 ligo_coq.micheline <> Prim constr
+R6079:6079 Coq.Lists.List ListNotations ::list_scope:'['_x_']' not
+R6081:6081 Coq.Lists.List ListNotations ::list_scope:'['_x_']' not
+R6080:6080 ligo_coq.ligo <> a:161 var
+R6059:6059 ligo_coq.ligo <> e:160 var
+R6057:6057 ligo_coq.ligo <> g:159 var
+R6105:6114 ligo_coq.ligo <> expr_typed:29 ind
+R6135:6135 ligo_coq.ligo <> c:162 var
+R6119:6127 ligo_coq.ligo <> E_if_none constr
+R6132:6132 ligo_coq.ligo <> e:160 var
+R6116:6116 ligo_coq.ligo <> g:159 var
+binder 6157:6157 <> g:166
+binder 6159:6159 <> e:167
+binder 6161:6161 <> a:168
+binder 6163:6163 <> c:169
+R6244:6253 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R6174:6183 ligo_coq.ligo <> cond_typed:32 ind
+R6243:6243 ligo_coq.ligo <> c:169 var
+R6240:6241 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+R6213:6213 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R6215:6216 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R6238:6238 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R6214:6214 ligo_coq.ligo <> a:168 var
+R6217:6220 ligo_coq.micheline <> Prim constr
+R6232:6232 Coq.Lists.List ListNotations ::list_scope:'['_x_']' not
+R6234:6234 Coq.Lists.List ListNotations ::list_scope:'['_x_']' not
+R6233:6233 ligo_coq.ligo <> a:168 var
+R6190:6193 ligo_coq.micheline <> Prim constr
+R6205:6205 Coq.Lists.List ListNotations ::list_scope:'['_x_']' not
+R6207:6207 Coq.Lists.List ListNotations ::list_scope:'['_x_']' not
+R6206:6206 ligo_coq.ligo <> a:168 var
+R6187:6187 ligo_coq.ligo <> e:167 var
+R6185:6185 ligo_coq.ligo <> g:166 var
+R6254:6263 ligo_coq.ligo <> expr_typed:29 ind
+R6284:6284 ligo_coq.ligo <> c:169 var
+R6268:6276 ligo_coq.ligo <> E_if_cons constr
+R6281:6281 ligo_coq.ligo <> e:167 var
+R6265:6265 ligo_coq.ligo <> g:166 var
+binder 6303:6304 <> ss:175
+binder 6306:6306 <> g:176
+binder 6308:6309 <> g1:177
+binder 6311:6312 <> g2:178
+binder 6314:6317 <> elem:179
+binder 6319:6322 <> coll:180
+binder 6324:6325 <> e1:181
+binder 6327:6328 <> e2:182
+R6356:6365 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R6339:6344 ligo_coq.co_de_bruijn <> splits ind
+R6354:6355 ligo_coq.ligo <> g2:178 var
+R6351:6352 ligo_coq.ligo <> g1:177 var
+R6349:6349 ligo_coq.ligo <> g:176 var
+R6346:6347 ligo_coq.ligo <> ss:175 var
+R6386:6395 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R6366:6375 ligo_coq.types <> iter_class ind
+R6382:6385 ligo_coq.ligo <> coll:180 var
+R6377:6380 ligo_coq.ligo <> elem:179 var
+R6443:6452 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R6396:6406 ligo_coq.ligo <> binds_typed:31 ind
+R6422:6425 ligo_coq.micheline <> Prim constr
+R6437:6438 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+R6414:6414 Coq.Lists.List ListNotations ::list_scope:'['_x_']' not
+R6419:6419 Coq.Lists.List ListNotations ::list_scope:'['_x_']' not
+R6415:6418 ligo_coq.ligo <> elem:179 var
+R6411:6412 ligo_coq.ligo <> e1:181 var
+R6408:6409 ligo_coq.ligo <> g1:177 var
+R6474:6483 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R6453:6462 ligo_coq.ligo <> expr_typed:29 ind
+R6470:6473 ligo_coq.ligo <> coll:180 var
+R6467:6468 ligo_coq.ligo <> e2:182 var
+R6464:6465 ligo_coq.ligo <> g2:178 var
+R6484:6493 ligo_coq.ligo <> expr_typed:29 ind
+R6519:6522 ligo_coq.micheline <> Prim constr
+R6534:6535 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+R6498:6503 ligo_coq.ligo <> E_iter constr
+R6514:6515 ligo_coq.ligo <> e2:182 var
+R6511:6512 ligo_coq.ligo <> e1:181 var
+R6508:6509 ligo_coq.ligo <> ss:175 var
+R6495:6495 ligo_coq.ligo <> g:176 var
+binder 6557:6558 <> ss:188
+binder 6560:6560 <> g:189
+binder 6562:6563 <> g1:190
+binder 6565:6566 <> g2:191
+binder 6568:6571 <> elem:192
+binder 6573:6577 <> elem':193
+binder 6579:6582 <> coll:194
+binder 6584:6588 <> coll':195
+binder 6590:6591 <> e1:196
+binder 6593:6594 <> e2:197
+R6622:6631 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R6605:6610 ligo_coq.co_de_bruijn <> splits ind
+R6620:6621 ligo_coq.ligo <> g2:191 var
+R6617:6618 ligo_coq.ligo <> g1:190 var
+R6615:6615 ligo_coq.ligo <> g:189 var
+R6612:6613 ligo_coq.ligo <> ss:188 var
+R6663:6672 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R6632:6640 ligo_coq.types <> map_class ind
+R6658:6662 ligo_coq.ligo <> coll':195 var
+R6653:6656 ligo_coq.ligo <> coll:194 var
+R6647:6651 ligo_coq.ligo <> elem':193 var
+R6642:6645 ligo_coq.ligo <> elem:192 var
+R6703:6712 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R6673:6683 ligo_coq.ligo <> binds_typed:31 ind
+R6698:6702 ligo_coq.ligo <> elem':193 var
+R6691:6691 Coq.Lists.List ListNotations ::list_scope:'['_x_']' not
+R6696:6696 Coq.Lists.List ListNotations ::list_scope:'['_x_']' not
+R6692:6695 ligo_coq.ligo <> elem:192 var
+R6688:6689 ligo_coq.ligo <> e1:196 var
+R6685:6686 ligo_coq.ligo <> g1:190 var
+R6734:6743 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R6713:6722 ligo_coq.ligo <> expr_typed:29 ind
+R6730:6733 ligo_coq.ligo <> coll:194 var
+R6727:6728 ligo_coq.ligo <> e2:197 var
+R6724:6725 ligo_coq.ligo <> g2:191 var
+R6744:6753 ligo_coq.ligo <> expr_typed:29 ind
+R6776:6780 ligo_coq.ligo <> coll':195 var
+R6758:6762 ligo_coq.ligo <> E_map constr
+R6772:6773 ligo_coq.ligo <> e2:197 var
+R6769:6770 ligo_coq.ligo <> e1:196 var
+R6766:6767 ligo_coq.ligo <> ss:188 var
+R6755:6755 ligo_coq.ligo <> g:189 var
+binder 6804:6805 <> ss:199
+binder 6807:6807 <> g:200
+binder 6809:6810 <> g1:201
+binder 6812:6813 <> g2:202
+binder 6815:6815 <> a:203
+binder 6817:6817 <> b:204
+binder 6819:6820 <> e1:205
+binder 6822:6823 <> e2:206
+R6851:6860 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R6834:6839 ligo_coq.co_de_bruijn <> splits ind
+R6849:6850 ligo_coq.ligo <> g2:202 var
+R6846:6847 ligo_coq.ligo <> g1:201 var
+R6844:6844 ligo_coq.ligo <> g:200 var
+R6841:6842 ligo_coq.ligo <> ss:199 var
+R6907:6916 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R6861:6871 ligo_coq.ligo <> binds_typed:31 ind
+R6884:6887 ligo_coq.micheline <> Prim constr
+R6897:6897 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R6899:6900 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R6902:6902 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R6898:6898 ligo_coq.ligo <> a:203 var
+R6901:6901 ligo_coq.ligo <> b:204 var
+R6879:6879 Coq.Lists.List ListNotations ::list_scope:'['_x_']' not
+R6881:6881 Coq.Lists.List ListNotations ::list_scope:'['_x_']' not
+R6880:6880 ligo_coq.ligo <> a:203 var
+R6876:6877 ligo_coq.ligo <> e1:205 var
+R6873:6874 ligo_coq.ligo <> g1:201 var
+R6935:6944 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R6917:6926 ligo_coq.ligo <> expr_typed:29 ind
+R6934:6934 ligo_coq.ligo <> a:203 var
+R6931:6932 ligo_coq.ligo <> e2:206 var
+R6928:6929 ligo_coq.ligo <> g2:202 var
+R6945:6954 ligo_coq.ligo <> expr_typed:29 ind
+R6986:6986 ligo_coq.ligo <> b:204 var
+R6959:6969 ligo_coq.ligo <> E_loop_left constr
+R6982:6983 ligo_coq.ligo <> e2:206 var
+R6980:6980 ligo_coq.ligo <> b:204 var
+R6977:6978 ligo_coq.ligo <> e1:205 var
+R6974:6975 ligo_coq.ligo <> ss:199 var
+R6956:6956 ligo_coq.ligo <> g:200 var
+binder 7005:7007 <> ss1:210
+binder 7009:7011 <> ss2:211
+binder 7013:7013 <> g:212
+binder 7015:7016 <> g1:213
+binder 7018:7019 <> g':214
+binder 7021:7022 <> g2:215
+binder 7024:7025 <> g3:216
+binder 7027:7030 <> elem:217
+binder 7032:7035 <> coll:218
+binder 7037:7039 <> ret:219
+binder 7041:7042 <> e1:220
+binder 7044:7045 <> e2:221
+binder 7047:7048 <> e3:222
+R7077:7086 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R7059:7064 ligo_coq.co_de_bruijn <> splits ind
+R7075:7076 ligo_coq.ligo <> g':214 var
+R7072:7073 ligo_coq.ligo <> g1:213 var
+R7070:7070 ligo_coq.ligo <> g:212 var
+R7066:7068 ligo_coq.ligo <> ss1:210 var
+R7106:7115 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R7087:7092 ligo_coq.co_de_bruijn <> splits ind
+R7104:7105 ligo_coq.ligo <> g3:216 var
+R7101:7102 ligo_coq.ligo <> g2:215 var
+R7098:7099 ligo_coq.ligo <> g':214 var
+R7094:7096 ligo_coq.ligo <> ss2:211 var
+R7136:7145 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R7116:7125 ligo_coq.types <> iter_class ind
+R7132:7135 ligo_coq.ligo <> coll:218 var
+R7127:7130 ligo_coq.ligo <> elem:217 var
+R7166:7175 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R7146:7155 ligo_coq.ligo <> expr_typed:29 ind
+R7163:7165 ligo_coq.ligo <> ret:219 var
+R7160:7161 ligo_coq.ligo <> e1:220 var
+R7157:7158 ligo_coq.ligo <> g1:213 var
+R7197:7206 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R7176:7185 ligo_coq.ligo <> expr_typed:29 ind
+R7193:7196 ligo_coq.ligo <> coll:218 var
+R7190:7191 ligo_coq.ligo <> e2:221 var
+R7187:7188 ligo_coq.ligo <> g2:215 var
+R7260:7269 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R7207:7217 ligo_coq.ligo <> binds_typed:31 ind
+R7257:7259 ligo_coq.ligo <> ret:219 var
+R7225:7225 Coq.Lists.List ListNotations ::list_scope:'['_x_']' not
+R7255:7255 Coq.Lists.List ListNotations ::list_scope:'['_x_']' not
+R7226:7229 ligo_coq.micheline <> Prim constr
+R7241:7241 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R7245:7246 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R7251:7251 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R7242:7244 ligo_coq.ligo <> ret:219 var
+R7247:7250 ligo_coq.ligo <> elem:217 var
+R7222:7223 ligo_coq.ligo <> e3:222 var
+R7219:7220 ligo_coq.ligo <> g3:216 var
+R7270:7279 ligo_coq.ligo <> expr_typed:29 ind
+R7312:7314 ligo_coq.ligo <> ret:219 var
+R7284:7289 ligo_coq.ligo <> E_fold constr
+R7308:7309 ligo_coq.ligo <> e3:222 var
+R7305:7306 ligo_coq.ligo <> e2:221 var
+R7301:7303 ligo_coq.ligo <> ss2:211 var
+R7298:7299 ligo_coq.ligo <> e1:220 var
+R7294:7296 ligo_coq.ligo <> ss1:210 var
+R7281:7281 ligo_coq.ligo <> g:212 var
+binder 7387:7389 <> ss1:226
+binder 7391:7393 <> ss2:227
+binder 7395:7395 <> g:228
+binder 7397:7398 <> g1:229
+binder 7400:7401 <> g':230
+binder 7403:7404 <> g2:231
+binder 7406:7407 <> g3:232
+binder 7409:7412 <> elem:233
+binder 7414:7417 <> coll:234
+binder 7419:7421 <> ret:235
+binder 7423:7424 <> e1:236
+binder 7426:7427 <> e2:237
+binder 7429:7430 <> e3:238
+R7459:7468 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R7441:7446 ligo_coq.co_de_bruijn <> splits ind
+R7457:7458 ligo_coq.ligo <> g':230 var
+R7454:7455 ligo_coq.ligo <> g1:229 var
+R7452:7452 ligo_coq.ligo <> g:228 var
+R7448:7450 ligo_coq.ligo <> ss1:226 var
+R7488:7497 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R7469:7474 ligo_coq.co_de_bruijn <> splits ind
+R7486:7487 ligo_coq.ligo <> g3:232 var
+R7483:7484 ligo_coq.ligo <> g2:231 var
+R7480:7481 ligo_coq.ligo <> g':230 var
+R7476:7478 ligo_coq.ligo <> ss2:227 var
+R7518:7527 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R7498:7507 ligo_coq.types <> iter_class ind
+R7514:7517 ligo_coq.ligo <> coll:234 var
+R7509:7512 ligo_coq.ligo <> elem:233 var
+R7548:7557 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R7528:7537 ligo_coq.ligo <> expr_typed:29 ind
+R7545:7547 ligo_coq.ligo <> ret:235 var
+R7542:7543 ligo_coq.ligo <> e1:236 var
+R7539:7540 ligo_coq.ligo <> g1:229 var
+R7579:7588 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R7558:7567 ligo_coq.ligo <> expr_typed:29 ind
+R7575:7578 ligo_coq.ligo <> coll:234 var
+R7572:7573 ligo_coq.ligo <> e2:237 var
+R7569:7570 ligo_coq.ligo <> g2:231 var
+R7642:7651 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R7589:7599 ligo_coq.ligo <> binds_typed:31 ind
+R7639:7641 ligo_coq.ligo <> ret:235 var
+R7607:7607 Coq.Lists.List ListNotations ::list_scope:'['_x_']' not
+R7637:7637 Coq.Lists.List ListNotations ::list_scope:'['_x_']' not
+R7608:7611 ligo_coq.micheline <> Prim constr
+R7623:7623 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R7628:7629 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R7633:7633 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R7624:7627 ligo_coq.ligo <> elem:233 var
+R7630:7632 ligo_coq.ligo <> ret:235 var
+R7604:7605 ligo_coq.ligo <> e3:238 var
+R7601:7602 ligo_coq.ligo <> g3:232 var
+R7652:7661 ligo_coq.ligo <> expr_typed:29 ind
+R7705:7707 ligo_coq.ligo <> ret:235 var
+R7666:7677 ligo_coq.ligo <> E_fold_right constr
+R7701:7702 ligo_coq.ligo <> e3:238 var
+R7698:7699 ligo_coq.ligo <> e2:237 var
+R7694:7696 ligo_coq.ligo <> ss2:227 var
+R7691:7692 ligo_coq.ligo <> e1:236 var
+R7687:7689 ligo_coq.ligo <> ss1:226 var
+R7682:7685 ligo_coq.ligo <> elem:233 var
+R7663:7663 ligo_coq.ligo <> g:228 var
+binder 7730:7730 <> g:242
+binder 7732:7732 <> a:243
+binder 7734:7734 <> b:244
+binder 7736:7736 <> e:245
+R7763:7772 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R7747:7756 ligo_coq.ligo <> expr_typed:29 ind
+R7762:7762 ligo_coq.ligo <> a:243 var
+R7760:7760 ligo_coq.ligo <> e:245 var
+R7758:7758 ligo_coq.ligo <> g:242 var
+R7773:7782 ligo_coq.ligo <> expr_typed:29 ind
+R7804:7804 ligo_coq.ligo <> b:244 var
+R7787:7796 ligo_coq.ligo <> E_failwith constr
+R7801:7801 ligo_coq.ligo <> e:245 var
+R7784:7784 ligo_coq.ligo <> g:242 var
+binder 7832:7835 <> code:247
+binder 7837:7837 <> a:248
+binder 7839:7839 <> b:249
+R7873:7882 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R7850:7859 ligo_coq.michelson <> prog_typed ind
+R7870:7870 Coq.Lists.List ListNotations ::list_scope:'['_x_']' not
+R7872:7872 Coq.Lists.List ListNotations ::list_scope:'['_x_']' not
+R7871:7871 ligo_coq.ligo <> b:249 var
+R7866:7866 Coq.Lists.List ListNotations ::list_scope:'['_x_']' not
+R7868:7868 Coq.Lists.List ListNotations ::list_scope:'['_x_']' not
+R7867:7867 ligo_coq.ligo <> a:248 var
+R7861:7864 ligo_coq.ligo <> code:247 var
+R7883:7892 ligo_coq.ligo <> expr_typed:29 ind
+R7928:7931 ligo_coq.micheline <> Prim constr
+R7945:7945 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R7947:7948 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R7950:7950 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R7946:7946 ligo_coq.ligo <> a:248 var
+R7949:7949 ligo_coq.ligo <> b:249 var
+R7898:7912 ligo_coq.ligo <> E_raw_michelson constr
+R7921:7924 ligo_coq.ligo <> code:247 var
+R7919:7919 ligo_coq.ligo <> b:249 var
+R7917:7917 ligo_coq.ligo <> a:248 var
+R7894:7895 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+binder 7984:7984 <> g:253
+binder 7986:7987 <> az:254
+binder 7989:7989 <> b:255
+binder 7991:7994 <> hash:256
+binder 7996:7999 <> args:257
+R8030:8112 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R8010:8019 ligo_coq.ligo <> args_typed:30 ind
+R8028:8029 ligo_coq.ligo <> az:254 var
+R8023:8026 ligo_coq.ligo <> args:257 var
+R8021:8021 ligo_coq.ligo <> g:253 var
+R8113:8122 ligo_coq.ligo <> expr_typed:29 ind
+R8161:8161 ligo_coq.ligo <> b:255 var
+R8127:8143 ligo_coq.ligo <> E_global_constant constr
+R8155:8158 ligo_coq.ligo <> args:257 var
+R8150:8153 ligo_coq.ligo <> hash:256 var
+R8148:8148 ligo_coq.ligo <> b:255 var
+R8124:8124 ligo_coq.ligo <> g:253 var
+R8270:8279 ligo_coq.ligo <> args_typed:30 ind
+R8293:8294 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+R8284:8291 ligo_coq.ligo <> Args_nil constr
+R8281:8282 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+binder 8315:8317 <> env:259
+binder 8319:8322 <> env1:260
+binder 8324:8327 <> env2:261
+binder 8329:8330 <> ss:262
+binder 8332:8332 <> e:263
+binder 8334:8337 <> args:264
+binder 8339:8339 <> d:265
+binder 8341:8341 <> a:266
+R8373:8380 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R8350:8355 ligo_coq.co_de_bruijn <> splits ind
+R8369:8372 ligo_coq.ligo <> env2:261 var
+R8364:8367 ligo_coq.ligo <> env1:260 var
+R8360:8362 ligo_coq.ligo <> env:259 var
+R8357:8358 ligo_coq.ligo <> ss:262 var
+R8400:8407 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R8381:8390 ligo_coq.ligo <> expr_typed:29 ind
+R8399:8399 ligo_coq.ligo <> a:266 var
+R8397:8397 ligo_coq.ligo <> e:263 var
+R8392:8395 ligo_coq.ligo <> env1:260 var
+R8430:8437 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R8408:8417 ligo_coq.ligo <> args_typed:30 ind
+R8429:8429 ligo_coq.ligo <> d:265 var
+R8424:8427 ligo_coq.ligo <> args:264 var
+R8419:8422 ligo_coq.ligo <> env2:261 var
+R8438:8447 ligo_coq.ligo <> args_typed:30 ind
+R8477:8480 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R8476:8476 ligo_coq.ligo <> d:265 var
+R8481:8481 Coq.Lists.List ListNotations ::list_scope:'['_x_']' not
+R8483:8483 Coq.Lists.List ListNotations ::list_scope:'['_x_']' not
+R8482:8482 ligo_coq.ligo <> a:266 var
+R8454:8462 ligo_coq.ligo <> Args_cons constr
+R8469:8472 ligo_coq.ligo <> args:264 var
+R8467:8467 ligo_coq.ligo <> e:263 var
+R8464:8465 ligo_coq.ligo <> ss:262 var
+R8449:8451 ligo_coq.ligo <> env:259 var
+binder 8602:8604 <> env:267
+binder 8606:8607 <> us:268
+binder 8609:8610 <> az:269
+binder 8612:8614 <> az':270
+binder 8616:8616 <> e:271
+binder 8618:8618 <> b:272
+R8641:8648 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R8627:8630 ligo_coq.co_de_bruijn <> used ind
+R8639:8640 ligo_coq.ligo <> az:269 var
+R8635:8637 ligo_coq.ligo <> az':270 var
+R8632:8633 ligo_coq.ligo <> us:268 var
+R8676:8683 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R8649:8658 ligo_coq.ligo <> expr_typed:29 ind
+R8675:8675 ligo_coq.ligo <> b:272 var
+R8673:8673 ligo_coq.ligo <> e:271 var
+R8664:8667 Coq.Init.Datatypes <> ::list_scope:x_'++'_x not
+R8661:8663 ligo_coq.ligo <> az':270 var
+R8668:8670 ligo_coq.ligo <> env:267 var
+R8684:8694 ligo_coq.ligo <> binds_typed:31 ind
+R8719:8719 ligo_coq.ligo <> b:272 var
+R8716:8717 ligo_coq.ligo <> az:269 var
+R8701:8705 ligo_coq.ligo <> Binds constr
+R8713:8713 ligo_coq.ligo <> e:271 var
+R8710:8711 ligo_coq.ligo <> az:269 var
+R8707:8708 ligo_coq.ligo <> us:268 var
+R8696:8698 ligo_coq.ligo <> env:267 var
+binder 8875:8877 <> env:273
+binder 8879:8882 <> env1:274
+binder 8884:8887 <> env':275
+binder 8889:8892 <> env2:276
+binder 8894:8897 <> env3:277
+binder 8899:8901 <> ss1:278
+binder 8903:8904 <> e1:279
+binder 8906:8908 <> ss2:280
+binder 8910:8911 <> b2:281
+binder 8913:8914 <> b3:282
+binder 8916:8916 <> a:283
+binder 8918:8919 <> bs:284
+binder 8921:8922 <> cs:285
+binder 8924:8924 <> d:286
+R8957:8964 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R8933:8938 ligo_coq.co_de_bruijn <> splits ind
+R8953:8956 ligo_coq.ligo <> env':275 var
+R8948:8951 ligo_coq.ligo <> env1:274 var
+R8944:8946 ligo_coq.ligo <> env:273 var
+R8940:8942 ligo_coq.ligo <> ss1:278 var
+R8990:8997 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R8965:8970 ligo_coq.co_de_bruijn <> splits ind
+R8986:8989 ligo_coq.ligo <> env3:277 var
+R8981:8984 ligo_coq.ligo <> env2:276 var
+R8976:8979 ligo_coq.ligo <> env':275 var
+R8972:8974 ligo_coq.ligo <> ss2:280 var
+R9018:9025 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R8998:9007 ligo_coq.ligo <> expr_typed:29 ind
+R9017:9017 ligo_coq.ligo <> a:283 var
+R9014:9015 ligo_coq.ligo <> e1:279 var
+R9009:9012 ligo_coq.ligo <> env1:274 var
+R9050:9057 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R9026:9036 ligo_coq.ligo <> binds_typed:31 ind
+R9049:9049 ligo_coq.ligo <> d:286 var
+R9046:9047 ligo_coq.ligo <> bs:284 var
+R9043:9044 ligo_coq.ligo <> b2:281 var
+R9038:9041 ligo_coq.ligo <> env2:276 var
+R9082:9089 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R9058:9068 ligo_coq.ligo <> binds_typed:31 ind
+R9081:9081 ligo_coq.ligo <> d:286 var
+R9078:9079 ligo_coq.ligo <> cs:285 var
+R9075:9076 ligo_coq.ligo <> b3:282 var
+R9070:9073 ligo_coq.ligo <> env3:277 var
+R9090:9099 ligo_coq.ligo <> cond_typed:32 ind
+R9137:9137 ligo_coq.ligo <> d:286 var
+R9134:9135 ligo_coq.ligo <> cs:285 var
+R9131:9132 ligo_coq.ligo <> bs:284 var
+R9129:9129 ligo_coq.ligo <> a:283 var
+R9106:9109 ligo_coq.ligo <> Cond constr
+R9125:9126 ligo_coq.ligo <> b3:282 var
+R9122:9123 ligo_coq.ligo <> b2:281 var
+R9118:9120 ligo_coq.ligo <> ss2:280 var
+R9115:9116 ligo_coq.ligo <> e1:279 var
+R9111:9113 ligo_coq.ligo <> ss1:278 var
+R9101:9103 ligo_coq.ligo <> env:273 var
+binder 9206:9208 <> ann:287
+binder 9210:9211 <> az:288
+R9220:9236 ligo_coq.ligo <> static_args_typed:33 ind
+R9239:9247 ligo_coq.ligo <> Type_args constr
+R9253:9254 ligo_coq.ligo <> az:288 var
+R9249:9251 ligo_coq.ligo <> ann:287 var
+binder 9277:9277 <> s:289
+R9300:9307 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R9286:9297 ligo_coq.ligo <> script_typed:34 ind
+R9299:9299 ligo_coq.ligo <> s:289 var
+R9308:9324 ligo_coq.ligo <> static_args_typed:33 ind
+R9327:9336 ligo_coq.ligo <> Script_arg constr
+R9338:9338 ligo_coq.ligo <> s:289 var
+binder 9395:9395 <> p:290
+binder 9397:9397 <> s:291
+binder 9399:9399 <> e:292
+R9524:9533 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R9410:9420 ligo_coq.ligo <> binds_typed:31 ind
+R9455:9458 ligo_coq.micheline <> Prim constr
+R9470:9470 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R9516:9517 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R9519:9519 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R9471:9474 ligo_coq.micheline <> Prim constr
+R9486:9486 Coq.Lists.List ListNotations ::list_scope:'['_x_']' not
+R9512:9512 Coq.Lists.List ListNotations ::list_scope:'['_x_']' not
+R9487:9490 ligo_coq.micheline <> Prim constr
+R9507:9508 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+R9518:9518 ligo_coq.ligo <> s:291 var
+R9427:9427 Coq.Lists.List ListNotations ::list_scope:'['_x_']' not
+R9452:9452 Coq.Lists.List ListNotations ::list_scope:'['_x_']' not
+R9428:9431 ligo_coq.micheline <> Prim constr
+R9443:9443 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R9445:9446 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R9448:9448 Coq.Lists.List ListNotations ::list_scope:'['_x_';'_x_';'_'..'_';'_x_']' not
+R9444:9444 ligo_coq.ligo <> p:290 var
+R9447:9447 ligo_coq.ligo <> s:291 var
+R9425:9425 ligo_coq.ligo <> e:292 var
+R9422:9423 Coq.Lists.List ListNotations ::list_scope:'['_']' not
+R9534:9545 ligo_coq.ligo <> script_typed:34 ind
+R9548:9553 ligo_coq.ligo <> Script constr
+R9559:9559 ligo_coq.ligo <> e:292 var
+R9557:9557 ligo_coq.ligo <> s:291 var
+R9555:9555 ligo_coq.ligo <> p:290 var
+def 9577:9588 <> binds_length
+R9595:9599 ligo_coq.ligo <> binds ind
+binder 9591:9591 <> e:301
+R9604:9606 Coq.Init.Datatypes <> nat ind
+R9619:9619 ligo_coq.ligo <> e:301 var
+R9630:9634 ligo_coq.ligo <> Binds constr
+R9646:9656 Coq.Lists.List <> length syndef
+def 9678:9688 <> args_length
+R9695:9698 ligo_coq.ligo <> args ind
+binder 9691:9691 <> e:303
+R9703:9705 Coq.Init.Datatypes <> nat ind
+R9718:9718 ligo_coq.ligo <> e:303 var
+R9729:9736 ligo_coq.ligo <> Args_nil constr
+R9741:9741 Coq.Init.Datatypes <> O constr
+R9747:9755 ligo_coq.ligo <> Args_cons constr
+R9766:9766 Coq.Init.Datatypes <> S constr
+R9769:9779 ligo_coq.ligo <> args_length:304 def
+R9781:9781 ligo_coq.ligo <> e:303 var
+R9796:9799 ligo_coq.ligo expr <> sec
+R9813:9817 ligo_coq.ligo <> E_var constr
+R9813:9817 ligo_coq.ligo <> E_var constr
+R9841:9845 ligo_coq.ligo <> E_app constr
+R9841:9845 ligo_coq.ligo <> E_app constr
+R9869:9873 ligo_coq.ligo <> E_lam constr
+R9869:9873 ligo_coq.ligo <> E_lam constr
+R9897:9906 ligo_coq.ligo <> E_operator constr
+R9897:9906 ligo_coq.ligo <> E_operator constr
+R9930:9938 ligo_coq.ligo <> E_literal constr
+R9930:9938 ligo_coq.ligo <> E_literal constr
+R9962:9967 ligo_coq.ligo <> E_pair constr
+R9962:9967 ligo_coq.ligo <> E_pair constr
+R9991:9995 ligo_coq.ligo <> E_car constr
+R9991:9995 ligo_coq.ligo <> E_car constr
+R10019:10023 ligo_coq.ligo <> E_cdr constr
+R10019:10023 ligo_coq.ligo <> E_cdr constr
+R10047:10052 ligo_coq.ligo <> E_unit constr
+R10047:10052 ligo_coq.ligo <> E_unit constr
+R10076:10081 ligo_coq.ligo <> E_left constr
+R10076:10081 ligo_coq.ligo <> E_left constr
+R10105:10111 ligo_coq.ligo <> E_right constr
+R10105:10111 ligo_coq.ligo <> E_right constr
+R10135:10143 ligo_coq.ligo <> E_if_left constr
+R10135:10143 ligo_coq.ligo <> E_if_left constr
+R10167:10172 ligo_coq.ligo <> E_iter constr
+R10167:10172 ligo_coq.ligo <> E_iter constr
+R10196:10200 ligo_coq.ligo <> E_map constr
+R10196:10200 ligo_coq.ligo <> E_map constr
+R10224:10234 ligo_coq.ligo <> E_loop_left constr
+R10224:10234 ligo_coq.ligo <> E_loop_left constr
+R10258:10263 ligo_coq.ligo <> E_fold constr
+R10258:10263 ligo_coq.ligo <> E_fold constr
+R10287:10296 ligo_coq.ligo <> E_failwith constr
+R10287:10296 ligo_coq.ligo <> E_failwith constr
+R10320:10334 ligo_coq.ligo <> E_raw_michelson constr
+R10320:10334 ligo_coq.ligo <> E_raw_michelson constr
+R10358:10365 ligo_coq.ligo <> Args_nil constr
+R10358:10365 ligo_coq.ligo <> Args_nil constr
+R10389:10397 ligo_coq.ligo <> Args_cons constr
+R10389:10397 ligo_coq.ligo <> Args_cons constr
+R10421:10425 ligo_coq.ligo <> Binds constr
+R10421:10425 ligo_coq.ligo <> Binds constr
+R10449:10452 ligo_coq.ligo <> Cond constr
+R10449:10452 ligo_coq.ligo <> Cond constr
+R10476:10484 ligo_coq.ligo <> Type_args constr
+R10476:10484 ligo_coq.ligo <> Type_args constr
+R10508:10517 ligo_coq.ligo <> Script_arg constr
+R10508:10517 ligo_coq.ligo <> Script_arg constr
+R10541:10546 ligo_coq.ligo <> Script constr
+R10541:10546 ligo_coq.ligo <> Script constr

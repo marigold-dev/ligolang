@@ -1,0 +1,1 @@
+../../../../../default/src/stages/common/stage_common.ml-gen

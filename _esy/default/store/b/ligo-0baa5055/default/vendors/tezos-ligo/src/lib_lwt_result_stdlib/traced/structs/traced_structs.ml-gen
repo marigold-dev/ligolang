@@ -1,0 +1,38 @@
+(** @canonical Traced_structs.Hashtbl *)
+module Hashtbl = Traced_structs__Hashtbl
+
+
+(** @canonical Traced_structs.List *)
+module List = Traced_structs__List
+
+
+(** @canonical Traced_structs.Map *)
+module Map = Traced_structs__Map
+
+
+(** @canonical Traced_structs.Monad *)
+module Monad = Traced_structs__Monad
+
+
+(** @canonical Traced_structs.Seq *)
+module Seq = Traced_structs__Seq
+
+
+(** @canonical Traced_structs.Seq_e *)
+module Seq_e = Traced_structs__Seq_e
+
+
+(** @canonical Traced_structs.Seq_es *)
+module Seq_es = Traced_structs__Seq_es
+
+
+(** @canonical Traced_structs.Seq_s *)
+module Seq_s = Traced_structs__Seq_s
+
+
+(** @canonical Traced_structs.Set *)
+module Set = Traced_structs__Set
+
+
+(** @canonical Traced_structs.Structs *)
+module Structs = Traced_structs__Structs

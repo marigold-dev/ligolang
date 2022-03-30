@@ -1,0 +1,6 @@
+(** @canonical Ligo_run.Of_michelson *)
+module Of_michelson = Ligo_run__Of_michelson
+
+
+(** @canonical Ligo_run.Run *)
+module Run = Ligo_run__Run

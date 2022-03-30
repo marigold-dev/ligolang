@@ -1,0 +1,2 @@
+(** @canonical Compiler_options.Raw_options *)
+module Raw_options = Compiler_options__Raw_options

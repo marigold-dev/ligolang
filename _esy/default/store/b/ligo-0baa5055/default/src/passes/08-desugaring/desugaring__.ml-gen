@@ -1,0 +1,10 @@
+(** @canonical Desugaring.Compiler *)
+module Compiler = Desugaring__Compiler
+
+
+(** @canonical Desugaring.Decompiler *)
+module Decompiler = Desugaring__Decompiler
+
+
+(** @canonical Desugaring.Errors *)
+module Errors = Desugaring__Errors

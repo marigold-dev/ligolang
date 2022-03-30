@@ -1,0 +1,74 @@
+(** @canonical Tezos_stdlib.Bits *)
+module Bits = Tezos_stdlib__Bits
+
+
+(** @canonical Tezos_stdlib.Bloomer *)
+module Bloomer = Tezos_stdlib__Bloomer
+
+
+(** @canonical Tezos_stdlib.Bounded_heap *)
+module Bounded_heap = Tezos_stdlib__Bounded_heap
+
+
+(** @canonical Tezos_stdlib.Circular_buffer *)
+module Circular_buffer = Tezos_stdlib__Circular_buffer
+
+
+(** @canonical Tezos_stdlib.Compare *)
+module Compare = Tezos_stdlib__Compare
+
+
+(** @canonical Tezos_stdlib.FallbackArray *)
+module FallbackArray = Tezos_stdlib__FallbackArray
+
+
+(** @canonical Tezos_stdlib.FunctionalArray *)
+module FunctionalArray = Tezos_stdlib__FunctionalArray
+
+
+(** @canonical Tezos_stdlib.Lwt_dropbox *)
+module Lwt_dropbox = Tezos_stdlib__Lwt_dropbox
+
+
+(** @canonical Tezos_stdlib.Lwt_idle_waiter *)
+module Lwt_idle_waiter = Tezos_stdlib__Lwt_idle_waiter
+
+
+(** @canonical Tezos_stdlib.Lwt_pipe *)
+module Lwt_pipe = Tezos_stdlib__Lwt_pipe
+
+
+(** @canonical Tezos_stdlib.Lwt_utils *)
+module Lwt_utils = Tezos_stdlib__Lwt_utils
+
+
+(** @canonical Tezos_stdlib.Memory *)
+module Memory = Tezos_stdlib__Memory
+
+
+(** @canonical Tezos_stdlib.ReadOnlyArray *)
+module ReadOnlyArray = Tezos_stdlib__ReadOnlyArray
+
+
+(** @canonical Tezos_stdlib.Tag *)
+module Tag = Tezos_stdlib__Tag
+
+
+(** @canonical Tezos_stdlib.TzEndian *)
+module TzEndian = Tezos_stdlib__TzEndian
+
+
+(** @canonical Tezos_stdlib.TzFilename *)
+module TzFilename = Tezos_stdlib__TzFilename
+
+
+(** @canonical Tezos_stdlib.TzList *)
+module TzList = Tezos_stdlib__TzList
+
+
+(** @canonical Tezos_stdlib.TzString *)
+module TzString = Tezos_stdlib__TzString
+
+
+(** @canonical Tezos_stdlib.Utils *)
+module Utils = Tezos_stdlib__Utils

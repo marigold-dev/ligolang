@@ -1,0 +1,2 @@
+(** @canonical Menhir_pascaligo_tokens.MenhirToken *)
+module MenhirToken = Menhir_pascaligo_tokens__MenhirToken

@@ -3,9 +3,8 @@
 open Test_helpers
 
 let () =
-  Printexc.record_backtrace true ;
-    run_test @@ test_suite "LIGO"
-  [
-    Integration_tests.main ;
-    Spilling_tests.main ;
-  ];()
+  Printexc.record_backtrace true;
+  run_test
+  @@ test_suite "LIGO"
+       [ Integration_tests.main; Spilling_tests.main; Lambda_vm_test.main ];
+  ()

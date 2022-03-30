@@ -1,0 +1,50 @@
+(** @canonical Bare_sigs.Hashtbl *)
+module Hashtbl = Bare_sigs__Hashtbl
+
+
+(** @canonical Bare_sigs.List *)
+module List = Bare_sigs__List
+
+
+(** @canonical Bare_sigs.Map *)
+module Map = Bare_sigs__Map
+
+
+(** @canonical Bare_sigs.Monad *)
+module Monad = Bare_sigs__Monad
+
+
+(** @canonical Bare_sigs.Option *)
+module Option = Bare_sigs__Option
+
+
+(** @canonical Bare_sigs.Result *)
+module Result = Bare_sigs__Result
+
+
+(** @canonical Bare_sigs.Seq *)
+module Seq = Bare_sigs__Seq
+
+
+(** @canonical Bare_sigs.Seq_e *)
+module Seq_e = Bare_sigs__Seq_e
+
+
+(** @canonical Bare_sigs.Seq_es *)
+module Seq_es = Bare_sigs__Seq_es
+
+
+(** @canonical Bare_sigs.Seq_s *)
+module Seq_s = Bare_sigs__Seq_s
+
+
+(** @canonical Bare_sigs.Set *)
+module Set = Bare_sigs__Set
+
+
+(** @canonical Bare_sigs.Unit *)
+module Unit = Bare_sigs__Unit
+
+
+(** @canonical Bare_sigs.WithExceptions *)
+module WithExceptions = Bare_sigs__WithExceptions

@@ -1,0 +1,50 @@
+(** @canonical Self_ast_imperative.Assign_heuristic *)
+module Assign_heuristic = Self_ast_imperative__Assign_heuristic
+
+
+(** @canonical Self_ast_imperative.Consts *)
+module Consts = Self_ast_imperative__Consts
+
+
+(** @canonical Self_ast_imperative.Entrypoints_length_limit *)
+module Entrypoints_length_limit = Self_ast_imperative__Entrypoints_length_limit
+
+
+(** @canonical Self_ast_imperative.Errors *)
+module Errors = Self_ast_imperative__Errors
+
+
+(** @canonical Self_ast_imperative.Expression_soundness *)
+module Expression_soundness = Self_ast_imperative__Expression_soundness
+
+
+(** @canonical Self_ast_imperative.Helpers *)
+module Helpers = Self_ast_imperative__Helpers
+
+
+(** @canonical Self_ast_imperative.Layout_check *)
+module Layout_check = Self_ast_imperative__Layout_check
+
+
+(** @canonical Self_ast_imperative.Literals *)
+module Literals = Self_ast_imperative__Literals
+
+
+(** @canonical Self_ast_imperative.No_shadowing *)
+module No_shadowing = Self_ast_imperative__No_shadowing
+
+
+(** @canonical Self_ast_imperative.None_variant *)
+module None_variant = Self_ast_imperative__None_variant
+
+
+(** @canonical Self_ast_imperative.Tezos_type_annotation *)
+module Tezos_type_annotation = Self_ast_imperative__Tezos_type_annotation
+
+
+(** @canonical Self_ast_imperative.Type_soundness *)
+module Type_soundness = Self_ast_imperative__Type_soundness
+
+
+(** @canonical Self_ast_imperative.Vars *)
+module Vars = Self_ast_imperative__Vars

@@ -1,0 +1,10 @@
+(** @canonical Jsligo.Compiler *)
+module Compiler = Jsligo__Compiler
+
+
+(** @canonical Jsligo.Decompiler *)
+module Decompiler = Jsligo__Decompiler
+
+
+(** @canonical Jsligo.Errors *)
+module Errors = Jsligo__Errors

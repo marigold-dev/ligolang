@@ -1,0 +1,1 @@
+../../../../../../default/src/main/fuzz/jsligo/fuzz_jsligo.ml-gen

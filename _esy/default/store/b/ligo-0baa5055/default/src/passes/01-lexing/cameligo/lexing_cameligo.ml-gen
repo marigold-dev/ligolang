@@ -1,0 +1,10 @@
+(** @canonical Lexing_cameligo.Self_tokens *)
+module Self_tokens = Lexing_cameligo__Self_tokens
+
+
+(** @canonical Lexing_cameligo.Style *)
+module Style = Lexing_cameligo__Style
+
+
+(** @canonical Lexing_cameligo.Token *)
+module Token = Lexing_cameligo__Token

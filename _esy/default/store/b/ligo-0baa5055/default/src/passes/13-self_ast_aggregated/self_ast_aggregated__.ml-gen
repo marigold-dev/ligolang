@@ -1,0 +1,18 @@
+(** @canonical Self_ast_aggregated.Errors *)
+module Errors = Self_ast_aggregated__Errors
+
+
+(** @canonical Self_ast_aggregated.Helpers *)
+module Helpers = Self_ast_aggregated__Helpers
+
+
+(** @canonical Self_ast_aggregated.Monomorphisation *)
+module Monomorphisation = Self_ast_aggregated__Monomorphisation
+
+
+(** @canonical Self_ast_aggregated.Obj_ligo *)
+module Obj_ligo = Self_ast_aggregated__Obj_ligo
+
+
+(** @canonical Self_ast_aggregated.Uncurry *)
+module Uncurry = Self_ast_aggregated__Uncurry

@@ -1,0 +1,26 @@
+(** @canonical Decompile.Formatter *)
+module Formatter = Decompile__Formatter
+
+
+(** @canonical Decompile.Helpers *)
+module Helpers = Decompile__Helpers
+
+
+(** @canonical Decompile.Of_core *)
+module Of_core = Decompile__Of_core
+
+
+(** @canonical Decompile.Of_imperative *)
+module Of_imperative = Decompile__Of_imperative
+
+
+(** @canonical Decompile.Of_michelson *)
+module Of_michelson = Decompile__Of_michelson
+
+
+(** @canonical Decompile.Of_sugar *)
+module Of_sugar = Decompile__Of_sugar
+
+
+(** @canonical Decompile.Of_typed *)
+module Of_typed = Decompile__Of_typed

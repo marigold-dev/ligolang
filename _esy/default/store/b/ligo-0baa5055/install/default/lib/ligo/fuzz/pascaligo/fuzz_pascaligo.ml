@@ -1,0 +1,1 @@
+../../../../../../default/src/main/fuzz/pascaligo/fuzz_pascaligo.ml-gen

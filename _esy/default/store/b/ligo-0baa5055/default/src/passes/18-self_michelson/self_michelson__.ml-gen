@@ -1,0 +1,10 @@
+(** @canonical Self_michelson.Helpers *)
+module Helpers = Self_michelson__Helpers
+
+
+(** @canonical Self_michelson.Main *)
+module Main = Self_michelson__Main
+
+
+(** @canonical Self_michelson.Peephole *)
+module Peephole = Self_michelson__Peephole

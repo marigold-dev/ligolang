@@ -9,3 +9,4 @@ module Of_michelson = Of_michelson
 module Of_mini_c = Of_mini_c
 module Utils = Utils
 module Helpers = Helpers
+module To_lambda = To_lambda

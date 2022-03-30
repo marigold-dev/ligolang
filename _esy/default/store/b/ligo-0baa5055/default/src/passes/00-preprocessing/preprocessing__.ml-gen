@@ -1,0 +1,18 @@
+(** @canonical Preprocessing.Cameligo *)
+module Cameligo = Preprocessing__Cameligo
+
+
+(** @canonical Preprocessing.Errors *)
+module Errors = Preprocessing__Errors
+
+
+(** @canonical Preprocessing.Jsligo *)
+module Jsligo = Preprocessing__Jsligo
+
+
+(** @canonical Preprocessing.Pascaligo *)
+module Pascaligo = Preprocessing__Pascaligo
+
+
+(** @canonical Preprocessing.Reasonligo *)
+module Reasonligo = Preprocessing__Reasonligo

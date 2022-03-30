@@ -1,0 +1,12 @@
+DIGEST fed72dc006e2f01853272db3047ffe60
+FDuneExtraction.extraction
+R920:927 ligo_coq.compiler <> <> lib
+R929:940 ligo_coq.co_de_bruijn <> <> lib
+R960:969 Coq.extraction.Extraction <> <> lib
+R980:993 Coq.extraction.ExtrOcamlBasic <> <> lib
+R1004:1024 Coq.extraction.ExtrOcamlNativeString <> <> lib
+R1042:1047 Coq.ZArith.ZArith <> <> lib
+R1049:1054 Coq.NArith.NArith <> <> lib
+R1121:1128 Coq.Numbers.BinNums <> positive ind
+R1467:1467 Coq.Numbers.BinNums <> Z ind
+R1632:1632 Coq.Numbers.BinNums <> N ind

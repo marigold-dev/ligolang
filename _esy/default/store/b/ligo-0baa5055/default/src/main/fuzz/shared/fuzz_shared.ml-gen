@@ -1,0 +1,6 @@
+(** @canonical Fuzz_shared.Helpers *)
+module Helpers = Fuzz_shared__Helpers
+
+
+(** @canonical Fuzz_shared.Monad *)
+module Monad = Fuzz_shared__Monad

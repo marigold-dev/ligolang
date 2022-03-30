@@ -1,0 +1,14 @@
+(** @canonical Parsing_pascaligo.ParErr *)
+module ParErr = Parsing_pascaligo__ParErr
+
+
+(** @canonical Parsing_pascaligo.Parser *)
+module Parser = Parsing_pascaligo__Parser
+
+
+(** @canonical Parsing_pascaligo.Pretty *)
+module Pretty = Parsing_pascaligo__Pretty
+
+
+(** @canonical Parsing_pascaligo.RecoverParser *)
+module RecoverParser = Parsing_pascaligo__RecoverParser

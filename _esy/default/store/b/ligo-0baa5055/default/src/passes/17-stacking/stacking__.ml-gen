@@ -1,0 +1,10 @@
+(** @canonical Stacking.Compiler_program *)
+module Compiler_program = Stacking__Compiler_program
+
+
+(** @canonical Stacking.Decompiler *)
+module Decompiler = Stacking__Decompiler
+
+
+(** @canonical Stacking.Errors *)
+module Errors = Stacking__Errors

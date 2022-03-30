@@ -1,0 +1,1 @@
+src/main/compile/of_michelson.ml: Ast_typed Caml Format List Location Main_errors Memory_proto_alpha Micheline Micheline_parser Micheline_printer Michelson Proto_alpha_utils Self_michelson Stacking Stage_common Stdlib Tezos_micheline Tezos_utils Trace
