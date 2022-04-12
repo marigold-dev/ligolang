@@ -1,1 +1,0 @@
-src/main/run/of_michelson.ml: Contract Main_errors Memory_proto_alpha Proto_alpha_utils Protocol Script_ir_translator Script_typed_ir Simple_utils Tez Tezos_micheline Tezos_raw_protocol_011_PtHangz2 Tezos_utils Trace Z

@@ -1,1 +1,0 @@
-../../../../../default/src/main/compile/of_michelson.ml

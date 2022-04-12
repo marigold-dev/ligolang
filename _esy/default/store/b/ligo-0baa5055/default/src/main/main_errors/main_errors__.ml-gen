@@ -1,6 +1,0 @@
-(** @canonical Main_errors.Formatter *)
-module Formatter = Main_errors__Formatter
-
-
-(** @canonical Main_errors.Types *)
-module Types = Main_errors__Types

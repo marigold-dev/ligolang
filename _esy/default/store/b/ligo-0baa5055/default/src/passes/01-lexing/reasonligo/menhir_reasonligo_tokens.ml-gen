@@ -1,2 +1,0 @@
-(** @canonical Menhir_reasonligo_tokens.MenhirToken *)
-module MenhirToken = Menhir_reasonligo_tokens__MenhirToken

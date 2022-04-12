@@ -1,1 +1,0 @@
-../../../../../../default/src/passes/01-lexing/pascaligo/menhir_pascaligo_tokens.ml-gen

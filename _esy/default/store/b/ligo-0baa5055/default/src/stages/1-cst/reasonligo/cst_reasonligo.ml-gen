@@ -1,6 +1,0 @@
-(** @canonical Cst_reasonligo.CST *)
-module CST = Cst_reasonligo__CST
-
-
-(** @canonical Cst_reasonligo.Print *)
-module Print = Cst_reasonligo__Print

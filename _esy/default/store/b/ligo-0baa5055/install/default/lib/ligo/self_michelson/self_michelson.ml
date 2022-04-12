@@ -1,1 +1,0 @@
-../../../../../default/src/passes/18-self_michelson/self_michelson.ml

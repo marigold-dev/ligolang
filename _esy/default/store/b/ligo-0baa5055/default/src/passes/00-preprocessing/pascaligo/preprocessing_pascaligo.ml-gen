@@ -1,6 +1,0 @@
-(** @canonical Preprocessing_pascaligo.Comments *)
-module Comments = Preprocessing_pascaligo__Comments
-
-
-(** @canonical Preprocessing_pascaligo.File *)
-module File = Preprocessing_pascaligo__File

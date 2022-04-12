@@ -1,1 +1,0 @@
-../../../../../default/src/main/api/ligo_api__.ml-gen

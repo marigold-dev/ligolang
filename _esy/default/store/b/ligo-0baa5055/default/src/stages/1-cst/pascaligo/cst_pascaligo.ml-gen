@@ -1,6 +1,0 @@
-(** @canonical Cst_pascaligo.CST *)
-module CST = Cst_pascaligo__CST
-
-
-(** @canonical Cst_pascaligo.Print *)
-module Print = Cst_pascaligo__Print

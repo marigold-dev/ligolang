@@ -1,2 +1,0 @@
-(** @canonical Predefined.Helpers *)
-module Helpers = Predefined__Helpers

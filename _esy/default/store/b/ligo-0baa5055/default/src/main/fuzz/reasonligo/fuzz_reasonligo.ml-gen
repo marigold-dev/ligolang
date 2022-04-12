@@ -1,6 +1,0 @@
-(** @canonical Fuzz_reasonligo.Fuzz *)
-module Fuzz = Fuzz_reasonligo__Fuzz
-
-
-(** @canonical Fuzz_reasonligo.Helpers *)
-module Helpers = Fuzz_reasonligo__Helpers

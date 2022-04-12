@@ -1,6 +1,0 @@
-(** @canonical Preprocessing_cameligo.Comments *)
-module Comments = Preprocessing_cameligo__Comments
-
-
-(** @canonical Preprocessing_cameligo.File *)
-module File = Preprocessing_cameligo__File

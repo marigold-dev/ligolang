@@ -1,1 +1,0 @@
-../../../../../../default/src/passes/01-lexing/jsligo/menhir_jsligo_tokens.ml-gen

@@ -1,2 +1,0 @@
-(** @canonical Cst_shared.Tree *)
-module Tree = Cst_shared__Tree

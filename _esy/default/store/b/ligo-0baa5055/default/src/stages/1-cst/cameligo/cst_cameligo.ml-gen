@@ -1,6 +1,0 @@
-(** @canonical Cst_cameligo.CST *)
-module CST = Cst_cameligo__CST
-
-
-(** @canonical Cst_cameligo.Print *)
-module Print = Cst_cameligo__Print
