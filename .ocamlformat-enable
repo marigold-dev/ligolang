@@ -2,3 +2,5 @@ src/test/lambda_vm_test.ml
 src/passes/16-lambda_vm/compiler.ml
 src/passes/16-lambda_vm/syntax.ml
 src/passes/16-lambda_vm/syntax.mli
+src/passes/16-lambda_vm/helpers.ml
+src/passes/16-lambda_vm/helpers.mli

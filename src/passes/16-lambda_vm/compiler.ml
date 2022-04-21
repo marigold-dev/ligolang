@@ -2,6 +2,7 @@ module AST = Ast_typed
 module T = AST.Types
 module S = Simple_utils
 module Trace = S.Trace
+open Helpers
 
 let ident_of_var var = Format.asprintf "%a" T.Var.pp var
 
@@ -155,7 +156,13 @@ and compile_expr ~raise eenv expr =
         }
     | C_FALSE -> Const 0L
     | C_TRUE -> Const 1L
-    | _ -> failwith "todo")
+    | C_LE -> failwith "still need to implement LE"
+    | _ ->
+      failwith
+        ("Unsupported constant: "
+        ^ (const.cons_name
+          |> Stage_common.Enums.constant'_to_yojson
+          |> Yojson.Safe.to_string)))
   | E_lambda lam ->
     Lam (ident_of_var lam.binder, compile_expr ~raise eenv lam.result)
   | E_application app ->
@@ -165,6 +172,107 @@ and compile_expr ~raise eenv expr =
         arg = compile_expr ~raise eenv app.args;
       }
   | E_let_in expr -> compile_let_in ~raise eenv expr
+  | E_recursive { fun_name; lambda; _ } ->
+    (*
+       We need to use a fixed-point combinator to implement recursion here. 
+       The Y combinator is: 
+
+       ```
+       Y = λ(
+         λ(1 (0 0)) 
+         λ(1 (0 0))
+       )
+       ```
+
+       But we can't use it because it only works under nonstrict evaluation. (Under 
+       strict evaluation, it will always run forever.) 
+
+       The reason why can be seen when running the y-combinator in our head. Say we pass it 
+       the function `f`.
+
+       ```
+       f' = λ(
+             λ(1 (0 0)) 
+             λ(1 (0 0))
+           ) f
+       ```
+
+       This reduces to
+
+       ```
+       f' = λ(f (0 0)) 
+           λ(f (0 0))
+       ```
+
+       Then
+
+
+       ```
+       f' = f (
+              λ(f (0 0)) 
+              λ(f (0 0))
+             )
+       ```
+
+       But this is where the problem comes in. Nonstrict evaluation will then do the top-most beta-reduction,
+       while strict evaluation will notice that there are beta-reductions inside the parameter and begin
+       reducing those. (Once it does, we'll be in the same position as before, just one level deeper.)
+
+       The solution is to derive the Z-combinator by eta-expanding `0 0`.
+
+       ```
+       Z = λ(
+         λ(1 (λ(1 1 0)))
+         λ(1 (λ(1 1 0)))
+       )
+       ```
+
+       Retracing our steps to where we got stuck before, we end up with
+
+       ```
+       f' = f (
+              λ(f (λ(1 1 0)))
+              λ(f (λ(1 1 0)))
+             )
+       ```
+
+      Strict evaluation will beta-reduce the parameter to the top-most `f`, giving us:
+
+       ```
+       f' = f (
+              f                  # 1
+              (λ(λ               # 2
+                (
+                  f 
+                  (λ(1 1 0))
+                ) 
+                λ(
+                  f 
+                  (λ(1 1 0))
+                ) 
+                0
+              ))
+             )
+       ```
+
+       At which point the next possible beta-reduction is `#1 #2`, which is what we want.
+    *)
+    let z_comb =
+      (*f should be a function of two parameters, the first being itself *)
+      let inside_z = lam (fun x -> lam (fun v -> app x [x; v])) in
+      lam (fun f -> app f [inside_z; inside_z]) in
+    let nonrecursive_version =
+      app z_comb
+        [
+          T.(
+            E_lambda
+              {
+                binder = fun_name;
+                result = E_lambda lambda |> expression_content_to_expression;
+              }
+            |> expression_content_to_expression);
+        ] in
+    compile_expr ~raise eenv nonrecursive_version
   | E_matching { matchee; cases = Match_record record } ->
     compile_expr ~raise eenv (match_record_rewrite ~matchee record)
   | E_matching { matchee; cases = Match_variant variant } ->
