@@ -3,12 +3,19 @@
 # Some commonly used options have been documented as comments in this file.
 # For advanced use and comprehensive documentation of the format, please see:
 # https://docs.haskellstack.org/en/stable/yaml_configuration/
-resolver: lts-18.0
+resolver: lts-18.10
 
 packages:
 - .
 
 extra-deps:
+- git: https://github.com/haskell/lsp.git
+  commit: 8db20a514b2a5533e5ad3eb82df1b102c0a7c2ee
+  subdirs:
+    - lsp-types
+    - lsp
+    - lsp-test
+
 - git: https://github.com/serokell/haskell-tree-sitter.git
   commit: 27c33c98b00f8961c8619de2e3771a1932501ada
   subdirs:
@@ -22,7 +29,7 @@ extra-deps:
 - primitive-unlifted-0.1.3.0
 
 - git: https://github.com/serokell/duplo.git
-  commit: b0ac4699c44a35ea178d7d117e48076408b0886f
+  commit: f65dc29eef93a7260cfbb7db812f0bd265db16fd
 
 nix:
   packages: [zlib]

@@ -43,7 +43,7 @@ module Fold_helpers(M : Monad) = struct
     | TProd  {inside={value={inside; _}; _}; _} ->
       bind_fold_ne_list self init @@ npseq_to_ne_list inside
     | TSum    {value;region=_} ->
-      let {variants; attributes=_} = value in
+      let {variants; attributes=_;leading_vbar=_} = value in
       bind_fold_ne_list self_variant init @@ npseq_to_ne_list variants.value
     | TObject {value;region=_} ->
        let aux init ({value;region=_} : _ reg) =
@@ -71,7 +71,7 @@ module Fold_helpers(M : Monad) = struct
     fun f init v ->
     let self_type = fold_type_expression f in
     let component = v.value.tuple.value.inside in
-    let {params; _} = component in
+    let ({params; _}:variant_comp) = component in
     match params with 
        Some params -> bind_fold_ne_list self_type init (npseq_to_ne_list (snd params))
     | None         -> ok init
@@ -204,7 +204,7 @@ module Fold_helpers(M : Monad) = struct
     match d with
       SBlock {value = {inside; _}; _} -> bind_fold_npseq self init inside
     | SExpr e -> self_expr init e
-    | SCond {value = {test; ifso; ifnot}; _} ->
+    | SCond {value = {kwd_if=_; test; ifso; ifnot}; _} ->
        let* res = self_expr init test.inside in
        let* res = self res ifso in
        (match ifnot with
@@ -246,7 +246,7 @@ module Fold_helpers(M : Monad) = struct
        in
        bind_fold_ne_list fold_case res cases
     | SBreak _ -> ok init
-    | SNamespace {value = (_, _, {value = {inside; _}; _} ); _} -> bind_fold_npseq self init inside
+    | SNamespace {value = (_, _, {value = {inside; _}; _}, _); _} -> bind_fold_npseq self init inside
     | SExport {value = (_, s); _} -> self init s 
     | SImport _ -> ok init
     | SForOf {value = {expr; statement; _}; _}
@@ -612,7 +612,7 @@ module Fold_helpers(M : Monad) = struct
     | SBreak b ->
        return @@ SBreak b
     | SNamespace {value; region} -> 
-      let (kwd_namespace, name, statements) = value in
+      let (kwd_namespace, name, statements, attributes) = value in
       let ({value = statements_value; region = statements_region}: statements braces reg) = statements in
       let* inside = bind_map_npseq self statements_value.inside in
       let statements: statements braces reg = {
@@ -622,7 +622,7 @@ module Fold_helpers(M : Monad) = struct
         };
         region = statements_region
       } in
-      let value = (kwd_namespace, name, statements) in
+      let value = (kwd_namespace, name, statements, attributes) in
       return @@ SNamespace {
         value;
         region

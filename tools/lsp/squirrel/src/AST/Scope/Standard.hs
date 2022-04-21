@@ -1,54 +1,57 @@
-module AST.Scope.Standard where
+module AST.Scope.Standard
+  ( Standard
+  ) where
 
 import Algebra.Graph.AdjacencyMap qualified as G
-import Control.Exception.Safe
 import Control.Lens ((%~))
+import UnliftIO.Exception (Handler (..), catches, displayException)
 
 import AST.Scope.Common
-  ( pattern FindContract, FindFilepath (..), ContractNotFoundException (..)
-  , HasScopeForest (..) , ParsedContract (..), MergeStrategy (..), cMsgs
-  , getContract, lookupContract, mergeScopeForest, traverseAM
+  ( pattern FindContract, FindFilepath (..), HasScopeForest (..), Includes (..)
+  , ParsedContract (..), MergeStrategy (..), cMsgs, contractNotFoundException
+  , getContract, lookupContract, mergeScopeForest
   )
 import AST.Scope.Fallback (Fallback)
 import AST.Scope.FromCompiler (FromCompiler)
-import AST.Skeleton (Error (Error))
 
 import Cli.Impl
 import Cli.Json (fromLigoErrorToMsg)
 import Cli.Types (HasLigoClient)
 
-import Duplo.Lattice (Lattice (leq))
-import Parser (Msg)
+import Log (Log, i)
+import Log qualified
 import ParseTree (srcPath)
-import Range (point)
+import Util.Graph (traverseAMConcurrently)
 
 data Standard
 
-instance HasLigoClient m => HasScopeForest Standard m where
-  scopeForest pc = do
-    lgForest <- scopeForest @FromCompiler pc `catches`
-      [ Handler \case
+instance (HasLigoClient m, Log m) => HasScopeForest Standard m where
+  scopeForest reportProgress pc = do
+    fbForest <- scopeForest @Fallback reportProgress pc
+    tryMergeWithFromCompiler fbForest `catches`
+      [ Handler \(LigoDecodedExpectedClientFailureException err _) ->
           -- catch only errors that we expect from ligo and try to use fallback parser
-          LigoDecodedExpectedClientFailureException err -> addLigoErrToMsg $ fromLigoErrorToMsg err
-      , Handler \case
-          LigoUnexpectedCrashException err -> addLigoErrToMsg (point 1 1, Error err [])
-      , Handler \case
-          -- all other errors such as "Not found in $PATH" and other exceptions are ignored
-          (_ :: SomeException) -> fallbackForest
+          pure $ addLigoErrToMsg fbForest $ fromLigoErrorToMsg err
+      , Handler \(_ :: SomeLigoException) ->
+          pure fbForest
+      , Handler \(e :: IOError) -> do
+        -- Likely LIGO isn't installed or was not found.
+        $(Log.err) [i|Couldn't call LIGO, failed with #{displayException e}|]
+        pure fbForest
       ]
-    fbForest <- fallbackForest
-    merge lgForest fbForest
     where
-      fallbackForest = scopeForest @Fallback pc
+      tryMergeWithFromCompiler fbForest = do
+        lgForest <- scopeForest @FromCompiler reportProgress pc
+        merge lgForest fbForest
 
-      addLigoErrToMsg err = G.gmap (getContract . cMsgs %~ (`rewriteAt` err)) <$> fallbackForest
+      addLigoErrToMsg (Includes forest) err =
+        Includes $ G.gmap (getContract . cMsgs %~ (err :)) forest
 
-      merge l f = flip traverseAM l \(FindFilepath lf) -> do
+      merge l f = Includes <$> flip traverseAMConcurrently (getIncludes l) \(FindFilepath lf) -> do
         let src = _cFile lf
         let fp = srcPath src
-        FindFilepath ff <- maybe (throwM $ ContractNotFoundException fp f) pure (lookupContract fp f)
-        pure $ FindContract src (mergeScopeForest OnUnion (_cTree ff) (_cTree lf)) (_cMsgs ff <> _cMsgs lf)
-
-      -- | Rewrite error message at the most local scope or append it to the end.
-      rewriteAt :: [Msg] -> Msg -> [Msg]
-      rewriteAt at what@(from, _) = filter (not . (from `leq`) . fst) at <> [what]
+        FindFilepath ff <- maybe (contractNotFoundException fp f) pure (lookupContract fp f)
+        pure $ FindContract
+          src
+          (mergeScopeForest OnUnion (_cTree ff) (_cTree lf))
+          (_cMsgs ff <> _cMsgs lf)

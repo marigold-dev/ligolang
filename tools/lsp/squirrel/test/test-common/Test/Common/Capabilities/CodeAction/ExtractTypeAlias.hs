@@ -1,11 +1,16 @@
 module Test.Common.Capabilities.CodeAction.ExtractTypeAlias
   ( extractTypeAliasDriver
+  , extractTextEdits
   , testCases
+  , constructExpectedWorkspaceEdit
+  , testInfos
+  , TestInfo (..)
   ) where
 
 import Control.Lens
 import Data.HashMap.Strict qualified as HM
 import Data.Text qualified as T
+import Data.Word (Word32)
 import Language.LSP.Types qualified as J
 import Language.LSP.Types.Lens qualified as J
 import System.FilePath ((</>))
@@ -13,12 +18,11 @@ import Test.Tasty
 import Test.Tasty.HUnit
 
 import AST.Capabilities.CodeAction.ExtractTypeAlias
-import AST.Scope
 import Range
 
 import Test.Common.Capabilities.Util (contractsDir)
 import Test.Common.FixedExpectations (shouldBe)
-import Test.Common.Util (readContractWithScopes)
+import Test.Common.Util (ScopeTester, readContractWithScopes)
 
 data TestInfo = TestInfo
   { tiContract :: String
@@ -26,20 +30,36 @@ data TestInfo = TestInfo
   , tiExpectedEdits :: [(Range, String)] -- [(range, newText)]
   }
 
-mkr :: Int -> Int -> Int -> Int -> Range
+mkr :: Word32 -> Word32 -> Word32 -> Word32 -> Range
 mkr sl sc rl rc = Range (sl, sc, 0) (rl, rc, 0) ""
 
 testInfos :: [TestInfo]
 testInfos =
   [ TestInfo
     { tiContract = "simple.ligo"
-    , tiCursor = point 6 24
+    , tiCursor = point 2 24
     , tiExpectedEdits =
-        [ (mkr 5 29 5 32 , extractedTypeNameAlias)
-        , (mkr 6 23 6 26 , extractedTypeNameAlias)
-        , (mkr 6 29 6 32 , extractedTypeNameAlias)
-        , (mkr 7 13 7 16 , extractedTypeNameAlias)
-        , (mkr 5  1 5  1 , "type " <> extractedTypeNameAlias <> " is nat\n")
+        [ (mkr 1 29 1 32 , extractedTypeNameAlias)
+        , (mkr 2 23 2 26 , extractedTypeNameAlias)
+        , (mkr 2 29 2 32 , extractedTypeNameAlias)
+        , (mkr 3 13 3 16 , extractedTypeNameAlias)
+        , (mkr 1  1 1  1 , "type " <> extractedTypeNameAlias <> " is nat\n")
+        ]
+    }
+  , TestInfo
+    { tiContract = "parametric.mligo"
+    , tiCursor = interval 1 22 35
+    , tiExpectedEdits =
+        [ (mkr 1 22 1 35 , extractedTypeNameAlias)
+        , (mkr 1  1 1  1 , "type ('a, 'b) " <> extractedTypeNameAlias <> " = int * 'a * 'b\n")
+        ]
+    }
+  , TestInfo
+    { tiContract = "existential.mligo"
+    , tiCursor = interval 1 9 17
+    , tiExpectedEdits =
+        [ (mkr 1 9 1 17 , extractedTypeNameAlias)
+        , (mkr 1 1 1  1 , "type ('a, 'b) " <> extractedTypeNameAlias <> " = 'a -> 'b\n")
         ]
     }
   ]
@@ -52,10 +72,10 @@ constructExpectedWorkspaceEdit = map constructCodeAction
 extractTypeAliasDriver :: TestTree -> TestTree
 extractTypeAliasDriver = testGroup "Extract type extractedTypeNameAlias code action" . pure
 
-testCases :: forall parser. HasScopeForest parser IO => [TestTree]
+testCases :: forall parser. ScopeTester parser => [TestTree]
 testCases = map (makeTestCase @parser) testInfos
 
-makeTestCase :: forall parser. HasScopeForest parser IO => TestInfo -> TestTree
+makeTestCase :: forall parser. ScopeTester parser => TestInfo -> TestTree
 makeTestCase testInfo = testCase (tiContract testInfo) (makeTest @parser testInfo)
 
 extractTextEdits :: J.CodeAction -> [J.TextEdit]
@@ -70,10 +90,10 @@ extractTextEdits action = unwrapEdits edits
       [(_, J.List e)] -> e
       _ -> error "unwrapEdits: malformed list"
 
-makeTest :: forall parser. HasScopeForest parser IO => TestInfo -> Assertion
+makeTest :: forall parser. ScopeTester parser => TestInfo -> Assertion
 makeTest TestInfo{tiContract, tiCursor, tiExpectedEdits} = do
   let contractPath = contractsDir </> "code-action" </> "extract-type-definition" </> tiContract
   tree <- readContractWithScopes @parser contractPath
-  [action] <- typeExtractionCodeAction tiCursor (J.filePathToUri contractPath) tree
+  let [action] = typeExtractionCodeAction tiCursor (J.filePathToUri contractPath) tree
   let resultingEdits = extractTextEdits action
   resultingEdits `shouldBe` constructExpectedWorkspaceEdit tiExpectedEdits

@@ -1,7 +1,7 @@
--- | ligo version: a98a94dd5cadb791a2d4db1d60dde73b1a132811
+-- | ligo version: 0.34.0
 -- | The definition of type as is represented in ligo JSON output
 
-{-# LANGUAGE DeriveGeneric, RecordWildCards, TupleSections #-}
+{-# LANGUAGE DeriveGeneric #-}
 
 module Cli.Json
   ( LigoError (..)
@@ -13,6 +13,7 @@ module Cli.Json
   , LigoTypeFull (..)
   , LigoTypeContent (..)
   , LigoTypeContentInner (..)
+  , LigoTypeExpression (..)
   , LigoRecordField (..)
   , LigoRange (..)
   , LigoRangeInner (..)
@@ -22,13 +23,12 @@ module Cli.Json
   , fromLigoErrorToMsg
   , fromLigoTypeFull
   , mkLigoError
-  , toScopedDecl
   , prepareField
   )
 where
 
 import Control.Applicative (Alternative ((<|>)), liftA2)
-import Control.Lens.Operators
+import Control.Lens.Operators ((??))
 import Control.Monad.State
 import Data.Aeson.Types hiding (Error)
 import Data.Char (isUpper, toLower)
@@ -39,19 +39,18 @@ import Data.List qualified as List
 import Data.Maybe (fromMaybe)
 import Data.Text (Text)
 import Data.Text qualified as Text (unpack)
+import Data.Word (Word32)
 import GHC.Generics
 import Text.Read (readEither)
 import Text.Regex.TDFA ((=~), getAllTextSubmatches)
 
-import AST.Scope.ScopedDecl (DeclarationSpecifics (..), ScopedDecl (..), ValueDeclSpecifics (..))
-import AST.Scope.ScopedDecl.Parser (parseTypeDeclSpecifics)
 import AST.Skeleton hiding (String)
 import Duplo.Lattice
 import Duplo.Pretty
 import Duplo.Tree
 import Parser
 import Product
-import Range
+import Range hiding (startLine)
 
 ----------------------------------------------------------------------------
 -- Types
@@ -77,7 +76,7 @@ data LigoErrorContent = LigoErrorContent
     _lecMessage :: Text
     -- | Location of the error
     -- `"location"`
-  , _lecLocation :: LigoRange
+  , _lecLocation :: Maybe LigoRange
   }
   deriving stock (Eq, Generic, Show)
 
@@ -133,9 +132,13 @@ data LigoDefinitionScope = LigoDefinitionScope
     -- | The type itself
     -- `"t"`
   , _ldsT :: Maybe LigoTypeFull
-    -- | `Value` for now since they are always `null` by now
+    -- | We parse it in chunks of 2, each odd element of the array is a name for
+    -- the corresponding element which is `LigoRangeInner`.
+    -- ```
+    -- { "references": [ ["<scope>", LigoRangeInner] ] }
+    -- ```
     -- `"references"`
-  , _ldsReferences :: Value
+  , _ldsReferences :: [LigoRange]
   }
   deriving stock (Generic, Show)
 
@@ -152,7 +155,7 @@ data LigoTypeParameter
         -- ```
         _ltpTypeContent :: [LigoTypeContent]
         -- | `"type_meta"`
-      , _ltpTypeMeta :: Value -- Maybe LigoTypeFull
+      , _ltpTypeMeta :: Maybe LigoTypeExpression
         -- | `"location"`
       , _ltpLocation :: LigoRange
         -- | `"orig_var"`
@@ -181,7 +184,7 @@ data LigoTypeFull
         _ltfrLocation :: LigoRange
       , -- | *Some* meta constructors (e.g. `Some`).
         -- `"type_meta"`
-        _ltfrTypeMeta :: Value
+        _ltfrTypeMeta :: Maybe LigoTypeExpression
       , -- | `"orig_var"`
         _ltfrOrigVar :: Maybe Text
       , -- | We parse it by a chunks of 2, each odd element of array is a name for
@@ -192,6 +195,15 @@ data LigoTypeFull
         _ltfrTypeContent :: [LigoTypeContent]
       }
   | LigoTypeFullUnresolved Value -- TODO
+  deriving stock (Generic, Show)
+
+data LigoTypeExpression
+  = LigoTypeExpression
+      { _lteTypeContent :: [LigoTypeContent]
+      , _lteSugar :: Value  -- TODO: Sugar is not necessary at the moment, but may
+                            -- be useful to parse in the future.
+      , _lteLocation :: LigoRange
+      }
   deriving stock (Generic, Show)
 
 -- | A pair in "type_content" array `[name, content]`.
@@ -268,8 +280,8 @@ data LigoRange
 -- ```
 data LigoRangeInner = LigoRangeInner
   { _lriByte :: LigoByte
-  , _lriPointNum :: Int
-  , _lriPointBol :: Int
+  , _lriPointNum :: Word32
+  , _lriPointBol :: Word32
   }
   deriving stock (Eq, Generic, Show)
 
@@ -279,9 +291,9 @@ data LigoRangeInner = LigoRangeInner
 -- ```
 data LigoByte = LigoByte
   { _lbPosFname :: FilePath
-  , _lbPosLnum :: Int
-  , _lbPosBol :: Int
-  , _lbPosCnum :: Int
+  , _lbPosLnum :: Word32
+  , _lbPosBol :: Word32
+  , _lbPosCnum :: Word32
   }
   deriving stock (Eq, Generic, Show)
 
@@ -299,10 +311,19 @@ instance ToJSON LigoError where
   toJSON = genericToJSON defaultOptions {fieldLabelModifier = prepareField 2}
 
 instance FromJSON LigoErrorContent where
-  parseJSON = withObject "error_content" $ \o -> do
-    _lecMessage <- o .: "message"
-    _lecLocation <- parseLigoRange "location_error_inner_range" =<< o .: "location"
-    return LigoErrorContent {..}
+  parseJSON = asum . (parsers ??)
+    where
+      parsers =
+        [ withObject "error_content" \o -> do
+          _lecMessage <- o .: "message"
+          _lecLocation <- traverse (parseLigoRange "location_error_inner_range") =<< o .:? "location"
+          return LigoErrorContent {..}
+        , withText "error_content" \t -> do
+          let
+            _lecMessage = t
+            _lecLocation = Nothing
+          pure LigoErrorContent {..}
+        ]
 
 instance ToJSON LigoErrorContent where
   toJSON = genericToJSON defaultOptions {fieldLabelModifier = prepareField 3}
@@ -336,7 +357,7 @@ instance FromJSON LigoDefinitionScope where
     _ldsRange <- parseLigoRange "scope_range" =<< o .: "range"
     _ldsBodyRange <- parseLigoRange "scope_body_range" =<< o .: "body_range"
     _ldsT <- o .:? "t"
-    _ldsReferences <- o .: "references"
+    _ldsReferences <- traverse (parseLigoRangeArray "scope_references_ranges") =<< o .: "references"
     return $ LigoDefinitionScope {..}
 
 instance ToJSON LigoDefinitionScope where
@@ -358,7 +379,7 @@ instance FromJSON LigoTypeFull where
           _ltfcLocation <- parseLigoRange "ligo_type_core_range" =<< o' .: "location"
           type_content <- o' .: "type_content"
           _ltfcTypeContent <-
-            withArray "type_content" (mapM parseLigoTypeContent . group 2 . toList) type_content
+            withArray "type_content" parseManyLigoTypeContent type_content
           return $ LigoTypeFullCore {..}
 
       parseAsResolvedType :: Value -> Parser LigoTypeFull
@@ -367,8 +388,9 @@ instance FromJSON LigoTypeFull where
           _ltfrLocation <- parseLigoRange "ligo_type_core_range" =<< o' .: "location"
           type_content <- o' .: "type_content"
           _ltfrTypeContent <-
-            withArray "type_content" (mapM parseLigoTypeContent . group 2 . toList) type_content
-          _ltfrTypeMeta <- o' .: "type_meta"
+            withArray "type_content" parseManyLigoTypeContent type_content
+          type_meta <- o' .: "type_meta"
+          _ltfrTypeMeta <- parseLigoTypeMeta type_meta
           _ltfrOrigVar <- o' .: "orig_var" >>= parseOrigVar
           return $ LigoTypeFullResolved {..}
 
@@ -390,11 +412,24 @@ instance FromJSON LigoTypeParameter where
   parseJSON = withObject "type_parameter" $ \o -> do
     type_content <- o .: "type_content"
     _ltpTypeContent <-
-      withArray "type_content" (mapM parseLigoTypeContent . group 2 . toList) type_content
-    _ltpTypeMeta <- o .: "type_meta"
+      withArray "type_content" parseManyLigoTypeContent type_content
+    type_meta <- o .: "type_meta"
+    _ltpTypeMeta <- parseLigoTypeMeta type_meta
     _ltpLocation <- parseLigoRange "type_parameter_range" =<< o .: "location"
     _ltpOrigVar <- o .: "orig_var" >>= parseOrigVar
     return LigoTypeParameter {..}
+
+instance ToJSON LigoTypeExpression where
+  toJSON = genericToJSON defaultOptions {fieldLabelModifier = prepareField 3}
+
+instance FromJSON LigoTypeExpression where
+  parseJSON = withObject "type_expression" $ \o -> do
+    type_content <- o .: "type_content"
+    _lteTypeContent <-
+      withArray "type_content" parseManyLigoTypeContent type_content
+    _lteSugar <- o .: "sugar"
+    _lteLocation <- parseLigoRange "type_expression_range" =<< o .: "location"
+    return LigoTypeExpression {..}
 
 instance ToJSON LigoTypeParameter where
   toJSON = genericToJSON defaultOptions {fieldLabelModifier = prepareField 3}
@@ -474,20 +509,13 @@ parseOrigVar = \case
     return $ Just name'
   _ -> return Nothing
 
-_parseTypeMeta :: [Value] -> Parser (Maybe LigoTypeFull)
-_parseTypeMeta = \case
-  [_, o] -> do
-    tm <- parseTypeInner o
-    return $ Just tm
-  _ -> return Nothing
-
 -- A workaround since function types are not separated to "core" | "resolved" | "unresolved" and lets consider these as "core" ones
 parseTypeInner :: Value -> Parser LigoTypeFull
 parseTypeInner = withObject "type_inner" $ \o -> do
   _ltfcLocation <- parseLigoRange "ligo_type_core_range" =<< o .: "location"
   type_content <- o .: "type_content"
   _ltfcTypeContent <-
-    withArray "type_content" (mapM parseLigoTypeContent . group 2 . toList) type_content
+    withArray "type_content" parseManyLigoTypeContent type_content
   return $ LigoTypeFullCore {..}
 
 -- | Construct a parser for ligo ranges that are represented in pairs
@@ -535,7 +563,7 @@ parseLigoRangeString = flip withText safeExtract
           }
         }
 
-    parseRange :: [String] -> Either String (FilePath, Int, Int, Int)
+    parseRange :: [String] -> Either String (FilePath, Word32, Word32, Word32)
     parseRange = \case
         [_, file, line, colStart, colStop] -> do
           let fp = file
@@ -547,7 +575,7 @@ parseLigoRangeString = flip withText safeExtract
 
     matchRange :: String -> [String]
     matchRange str =
-      getAllTextSubmatches (str =~ ("in file \"(.*)\", line ([0-9]+), characters ([0-9]+)-([0-9]+)" :: Text))
+      getAllTextSubmatches (str =~ ("\"(.*)\", line ([0-9]+), characters ([0-9]+)-([0-9]+)" :: Text))
 
 -- | Construct a parser of ligo type content that is represented in pairs
 -- ```
@@ -560,20 +588,27 @@ parseLigoTypeContent [name, value] = do
   return $ LigoTypeContent {..}
 parseLigoTypeContent _ = error "number of type content elements is not even and cannot be grouped"
 
+parseManyLigoTypeContent :: Array -> Parser [LigoTypeContent]
+parseManyLigoTypeContent = mapM parseLigoTypeContent . group 2 . toList
+
+parseLigoTypeMeta :: [Value] -> Parser (Maybe LigoTypeExpression)
+parseLigoTypeMeta [String "None", Null] = pure Nothing
+parseLigoTypeMeta [String "Some", value] = Just <$> parseJSON @LigoTypeExpression value
+parseLigoTypeMeta _ = do
+  parseFail "number of type meta elements is not 2 and cannot be parsed"
+
 ----------------------------------------------------------------------------
 -- Pretty
 ----------------------------------------------------------------------------
 
 instance Pretty LigoError where
-  pp (LigoError _ stage (LigoErrorContent msg at)) = mconcat
-    [ text "Error in ", text $ show stage
-    , text "\n\nat: ", pp $ fromLigoRangeOrDef at
+  pp (LigoError status stage (LigoErrorContent msg at)) = mconcat
+    [ pp status <+> " in ", text $ show stage
+    , case at of
+        Nothing -> mempty
+        Just at' -> text "\n\nat: " <> pp (fromLigoRangeOrDef at')
     , text "\n\n" <> pp msg
     ]
-    where
-      _fromLigoRange r@(LigoRange _ _) =
-        "[" <> pp (fromMaybe (error "impossible") (mbFromLigoRange r)) <> "]"
-      _fromLigoRange (Virtual _) = text "virtual"
 
 ----------------------------------------------------------------------------
 -- Helpers
@@ -584,9 +619,9 @@ fromLigoErrorToMsg :: LigoError -> Msg
 fromLigoErrorToMsg LigoError
   { _leContent = LigoErrorContent
       { _lecMessage = err
-      , _lecLocation = fromLigoRangeOrDef -> at
+      , _lecLocation = fmap fromLigoRangeOrDef -> at
       }
-  } = (at, Error (err :: Text) [])
+  } = (fromMaybe (point 0 0) at, Error (err :: Text) [])
 
 -- | Helper function that converts qualified field to its JSON counterpart.
 --
@@ -629,13 +664,13 @@ mbFromLigoRange
   )
   | startFilePath /= endFilePath = error "start file of a range does not equal to its end file"
   | otherwise = Just Range
-      { rStart = (startLine, abs (startCNum - startBol) + 1, 0)
-      , rFinish = (endLine, abs (endCNum - endBol) + 1, 0)
-      , rFile = startFilePath
+      { _rStart = (startLine, abs (startCNum - startBol) + 1, 0)
+      , _rFinish = (endLine, abs (endCNum - endBol) + 1, 0)
+      , _rFile = startFilePath
       }
 
 fromLigoRangeOrDef :: LigoRange -> Range
-fromLigoRangeOrDef = fromMaybe (point (-1) (-1)) . mbFromLigoRange
+fromLigoRangeOrDef = fromMaybe (point 0 0) . mbFromLigoRange
 
 -- | Reconstruct `LIGO` tree out of `LigoTypeFull`.
 fromLigoTypeFull :: LigoTypeFull -> LIGO Info
@@ -645,6 +680,13 @@ fromLigoTypeFull = enclose . \case
     , _ltfcLocation
     } -> do
         modify . putElem . fromLigoRangeOrDef $ _ltfcLocation
+        fromLigoType tc
+
+  LigoTypeFullResolved
+    { _ltfrLocation
+    , _ltfrTypeMeta = Just LigoTypeExpression {_lteTypeContent = [tc]}
+    } -> do
+        modify . putElem . fromLigoRangeOrDef $ _ltfrLocation
         fromLigoType tc
 
   LigoTypeFullResolved
@@ -670,7 +712,13 @@ fromLigoTypeFull = enclose . \case
       st <- get
       return $ make' (st, TypeName p)
 
-    -- TODO: parse type meta
+    fromLigoParameter
+      LigoTypeParameter
+        { _ltpTypeMeta = Just LigoTypeExpression { _lteTypeContent = [t] }
+        , _ltpLocation
+        } = do
+          modify . putElem . fromLigoRangeOrDef $ _ltpLocation
+          fromLigoType t
     fromLigoParameter
       LigoTypeParameter
         { _ltpTypeContent = [t]
@@ -741,7 +789,7 @@ fromLigoTypeFull = enclose . \case
     enclose = flip evalState defaultState
 
     defaultState :: Product Info
-    defaultState = [] :> point 1 1 :> N :> CodeSource "" :> Nil
+    defaultState = [] :> [] :> point 1 1 :> CodeSource "" :> Nil
 
 mkLigoError :: Product Info -> Text -> LIGO Info
 mkLigoError p msg = make' . (p,) $ Error msg [p :< inject (Name "ligo error")]
@@ -764,25 +812,3 @@ make' (i, f)
     ges = List.filter (not . (`leq` i)) (extract <$> toList f)
     r = getElem (List.minimum ges) `merged` getElem (List.maximum ges)
     i' = putElem r i
-
--- | Converts ligo scope to our internal representation.
-toScopedDecl :: LigoDefinitionScope -> ScopedDecl
-toScopedDecl
-  LigoDefinitionScope
-    { _ldsName = _sdName
-    , _ldsRange = (fromMaybe (error "no origin range") . mbFromLigoRange -> _sdOrigin)
-    , _ldsBodyRange = (mbFromLigoRange -> _vdsInitRange)
-    , _ldsT
-    } =
-    ScopedDecl -- TODO fill in full information when we actually use ligo scopes
-      { _sdName
-      , _sdOrigin
-      , _sdRefs = []
-      , _sdDoc = []
-      , _sdDialect = Pascal -- TODO: we have no information regarding dealect in scope output
-      , _sdSpec = ValueSpec $ ValueDeclSpecifics
-        { _vdsInitRange
-        , _vdsParams = Nothing
-        , _vdsTspec = parseTypeDeclSpecifics . fromLigoTypeFull <$> _ldsT
-        }
-      }

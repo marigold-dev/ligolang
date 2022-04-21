@@ -1,7 +1,7 @@
 [@@@coverage exclude_file]
 open Types
 open Format
-open PP_helpers
+open Simple_utils.PP_helpers
 
 include Stage_common.PP
 
@@ -22,7 +22,7 @@ let record_sep_t value sep ppf (m : 'a label_map) =
 
 
 let expression_variable ppf (ev : expression_variable) : unit =
-  fprintf ppf "%a" Var.pp ev.wrap_content
+  fprintf ppf "%a" expression_variable ev
 
 let list_sep_d_par f ppf lst =
   match lst with
@@ -40,7 +40,8 @@ let rec type_content : formatter -> type_expression -> unit =
   | T_app            app -> type_app      type_expression ppf app
   | T_module_accessor ma -> module_access type_expression ppf ma
   | T_singleton       x  -> literal       ppf             x
-  | T_abstraction     x  -> abstraction   type_expression ppf x           
+  | T_abstraction     x  -> abstraction   type_expression ppf x
+  | T_for_all         x  -> for_all       type_expression ppf x
 
 and type_expression ppf (te : type_expression) : unit =
   fprintf ppf "%a" type_content te
@@ -72,11 +73,8 @@ and expression_content ppf (ec : expression_content) =
       fprintf ppf "list[%a]" (list_sep_d expression) lst
   | E_set lst ->
       fprintf ppf "set[%a]" (list_sep_d expression) lst
-  | E_lambda {binder; output_type; result} ->
-      fprintf ppf "lambda (%a) : %a return %a"
-        option_type_name binder
-        (PP_helpers.option type_expression) output_type
-        expression result
+  | E_lambda l -> lambda expression type_expression ppf l
+  | E_type_abstraction e -> type_abs expression ppf e
   | E_recursive { fun_name; fun_type; lambda} ->
       fprintf ppf "rec (%a:%a => %a )"
         expression_variable fun_name
@@ -134,7 +132,7 @@ and option_mut ppf mut =
 
 and attributes ppf attributes =
   let attr =
-    List.map ~f:(fun attr -> "[@@" ^ attr ^ "]") attributes |> String.concat ""
+    List.map ~f:(fun attr -> "[@@" ^ attr ^ "]") attributes |> String.concat
   in fprintf ppf "%s" attr
 
 let declaration ppf (d : declaration) = declaration expression type_expression ppf d

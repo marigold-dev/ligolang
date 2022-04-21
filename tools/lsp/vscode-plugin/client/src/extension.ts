@@ -3,7 +3,7 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  * ------------------------------------------------------------------------------------------ */
 
-import { ExtensionContext } from 'vscode';
+import { ExtensionContext, ExtensionMode } from 'vscode';
 
 import {
   LanguageClient,
@@ -11,9 +11,18 @@ import {
   ServerOptions,
 } from 'vscode-languageclient/node';
 
+import { registerCommands } from './command'
+import updateExtension from './updateExtension'
+import updateLigo from './updateLigo'
+
 let client: LanguageClient;
 
-export function activate(context: ExtensionContext) {
+export async function activate(context: ExtensionContext) {
+  if (context.extensionMode === ExtensionMode.Production) {
+    await updateLigo()
+    await updateExtension(context)
+  }
+
   const serverOptions: ServerOptions = {
     command: `${context.extensionPath}/bin/ligo-squirrel`,
     options: {
@@ -42,6 +51,9 @@ export function activate(context: ExtensionContext) {
     serverOptions,
     clientOptions,
   );
+
+  // Register VSC-specific server commands
+  registerCommands(client)
 
   // Start the client. This will also launch the server
   client.start();

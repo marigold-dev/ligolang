@@ -1,0 +1,9 @@
+(library
+ (name mini_c)
+ (public_name ligo.mini_c)
+ (instrumentation
+  (backend bisect_ppx))
+ (libraries simple-utils tezos-utils stage_common tezos-hacl-glue-unix)
+ (inline_tests)
+ (preprocess
+  (pps ppx_expect)))

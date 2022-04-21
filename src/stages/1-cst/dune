@@ -6,4 +6,5 @@
     cst_pascaligo
     cst_cameligo
     cst_reasonligo
-    cst_jsligo))
+    cst_jsligo
+    cst_shared))

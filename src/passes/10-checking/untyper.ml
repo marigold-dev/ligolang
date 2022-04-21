@@ -1,3 +1,5 @@
+module Ligo_string = Simple_utils.Ligo_string
+module Location    = Simple_utils.Location
 module I = Ast_core
 module O = Ast_typed
 
@@ -29,9 +31,9 @@ let rec untype_type_expression_nofail (t:O.type_expression) : I.type_expression 
   | O.T_constant {language;injection;parameters} ->
     ignore language ;
     let arguments = List.map ~f:untype_type_expression_nofail parameters in
-    let type_operator = Var.of_name (Ligo_string.extract injection) in
+    let type_operator = I.Var.fresh ~name:(Stage_common.Constant.to_string injection) () in
     return @@ I.T_app {type_operator;arguments}
-  | O.T_variable name -> return @@ I.T_variable (Var.todo_cast name)
+  | O.T_variable name -> return @@ I.T_variable name
   | O.T_module_accessor {module_name;element} ->
     let ma = O.{module_name; element = self element} in
     return @@ I.T_module_accessor ma
@@ -39,27 +41,30 @@ let rec untype_type_expression_nofail (t:O.type_expression) : I.type_expression 
   | O.T_abstraction x ->
     let type_ = untype_type_expression_nofail x.type_ in
     return @@ I.T_abstraction {x with type_}
+  | O.T_for_all x ->
+    let type_ = untype_type_expression_nofail x.type_ in
+    return @@ I.T_for_all {x with type_}
 
 let untype_type_expression (t:O.type_expression) : I.type_expression =
   untype_type_expression_nofail t
 
-let untype_declaration_constant untype_expression O.{name;binder;expr;attr={inline;no_mutation}} =
-  let attr = I.{inline;no_mutation} in
+let untype_declaration_constant untype_expression O.{binder;expr;attr} =
   let ty = untype_type_expression expr.type_expression in
-  let var = Location.map Var.todo_cast binder in
-  let binder = ({var;ascr= Some ty;attributes=Stage_common.Helpers.empty_attribute}: _ I.binder) in
+  let var = binder in
+  let binder = ({var;ascr=Some ty;attributes=Stage_common.Helpers.empty_attribute}: _ I.binder) in
   let expr = untype_expression expr in
   let expr = I.e_ascription expr ty in
-  I.{name;binder;attr;expr;}
+  I.{binder;attr;expr;}
 
-let untype_declaration_type O.{type_binder; type_expr} =
+let untype_declaration_type O.{type_binder; type_expr; type_attr={public}} =
   let type_expr = untype_type_expression type_expr in
-  let type_binder = Var.todo_cast type_binder in
-  I.{type_binder; type_expr}
+  let type_attr = (I.{public}: I.type_attribute) in
+  I.{type_binder; type_expr; type_attr}
 
-let rec untype_declaration_module untype_expression O.{module_binder; module_} =
+let rec untype_declaration_module untype_expression O.{module_binder; module_; module_attr={public}} =
   let module_ = untype_module untype_expression module_ in
-  I.{module_binder; module_ = module_}
+  let module_attr = (I.{public}: I.module_attribute) in
+  I.{module_binder; module_ = module_; module_attr}
 
 and untype_declaration untype_expression =
   let return (d: I.declaration) = d in
@@ -73,12 +78,11 @@ and untype_declaration untype_expression =
   | Declaration_module dm ->
     let dm = untype_declaration_module untype_expression dm in
     return @@ Declaration_module dm
-  | Module_alias ma -> 
+  | Module_alias ma ->
     return @@ Module_alias ma
 
 
 
-and untype_module untype_expression : O.module_fully_typed -> I.module_ =
-  fun (O.Module_Fully_Typed p) ->
+and untype_module untype_expression : O.module_ -> I.module_ = fun p ->
   let untype_declaration = untype_declaration untype_expression in
   List.map ~f:(Location.map untype_declaration) p

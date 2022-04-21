@@ -1,9 +1,9 @@
 open Types
 
-type tenv = Ast_typed.environment
+type tenv = Environment.t
 
 let var_equal : Ast_typed.expression_variable -> Ast_typed.expression_variable -> bool = fun v1 v2 ->
-  Var.equal v1.wrap_content v2.wrap_content
+  Ast_typed.Var.equal v1 v2
 
 let extract_variable_types :
   bindings_map -> Ast_typed.declaration -> bindings_map =
@@ -20,9 +20,10 @@ let extract_variable_types :
       let return = add env in
       match exp.expression_content with
       | E_literal _ | E_application _ | E_raw_code _ | E_constructor _
-      | E_type_in _ | E_mod_in _ | E_mod_alias _
+      | E_type_in _ | E_type_abstraction _ | E_mod_in _ | E_mod_alias _
       | E_record _ | E_record_accessor _ | E_record_update _ | E_constant _ -> return []
       | E_module_accessor _ -> return []
+      | E_type_inst _ -> return [] (* TODO *)
       | E_variable v -> return [(v,exp.type_expression)]
       | E_lambda { binder ; _ } ->
         let in_t = match exp.type_expression.type_content with
@@ -61,7 +62,7 @@ let extract_variable_types :
                     let t = Ast_typed.t_pair list_proj matchee.type_expression in
                     return [(x.pattern,t)]
                   | None -> failwith "matched value in the Match_variant: wrong type"
-                ) 
+                )
               )
         )
         | Match_record { fields ; _ }  ->
@@ -76,16 +77,16 @@ let extract_variable_types :
     | Declaration_module _ -> prev
     | Module_alias _ -> prev
 
-let get_binder_name : 'a Var.t -> string = fun v ->
-  if Var.is_generated v
+let get_binder_name : Ast_typed.Var.t -> string = fun v ->
+  if Ast_typed.Var.is_generated v
   then "generated"
-  else Var.to_name v
+  else Ast_typed.Var.to_name_exn v
 
 let make_def_id name i =
   (name ^ "#" ^ (string_of_int i), i+1)
 
-let add_shadowing_def : (int * _ Var.t) -> def -> def_map -> (int * def_map) =  fun (i,var) def env ->
-  if Var.is_generated var then (i,env)
+let add_shadowing_def : (int * Ast_typed.Var.t) -> def -> def_map -> (int * def_map) =  fun (i,var) def env ->
+  if Ast_typed.Var.is_generated var then (i,env)
   else
     let name = get_binder_name var in
     let (definition_id,i) = make_def_id name i in
@@ -115,7 +116,7 @@ let make_v_def_from_core :
   with_types:bool -> bindings_map -> Ast_core.expression_variable -> Location.t -> Location.t -> def =
   fun ~with_types bindings var range body_range ->
     let type_case = resolve_if ~with_types bindings var in
-    make_v_def var.wrap_content type_case range body_range
+    make_v_def var type_case range body_range
 
 let make_v_def_option_type :
   with_types:bool -> bindings_map -> Ast_core.expression_variable -> Ast_core.type_expression option -> Location.t -> Location.t -> def =
@@ -124,4 +125,4 @@ let make_v_def_option_type :
       | Some t -> Core t
       | None -> resolve_if ~with_types bindings var
     in
-    make_v_def var.wrap_content type_case range body_range
+    make_v_def var type_case range body_range

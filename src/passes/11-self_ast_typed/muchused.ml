@@ -4,10 +4,10 @@ type contract_pass_data = Contract_passes.contract_pass_data
 
 module V = struct
   type t = expression_variable
-  let compare x y = Var.compare (Location.unwrap x) (Location.unwrap y)
+  let compare x y = Var.compare x y
 end
 
-module M = Map.Make(V)
+module M = Simple_utils.Map.Make(V)
 
 type muchuse = int M.t * V.t list
 
@@ -25,46 +25,47 @@ let muchuse_neutral : muchuse = M.empty, []
 
 let rec is_dup (t : type_expression) =
   let open Stage_common.Constant in
-  let eq_name i n = String.equal (Ligo_string.extract i) n in
   match t.type_content with
-  | T_constant {injection; _}
-       when eq_name injection never_name ||
-            eq_name injection int_name ||
-            eq_name injection nat_name ||
-            eq_name injection bool_name ||
-            eq_name injection unit_name ||
-            eq_name injection string_name ||
-            eq_name injection bytes_name ||
-            eq_name injection chain_id_name ||
-            eq_name injection tez_name ||
-            eq_name injection key_hash_name ||
-            eq_name injection key_name ||
-            eq_name injection signature_name ||
-            eq_name injection timestamp_name ||
-            eq_name injection address_name ||
-            eq_name injection operation_name ||
-            eq_name injection bls12_381_g1_name ||
-            eq_name injection bls12_381_g2_name ||
-            eq_name injection bls12_381_fr_name ||
-            eq_name injection sapling_transaction_name ||
-            eq_name injection sapling_state_name ||
-            (* Test primitives are dup *)
-            eq_name injection account_name ||
-            eq_name injection failure_name ||
-            eq_name injection typed_address_name ||
-            eq_name injection mutation_name ->
+  | T_constant {injection = (
+    Never               |
+    Int                 |
+    Nat                 |
+    Chest               |
+    Chest_key           |
+    Bool                |
+    Unit                |
+    String              |
+    Bytes               |
+    Chain_id            |
+    Tez                 |
+    Key_hash            |
+    Key                 |
+    Signature           |
+    Timestamp           |
+    Address             |
+    Operation           |
+    Bls12_381_g1        |
+    Bls12_381_g2        |
+    Bls12_381_fr        |
+    Sapling_transaction |
+    Sapling_state       |
+    (* Test primitives are dup *)
+    Account             |
+    Failure             |
+    Typed_address       |
+    Mutation
+  ); _} ->
      true
-  | T_constant {injection; parameters = [t]; _}
-       when eq_name injection option_name ||
-            eq_name injection list_name ||
-            eq_name injection set_name ->
+  | T_constant {injection=
+    (Option  | 
+     List    | 
+     Set    ); parameters = [t]; _} ->
       is_dup t
-  | T_constant {injection;_}
-       when eq_name injection contract_name ->
+  | T_constant {injection=Contract;_} ->
       true
-  | T_constant {injection; parameters = [t1;t2]; _}
-       when eq_name injection big_map_name ||
-            eq_name injection map_name ->
+  | T_constant {injection=
+      (Big_map | 
+       Map    ); parameters = [t1;t2]; _} ->
       is_dup t1 && is_dup t2
   | T_record rows
   | T_sum rows ->
@@ -73,7 +74,16 @@ let rec is_dup (t : type_expression) =
                      |> List.filter ~f:(fun v -> not (is_dup v)) in
      List.is_empty row_types
   | T_arrow _ -> true
-  | _ -> false
+  | T_variable _ -> true
+  | T_abstraction {type_;ty_binder=_;kind=_} -> is_dup type_
+  | T_for_all {type_;ty_binder=_;kind=_} -> is_dup type_
+  | T_constant { injection=(
+    Option         | Map              | Big_map              | List            | 
+    Map_or_big_map | Set              | Michelson_program    | Michelson_or    | 
+    Michelson_pair | Test_exec_error  |  Pvss_key            | Baker_operation | 
+    Ticket         | Test_exec_result | Chest_opening_result | Baker_hash | Time);_ }  -> false 
+  | T_singleton _
+  | T_module_accessor _ -> false
 
 let muchuse_union (x,a) (y,b) =
   M.union (fun _ x y -> Some (x + y)) x y, a@b
@@ -121,6 +131,8 @@ let rec muchuse_of_expr expr : muchuse =
        | None -> muchuse_neutral (* something's wrong in the tree? *)
        | Some (l, (t, _))  -> muchuse_of_lambda t l
      end
+  | E_type_abstraction {result;_} ->
+     muchuse_of_expr result
   | E_let_in {let_binder;rhs;let_result;_} ->
      muchuse_union (muchuse_of_expr rhs)
        (muchuse_of_binder let_binder rhs.type_expression
@@ -144,11 +156,14 @@ let rec muchuse_of_expr expr : muchuse =
      muchuse_of_expr let_result
   | E_mod_alias {result;_} ->
      muchuse_of_expr result
+  | E_type_inst {forall;_} ->
+     muchuse_of_expr forall
   | E_module_accessor {element;module_name} ->
      match element.expression_content with
      | E_variable v ->
-        let name = module_name ^ "." ^ Var.to_name (Location.unwrap v) in
-        (M.add (Location.wrap ~loc:expr.location (Var.of_name name)) 1 M.empty,[])
+        let name = Var.of_input_var ~loc:expr.location @@
+          (Var.to_name_exn module_name) ^ "." ^ (Var.to_name_exn v) in
+        (M.add name 1 M.empty,[])
      | _ -> muchuse_neutral
 
 and muchuse_of_lambda t {binder; result} =
@@ -198,44 +213,44 @@ and muchuse_of_record {body;fields;_} =
   List.fold_left ~f:(fun (c,m) (v,t) -> muchuse_of_binder v t (c,m))
     ~init:(muchuse_of_expr body) typed_vars
 
-let rec get_all_declarations (module_name : module_variable) : module_fully_typed ->
+let rec get_all_declarations (module_name : module_variable) : module_ ->
                                (expression_variable * type_expression) list =
-  function (Module_Fully_Typed p) ->
-    let aux = fun (x : declaration) ->
+  function m ->
+    let aux = fun ({wrap_content=x;location} : declaration Location.wrap) ->
       match x with
       | Declaration_constant {binder;expr;_} ->
-         let name = module_name ^ "." ^ Var.to_name (Location.unwrap binder) in
-         [(Location.wrap ~loc:expr.location (Var.of_name name), expr.type_expression)]
-      | Declaration_module {module_binder;module_} ->
+          let name = Var.of_input_var ~loc:location @@ (Var.to_name_exn module_name) ^ "." ^ (Var.to_name_exn binder) in
+          [(name, expr.type_expression)]
+      | Declaration_module {module_binder;module_;module_attr=_} ->
          let recs = get_all_declarations module_binder module_ in
          let add_module_name (v, t) =
-           let name = module_name ^ "." ^ Var.to_name (Location.unwrap v) in
-           (Location.wrap ~loc:v.location (Var.of_name name), t) in
+          let name = Var.of_input_var ~loc:location @@ (Var.to_name_exn module_name) ^ "." ^ (Var.to_name_exn v) in
+          (name, t) in
          recs |> List.map ~f:add_module_name
       | _ -> [] in
-    p |> List.map ~f:Location.unwrap |> List.map ~f:aux |> List.concat
+    m |> List.map ~f:aux |> List.concat
 
-let rec muchused_helper (muchuse : muchuse) : module_fully_typed -> muchuse =
-  function (Module_Fully_Typed p) ->
+let rec muchused_helper (muchuse : muchuse) : module_ -> muchuse =
+  function m ->
   let aux = fun (x : declaration) s ->
     match x with
     | Declaration_constant {expr ; binder; _} ->
        muchuse_union (muchuse_of_expr expr)
          (muchuse_of_binder binder expr.type_expression s)
-    | Declaration_module {module_;module_binder} ->
+    | Declaration_module {module_;module_binder;module_attr=_} ->
        let decls = get_all_declarations module_binder module_ in
        List.fold_right ~f:(fun (v, t) (c,m) -> muchuse_of_binder v t (c, m))
          decls ~init:(muchused_helper s module_)
     | _ -> s
   in
-  List.fold_right ~f:aux (List.map ~f:Location.unwrap p) ~init:muchuse
+  List.fold_right ~f:aux (List.map ~f:Location.unwrap m) ~init:muchuse
 
-let muchused_map_module ~add_warning : module_fully_typed -> module_fully_typed = function module' ->
+let muchused_map_module ~add_warning : module_ -> module_ = function module_ ->
   let update_annotations annots =
     List.iter ~f:(fun a -> add_warning a) annots in
-  let _,muchused = muchused_helper muchuse_neutral module' in
+  let _,muchused = muchused_helper muchuse_neutral module_ in
   let warn_var v =
     `Self_ast_typed_warning_muchused
-      (Location.get_location v, Format.asprintf "%a" Var.pp (Location.unwrap v)) in
+      (Var.get_location v, Format.asprintf "%a" Var.pp v) in
   let () = update_annotations @@ List.map ~f:warn_var muchused in
-    module'
+  module_

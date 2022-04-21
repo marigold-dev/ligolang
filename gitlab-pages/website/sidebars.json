@@ -5,7 +5,7 @@
       "language-basics/types",
       "language-basics/constants-and-variables",
       "language-basics/math-numbers-tez",
-      "language-basics/strings",
+      "language-basics/strings-bytes",
       "language-basics/functions",
       "language-basics/boolean-if-else",
       "language-basics/loops",
@@ -22,12 +22,14 @@
       "advanced/include",
       "advanced/first-contract",
       "advanced/michelson-and-ligo",
+      "advanced/polymorphism",
       "advanced/testing",
       "advanced/mutation-testing",
       "advanced/michelson_testing",
       "advanced/inline",
       "advanced/interop",
-      "advanced/embedded-michelson"
+      "advanced/embedded-michelson",
+      "advanced/package-management"
     ],
     "Reference": [
       "api/cli-commands",
@@ -54,7 +56,7 @@
       "manpages/print dependency-graph",
       "manpages/print mini-c",
       "manpages/print preprocessed",
-      "manpages/print pretty-print",
+      "manpages/print pretty",
       "manpages/repl",
       "manpages/run dry-run",
       "manpages/run evaluate-call",
@@ -77,7 +79,8 @@
       "reference/set-reference",
       "reference/string-reference",
       "reference/current-reference",
-      "reference/test"
+      "reference/test",
+      "reference/hangzhou"
     ]
   },
   "contributors-docs": {
@@ -100,9 +103,12 @@
     ]
   },
   "tutorials": {
-    "Get Started": [
-      "tutorials/get-started/tezos-taco-shop-smart-contract",
-      "tutorials/get-started/tezos-taco-shop-payout"
+    "Get-started" : [
+      "tutorials/getting-started/getting-started"
+    ],
+    "First-contract": [
+      "tutorials/taco-shop/tezos-taco-shop-smart-contract",
+      "tutorials/taco-shop/tezos-taco-shop-payout"
     ],
     "Migrating from Ethereum": [
       "tutorials/tz-vs-eth/tz-vs-eth"

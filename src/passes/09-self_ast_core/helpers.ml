@@ -1,5 +1,5 @@
 open Ast_core
-open Trace
+open Simple_utils.Trace
 open Stage_common
 
 include Ast_core.PP
@@ -21,6 +21,7 @@ let rec fold_expression ~raise : ('a, 'err) folder -> 'a -> expression -> 'a = f
   | E_constant c -> Folds.constant self init c
   | E_application app -> Folds.application self init app
   | E_lambda l -> Folds.lambda self idle init l
+  | E_type_abstraction ta -> Folds.type_abs self init ta
   | E_ascription a -> Folds.ascription self idle init a
   | E_constructor c -> Folds.constructor self init c
   | E_matching {matchee=e; cases} -> (
@@ -32,12 +33,14 @@ let rec fold_expression ~raise : ('a, 'err) folder -> 'a -> expression -> 'a = f
   | E_record m -> Folds.record self init m
   | E_record_update ru -> Folds.record_update self init ru
   | E_record_accessor ra -> Folds.record_accessor self init ra
-  | E_let_in { let_binder = _ ; rhs ; let_result } -> (
+  | E_let_in { let_binder = _ ; rhs ; let_result ; attr=_ } -> (
       let res = self init rhs in
       let res = self res let_result in
       res
     )
-  | E_type_in ti -> Folds.type_in self idle init ti
+  | E_type_in { type_binder = _; rhs = _ ; let_result } -> 
+    let res = self init let_result in 
+    res
   | E_mod_in  mi ->
     let res = List.fold ~f:(fun acc (x: declaration Location.wrap) -> match x.wrap_content with
       | Declaration_constant dc -> self acc dc.expr
@@ -95,14 +98,14 @@ let rec map_expression ~raise : 'err exp_mapper -> expression -> expression = fu
     let app = Maps.application self app in
     return @@ E_application app
   )
-  | E_let_in { let_binder ; rhs ; let_result; attr = { inline; no_mutation } } -> (
+  | E_let_in { let_binder ; rhs ; let_result; attr } -> (
       let rhs = self rhs in
       let let_result = self let_result in
-      return @@ E_let_in { let_binder ; rhs ; let_result; attr = { inline; no_mutation } }
+      return @@ E_let_in { let_binder ; rhs ; let_result; attr }
     )
-  | E_type_in ti -> (
-      let ti = Maps.type_in self (fun a -> a) ti in
-      return @@ E_type_in ti
+  | E_type_in {type_binder; rhs; let_result} -> (
+      let let_result = self let_result in
+      return @@ E_type_in { type_binder ; rhs; let_result }
     )
   | E_mod_in  mi ->
     let rhs = List.map ~f:(fun (x: declaration Location.wrap) -> match x.wrap_content with
@@ -121,6 +124,10 @@ let rec map_expression ~raise : 'err exp_mapper -> expression -> expression = fu
       let l = Maps.lambda self (fun a -> a) l in
       return @@ E_lambda l
     )
+  | E_type_abstraction ta -> (
+      let ta = Maps.type_abs self ta in
+      return @@ E_type_abstraction ta
+  )
   | E_recursive r ->
       let r = Maps.recursive self (fun a -> a) r in
       return @@ E_recursive r
@@ -160,14 +167,17 @@ and map_type_expression ~raise : 'err ty_exp_mapper -> type_expression -> type_e
   | T_abstraction x ->
     let x = Maps.for_all self x in
     return (T_abstraction x)
+  | T_for_all x ->
+    let x = Maps.for_all self x in
+    return (T_for_all x)
 
 and map_module ~raise : 'err abs_mapper -> module_ -> module_ = fun m p ->
   let aux = fun (x : declaration) ->
     let return (x:declaration) = x in
     match x,m with
     | (Declaration_type dt, Type_expression m') -> (
-        let dt = Maps.declaration_type (map_type_expression ~raise m') dt in
-        return @@ (Declaration_type dt)
+        let type_expr = map_type_expression ~raise m' dt.type_expr in
+        return @@ (Declaration_type {dt with type_expr})
       )
     | (Declaration_constant decl_cst, Expression m') -> (
         let expr = map_expression ~raise m' decl_cst.expr in
@@ -220,14 +230,18 @@ let rec fold_map_expression ~raise : ('a , 'err) fold_mapper -> 'a -> expression
       let res,app = Fold_maps.application self init app in
       (res, return @@ E_application app)
     )
-  | E_let_in { let_binder ; rhs ; let_result; attr = { inline; no_mutation } } -> (
+  | E_let_in { let_binder ; rhs ; let_result; attr } -> (
       let (res,rhs) = self init rhs in
       let (res,let_result) = self res let_result in
-      (res, return @@ E_let_in { let_binder ; rhs ; let_result ; attr = { inline; no_mutation } })
+      (res, return @@ E_let_in { let_binder ; rhs ; let_result ; attr })
     )
-  | E_type_in ti -> (
-      let res,ti = Fold_maps.type_in self idle init ti in
-      (res, return @@ E_type_in ti)
+  | E_type_abstraction ta -> (
+      let res, ta = Fold_maps.type_abs self init ta in
+      res, return @@ E_type_abstraction ta
+  )
+  | E_type_in { type_binder; rhs; let_result } -> (
+      let res, let_result = self init let_result in
+      (res, return @@ E_type_in {type_binder; rhs; let_result})
     )
   | E_mod_in  mi ->
     let res,rhs = List.fold_map ~f:(fun acc (x: declaration Location.wrap) -> match x.wrap_content with

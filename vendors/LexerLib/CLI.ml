@@ -19,11 +19,12 @@ module type PREPROCESSOR_CLI =
   sig
     include COMMENTS
 
-    val input     : string option (* input file     *)
-    val extension : string option (* file extension *)
-    val dirs      : string list   (* -I             *)
-    val show_pp   : bool          (* --show-pp      *)
-    val offsets   : bool          (* neg --columns  *)
+    val input        : string option (* input file     *)
+    val extension    : string option (* file extension *)
+    val dirs         : string list   (* -I             *)
+    val project_root : string option (* --project-root *)
+    val show_pp      : bool          (* --show-pp      *)
+    val offsets      : bool          (* neg --columns  *)
 
     type status = [
       `Done
@@ -71,14 +72,14 @@ module Make (Preprocessor_CLI: PREPROCESSOR_CLI) : S =
 
     let make_help buffer : Buffer.t =
       let options = [
-        "  -t, --tokens     Print tokens";
-        "  -u, --units      Print lexical units";
-        "  -c, --copy       Print lexemes and markup";
-        "      --bytes      Bytes for source locations";
-        "      --preprocess Run the preprocessor"
+        "  -t, --tokens       Print tokens";
+        "  -u, --units        Print lexical units";
+        "  -c, --copy         Print lexemes and markup";
+        "      --bytes        Bytes for source locations";
+        "      --preprocess   Run the preprocessor"
       ] in
       begin
-        Buffer.add_string buffer (String.concat "\n" options);
+        Buffer.add_string buffer (String.concat ~sep:"\n" options);
         Buffer.add_char   buffer '\n';
         buffer
       end
@@ -202,7 +203,7 @@ module Make (Preprocessor_CLI: PREPROCESSOR_CLI) : S =
        status of the previous CLI (here,
        [Preprocessor_CLI.status]). *)
 
-    module SSet = Set.Make (String)
+    module SSet = Argv.SSet
 
     let opt_wo_arg =
       let open SSet in
@@ -211,6 +212,7 @@ module Make (Preprocessor_CLI: PREPROCESSOR_CLI) : S =
       |> add "--tokens"
       |> add "--units"
       |> add "--preprocess"
+      |> add "--bytes"
 
       (* The following options are present in all CLI *)
       |> add "--cli"
@@ -259,7 +261,7 @@ module Make (Preprocessor_CLI: PREPROCESSOR_CLI) : S =
         sprintf "bytes      = %b" !bytes;
         sprintf "preprocess = %b" preprocess] in
     begin
-      Buffer.add_string buffer (String.concat "\n" options);
+      Buffer.add_string buffer (String.concat ~sep:"\n" options);
       Buffer.add_char   buffer '\n';
       buffer
     end

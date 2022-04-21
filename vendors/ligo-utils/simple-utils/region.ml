@@ -29,34 +29,23 @@ type t = <
   (* Conversions to [string] *)
 
   to_string : ?file:bool -> ?offsets:bool -> [`Byte | `Point] -> string;
-  compact   : ?file:bool -> ?offsets:bool -> [`Byte | `Point] -> string;
-
-  markup     : markup list;
+  compact   : ?file:bool -> ?offsets:bool -> [`Byte | `Point] -> string
 >
-
-and markup = 
-  BlockCom of string reg * comment_position
-| LineCom of string reg * comment_position
-
-and comment_position = 
-  Before
-| After
-| Inline
 
 (* A synonym *)
 
-and region = t
+type region = t
 
 (* A convenience *)
 
-and 'a reg = {region: t; value: 'a}
+type 'a reg = {region : t; value : 'a}
 
 (* Injections *)
 
 exception Invalid
 
-let make ~markup ~(start: Pos.t) ~(stop: Pos.t) =
-  if start#file <> stop#file || start#byte_offset > stop#byte_offset
+let make ~(start : Pos.t) ~(stop : Pos.t) =
+  if String.(<>) start#file stop#file || start#byte_offset > stop#byte_offset
   then raise Invalid
   else
     object
@@ -120,7 +109,7 @@ let make ~markup ~(start: Pos.t) ~(stop: Pos.t) =
                           else ""
           and start_str = start#compact ~file:false ~offsets mode
           and stop_str  = stop#compact ~file:false ~offsets mode in
-          if start#file = stop#file then
+          if String.equal start#file stop#file then
             if start#line = stop#line then
               sprintf "%s%s-%i" prefix start_str
                       (if offsets then stop#offset mode
@@ -129,17 +118,9 @@ let make ~markup ~(start: Pos.t) ~(stop: Pos.t) =
               sprintf "%s%s-%s" prefix start_str stop_str
           else sprintf "%s:%s-%s:%s"
                        start#file start_str stop#file stop_str
-
-        val    markup = markup
-        method markup = markup
     end
 
 (* Special regions *)
-
-let set_markup region markup =
-  make ~markup:markup ~start:region#start ~stop:region#stop
-
-let make = make ~markup:[]
 
 let ghost = make ~start:Pos.ghost ~stop:Pos.ghost
 
@@ -149,13 +130,16 @@ let min ~file = make ~start:(Pos.min ~file) ~stop:(Pos.min ~file)
 
 (* Comparisons *)
 
-let equal r1 r2 =
-   r1#file = r2#file
+let equal (r1 : t) (r2 : t) =
+  String.equal r1#file r2#file
 && Pos.equal r1#start r2#start
 && Pos.equal r1#stop  r2#stop
 
+let reg_equal eq {region=r1;value=v1} {region=r2;value=v2} =
+  equal r1 r2 && eq v1 v2
+
 let lt r1 r2 =
-  r1#file = r2#file
+  String.equal r1#file r2#file
 && not r1#is_ghost
 && not r2#is_ghost
 && Pos.lt r1#start r2#start
@@ -179,6 +163,12 @@ let to_yojson f =
   `Assoc [
       ("start", Pos.to_yojson f#start) ;
       ("stop",  Pos.to_yojson f#stop) ;
+    ]
+
+let to_human_yojson f =
+  `Assoc [
+      ("start", Pos.to_human_yojson f#start) ;
+      ("stop",  Pos.to_human_yojson f#stop) ;
     ]
 
 let of_yojson = fun t ->

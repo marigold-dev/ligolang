@@ -10,7 +10,7 @@ let%expect_test _ =
 
 (* Record_update *)
 let%expect_test _ =
-  run_ligo_bad [ "compile"; "expression" ; "cameligo" ; "let a = {foo = 1} in { a with foo = 1n}" ; "--infer" ] ;
+  run_ligo_bad [ "compile"; "expression" ; "cameligo" ; "let a = {foo = 1} in { a with foo = 1n}" ] ;
   [%expect {|
              Invalid type(s).
              Expected: "int", but got: "nat".

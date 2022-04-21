@@ -41,7 +41,7 @@ module Mutator (M : Monad) = struct
     let false_return x = return (false, x) in
     let return x = return (true, x) in
     match expr with
-    | EAnnot {value = (_, _, TVar {value = "address"})} ->
+    | EAnnot {value = (_, _, TVar {value = "address";region=_});region=_} ->
        false_return expr
     | EArith (Add op) | EArith (Sub op) | EArith (Mult op)
     | EArith (Div op) | EArith (Mod op) ->
@@ -58,10 +58,10 @@ module Mutator (M : Monad) = struct
        let z = f z in
        return (EArith (Nat {value=(s, Z.of_int z);region}))
     | EArith (Mutez {value=(s, z);region}) ->
-       let* z = mutate_nat (Z.to_int z) in
+       let* z = mutate_nat (Z.to_int @@ Z.of_int64 z) in
        let* f = transform_nat |> map_return |> oneof in
        let z = f z in
-       return (EArith (Mutez {value=(s, Z.of_int z);region}))
+       return (EArith (Mutez {value=(s, Int64.of_int z);region}))
     | ELogic (BoolExpr (Or op)) | ELogic (BoolExpr (And op)) ->
        let* ctor = bool_bin_op_ctor |> map_return |> oneof in
        return (ELogic (BoolExpr (ctor op)))

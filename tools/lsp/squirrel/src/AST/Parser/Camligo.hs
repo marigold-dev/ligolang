@@ -1,6 +1,8 @@
 -- TODO: recogniser does not recognize maps and bigmaps properly
 
-module AST.Parser.Camligo where
+module AST.Parser.Camligo
+  ( recognise
+  ) where
 
 import AST.Skeleton
 
@@ -8,8 +10,6 @@ import Duplo.Tree
 
 import ParseTree
 import Parser
-import Product
-
 
 recognise :: SomeRawTree -> ParserM (SomeLIGO Info)
 recognise (SomeRawTree dialect rawTree)
@@ -26,9 +26,19 @@ recognise (SomeRawTree dialect rawTree)
       boilerplate $ \case
         "fun_decl"  -> BFunction <$> flag "recursive" <*> field "name" <*> fields "arg" <*> fieldOpt "type" <*> field "body"
         "let_decl"  -> BConst    <$>                      field "name"                  <*> fieldOpt "type" <*> fieldOpt "body"
-        "include"   -> BInclude  <$>                      field "filename"
-        "type_decl" -> BTypeDecl <$> field "name" <*> field "type"
+        "p_include" -> BInclude  <$>                      field "filename"
+        "p_import"  -> BImport   <$>                      field "filename" <*> field "alias"
+        "type_decl" -> BTypeDecl <$> field "name"     <*> fieldOpt "params" <*> field "type"
+        "module_decl"  -> BModuleDecl <$> field "moduleName" <*> fields "declaration"
+        "module_alias" -> BModuleAlias <$> field "moduleName" <*> field "module"
         _           -> fallthrough
+
+    -- TypeParams
+  , Descent do
+      boilerplate \case
+        "type_param"  -> TypeParam  <$> field  "param"
+        "type_params" -> TypeParams <$> fields "param"
+        _             -> fallthrough
 
   , Descent do
       boilerplate $ \case
@@ -43,7 +53,7 @@ recognise (SomeRawTree dialect rawTree)
         "record_literal"    -> Record     <$> fields "field"
         "if_expr"           -> If         <$> field  "condition" <*> field "then"  <*> fieldOpt "else"
         "match_expr"        -> Case       <$> field  "subject"   <*> fields "alt"
-        "lambda_expr"       -> Lambda     <$> fields "arg"       <*> pure Nothing  <*> field "body"
+        "lambda_expr"       -> Lambda     <$> fields "arg"       <*> fieldOpt "type" <*> field "body"
         "list_expr"         -> List       <$> fields "item"
         "tup_expr"          -> Tuple      <$> fields "x"
         "paren_expr"        -> Paren      <$> field  "expr"
@@ -69,7 +79,7 @@ recognise (SomeRawTree dialect rawTree)
         "tuple_pattern"     -> IsTuple  <$> fields "item"
         "constr_pattern"    -> IsConstr <$> field  "ctor" <*> fieldOpt "args"
         "par_annot_pattern" -> IsAnnot  <$> field  "pat"  <*> field "type"
-        "paren_pattern"     -> IsTuple  <$> fields "pat"
+        "paren_pattern"     -> IsParen  <$> field  "pat"
         "var_pattern"       -> IsVar    <$> field  "var"
         "record_pattern"    -> IsRecord <$> fields "field"
         "wildcard_pattern"  -> pure IsWildcard
@@ -80,7 +90,7 @@ recognise (SomeRawTree dialect rawTree)
       boilerplate $ \case
         "irrefutable_tuple"  -> IsTuple <$> fields "item"
         "annot_pattern"      -> IsAnnot <$> field  "pat"  <*> field "type"
-        "closed_irrefutable" -> IsTuple <$> fields "pat"
+        "closed_irrefutable" -> IsParen <$> field  "pat"
         _                    -> fallthrough
 
    -- RecordFieldPattern
@@ -116,12 +126,18 @@ recognise (SomeRawTree dialect rawTree)
         ("<", _)      -> return $ Op "<"
         (">=", _)     -> return $ Op ">="
         ("<=", _)     -> return $ Op "<="
-        ("=", _)      -> return $ Op "=="
+        ("=", _)      -> return $ Op "="
         ("!=", _)     -> return $ Op "!="
-        ("<>", _)     -> return $ Op "!="
+        ("<>", _)     -> return $ Op "<>"
         ("||", _)     -> return $ Op "||"
         ("&&", _)     -> return $ Op "&&"
-        ("negate", n) -> return $ Op n
+        ("not", _)    -> return $ Op "not"
+        ("lsl", _)    -> return $ Op "lsl"
+        ("lsr", _)    -> return $ Op "lsr"
+        ("land", _)   -> return $ Op "land"
+        ("lor", _)    -> return $ Op "lor"
+        ("lxor", _)   -> return $ Op "lxor"
+        ("or", _)     -> return $ Op "or"
         _             -> fallthrough
 
     -- Literal
@@ -167,13 +183,16 @@ recognise (SomeRawTree dialect rawTree)
     -- Type
   , Descent do
       boilerplate $ \case
+        "string_type"  -> TString  <$> field  "value"
         "fun_type"     -> TArrow   <$> field  "domain" <*> field "codomain"
         "prod_type"    -> TProduct <$> fields "x"
         "app_type"     -> TApply   <$> field  "f"      <*> fields "x"
         "record_type"  -> TRecord  <$> fields "field"
         "tuple_type"   -> TProduct <$> fields "x"
-        "sum_type"     -> TSum     <$> fields "variant"
         "TypeWildcard" -> pure TWildcard
+        "var_type"     -> TVariable <$> field "name"
+        "sum_type_prod_type_level" -> TSum <$> fields "variant"
+        "sum_type_fun_type_level"  -> TSum <$> fields "variant"
         _              -> fallthrough
 
     -- Module access:
@@ -186,8 +205,9 @@ recognise (SomeRawTree dialect rawTree)
     -- Variant
   , Descent do
       boilerplate $ \case
-        "variant" -> Variant <$> field "constructor" <*> fieldOpt "type"
-        _         -> fallthrough
+        "variant_prod_type_level" -> Variant <$> field "constructor" <*> fieldOpt "type"
+        "variant_fun_type_level"  -> Variant <$> field "constructor" <*> fieldOpt "type"
+        _                         -> fallthrough
 
     -- TField
   , Descent do
@@ -200,6 +220,12 @@ recognise (SomeRawTree dialect rawTree)
       boilerplate' $ \case
         ("TypeName", name) -> return $ TypeName name
         _                  -> fallthrough
+
+    -- TypeVariableName
+  , Descent do
+      boilerplate' \case
+        ("TypeVariableName", name) -> pure $ TypeVariableName name
+        _                          -> fallthrough
 
     -- Preprocessor
   , Descent do
@@ -226,8 +252,5 @@ recognise (SomeRawTree dialect rawTree)
         _                    -> fallthrough
 
   -- Err
-  , Descent do
-      \(r :> _, ParseTree _ children source) -> do
-        withComments do
-          return (r :> N :> CodeSource source :> Nil, Error source children)
+  , Descent noMatch
   ]

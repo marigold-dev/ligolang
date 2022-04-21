@@ -1,7 +1,10 @@
 [@@@coverage exclude_file]
+module Location    = Simple_utils.Location
+module List        = Simple_utils.List
+module Ligo_string = Simple_utils.Ligo_string
 open Types
 open Format
-open PP_helpers
+open Simple_utils.PP_helpers
 include Stage_common.PP
 
 let lmap_sep value sep ppf m =
@@ -71,6 +74,7 @@ let rec type_content : formatter -> type_content -> unit =
   | T_module_accessor ma -> module_access type_expression ppf ma
   | T_singleton       x  -> literal       ppf             x
   | T_abstraction     x  -> abstraction   type_expression ppf x
+  | T_for_all         x  -> for_all       type_expression ppf x
 
 and row_element : formatter -> row_element -> unit =
   fun ppf { associated_type ; michelson_annotation=_ ; decl_pos } ->
@@ -80,7 +84,7 @@ and row_element : formatter -> row_element -> unit =
 
 and type_injection ppf {language;injection;parameters} =
   ignore language;
-  fprintf ppf "[%s {| %s %a |}]" language (Ligo_string.extract injection) (list_sep_d_par type_expression) parameters
+  fprintf ppf "[%s {| %s %a |}]" language (Stage_common.Constant.to_string injection) (list_sep_d_par type_expression) parameters
 
 and record ppf {content; layout=_} =
   fprintf ppf "%a"
@@ -88,10 +92,6 @@ and record ppf {content; layout=_} =
 
 and type_expression ppf (te : type_expression) : unit =
   fprintf ppf "%a" type_content te.type_content
-
-let expression_variable ppf (ev : expression_variable) : unit =
-  fprintf ppf "%a" Var.pp ev.wrap_content
-
 
 let rec expression ppf ({ expression_content=ec; location=_; type_expression=te } : expression) =
   fprintf ppf "(%a : %a)"
@@ -120,16 +120,22 @@ and expression_content ppf (ec: expression_content) =
   | E_lambda {binder; result} ->
       fprintf ppf "lambda (%a) return %a" expression_variable binder
         expression result
+  | E_type_abstraction e -> type_abs expression ppf e
   | E_matching {matchee; cases;} ->
       fprintf ppf "match %a with %a" expression matchee (matching expression) cases
-  | E_let_in {let_binder; rhs; let_result; attr = { inline; no_mutation } } ->
+  | E_let_in {let_binder; rhs; let_result; attr = { inline; no_mutation; public=_ ; view = _ } } ->
       fprintf ppf "let %a = %a%a%a in %a" expression_variable let_binder expression
         rhs option_inline inline option_no_mutation no_mutation expression let_result
-  | E_type_in   ti -> type_in expression type_expression ppf ti
+  | E_type_in   {type_binder; rhs; let_result} ->
+      fprintf ppf "@[let %a =@;<1 2>%a in@ %a@]"
+        type_variable type_binder
+        type_expression rhs
+        expression let_result
+
   | E_mod_in {module_binder; rhs; let_result} ->
-      fprintf ppf "let %a = %a in %a"
+      fprintf ppf "let module %a = struct @[%a@]@end in@ %a"
         module_variable module_binder
-        module_fully_typed rhs
+        module_ rhs
         expression let_result
   | E_mod_alias ma -> mod_alias expression ppf ma
   | E_raw_code {language; code} ->
@@ -140,6 +146,8 @@ and expression_content ppf (ec: expression_content) =
         type_expression fun_type
         expression_content (E_lambda lambda)
   | E_module_accessor ma -> module_access expression ppf ma
+  | E_type_inst {forall;type_} ->
+      fprintf ppf "%a@[%a]" expression forall type_expression type_
 
 and assoc_expression ppf : map_kv -> unit =
  fun {key ; value} -> fprintf ppf "%a -> %a" expression key expression value
@@ -168,16 +176,18 @@ and matching : (formatter -> expression -> unit) -> _ -> matching_expr -> unit =
 
 and declaration ppf (d : declaration) =
   match d with
-  | Declaration_constant {name = _; binder; expr; attr = { inline; no_mutation } } ->
-      fprintf ppf "const %a = %a%a%a" expression_variable binder expression expr option_inline inline option_no_mutation no_mutation
-  | Declaration_type {type_binder; type_expr} ->
-      fprintf ppf "type %a = %a" type_variable type_binder type_expression type_expr
-  | Declaration_module {module_binder; module_} ->
-      fprintf ppf "module %a = %a" module_variable module_binder module_fully_typed module_
+  | Declaration_constant { binder; expr; attr = { inline; no_mutation; public; view } } ->
+      fprintf ppf "const %a = %a%a%a%a%a" expression_variable binder expression expr option_inline inline option_no_mutation no_mutation option_public public option_view view
+  | Declaration_type {type_binder; type_expr; type_attr = { public }} ->
+      fprintf ppf "type %a = %a%a" type_variable type_binder type_expression type_expr option_public public
+  | Declaration_module {module_binder; module_ = m; module_attr = { public }} ->
+      fprintf ppf "module %a = %a%a" module_variable module_binder module_ m option_public public
   | Module_alias {alias; binders} ->
       fprintf ppf "module %a = %a" module_variable alias (list module_variable) @@ List.Ne.to_list binders
 
-and module_fully_typed ppf (Module_Fully_Typed p : module_fully_typed) =
+and module_ ppf (m : module_) =
   fprintf ppf "@[<v>%a@]"
     (list_sep declaration (tag "@;"))
-    (List.map ~f:Location.unwrap p)
+    (List.map ~f:Location.unwrap m)
+
+let program ppf p = module_ ppf p

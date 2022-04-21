@@ -1,10 +1,15 @@
 PACKAGE := squirrel
 
-STACK_DEV_OPTIONS = --fast --ghc-options -Werror --file-watch
+LIGO_SEVERITY = LIGO_SEVERITY="debug"
+LIGO_ENV = LIGO_ENV="development"
+BUILD_FLAGS = $(LIGO_SEVERITY) $(LIGO_ENV)
+
+STACK_DEV_OPTIONS = --fast --ghc-options '-Werror -freverse-errors' --test --no-run-tests
+STACK_DEV = $(BUILD_FLAGS) stack build $(STACK_DEV_OPTIONS)
 
 .DEFAULT_GOAL := all
 
-all: build
+all: watch
 
 FORCE:
 
@@ -16,6 +21,9 @@ clean:
 	stack clean
 
 build: grammar
-	stack build $(STACK_DEV_OPTIONS)
+	$(STACK_DEV)
 
-.PHONY: all clean grammar build FORCE
+watch: grammar
+	$(STACK_DEV) --file-watch
+
+.PHONY: all clean grammar build watch FORCE

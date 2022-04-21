@@ -4,16 +4,9 @@ let file   = "./contracts/basic_multisig/multisig.ligo"
 let mfile  = "./contracts/basic_multisig/multisig.mligo"
 let refile = "./contracts/basic_multisig/multisig.religo"
 
-let get_program f = get_program f (Contract "main")
-
+let get_program f = get_program f (Contract (Stage_common.Var.of_input_var "main"))
 let compile_main ~raise ~add_warning f () =
-  let typed_prg,_ = get_program ~raise ~add_warning f () in
-  let mini_c_prg    = Ligo_compile.Of_typed.compile ~raise typed_prg in
-  let michelson_prg = Ligo_compile.Of_mini_c.aggregate_and_compile_contract ~raise ~options mini_c_prg "main" in
-  let _contract =
-    (* fails if the given entry point is not a valid contract *)
-    Ligo_compile.Of_michelson.build_contract michelson_prg in
-  ()
+  Test_helpers.compile_main ~raise ~add_warning f ()
 
 open Ast_imperative
 
@@ -32,7 +25,7 @@ let init_storage threshold counter pkeys =
 
 let (first_owner , first_contract) =
   let open Proto_alpha_utils.Memory_proto_alpha in
-  let id = List.nth_exn dummy_environment.identities 0 in
+  let id = List.nth_exn (test_environment ()).identities 0 in
   let kt = id.implicit_contract in
   Protocol.Alpha_context.Contract.to_b58check kt , kt
 
@@ -43,10 +36,10 @@ let op_list ~raise =
   let source =
     Trace.trace_alpha_tzresult ~raise (fun _ -> Main_errors.test_internal __LOC__) @@
     (Contract.of_b58check "KT1DUMMYDUMMYDUMMYDUMMYDUMMYDUMu2oHG") in
-  let operation = 
+  let operation =
     let parameters : Script.lazy_expr = Script.unit_parameter in
     let entrypoint = "default" in
-    let destination = 
+    let destination =
       Trace.trace_alpha_tzresult ~raise (fun _ -> Main_errors.test_internal __LOC__) @@
        Contract.of_b58check "tz1PpDGHRXFQq3sYDuH8EpLWzPm5PFpe1sLE"
     in
@@ -63,7 +56,7 @@ let chain_id_zero =
 
 (* sign the message 'msg' with 'keys', if 'is_valid'=false the providid signature will be incorrect *)
 let params ~raise ~add_warning counter payload keys is_validl f =
-  let _,env   = get_program ~raise ~add_warning f () in
+  let prog = get_program ~raise ~add_warning f () in
   let aux = fun acc (key,is_valid) ->
     let (_,_pk,sk) = key in
     let (pkh,_,_) = str_keys key in
@@ -72,7 +65,7 @@ let params ~raise ~add_warning counter payload keys is_validl f =
         e_nat counter ;
         e_string (if is_valid then "MULTISIG" else "XX") ;
         chain_id_zero ] in
-    let signature = sign_message ~raise env msg sk in
+    let signature = sign_message ~raise prog msg sk in
     (e_pair (e_key_hash pkh) (e_signature signature))::acc in
   let signed_msgs = List.fold ~f:aux ~init:[] (List.rev @@ List.zip_exn keys is_validl) in
   e_record_ez [
@@ -87,7 +80,7 @@ let not_enough_1_of_2 ~raise ~add_warning f () =
   let exp_failwith = "Not enough signatures passed the check" in
   let keys = gen_keys () in
   let test_params = params ~raise ~add_warning 0 empty_payload [keys] [true] f in
-  let options = Proto_alpha_utils.Memory_proto_alpha.make_options ~sender:first_contract () in
+  let options = Proto_alpha_utils.Memory_proto_alpha.(make_options ~env:(test_environment ()) ~sender:first_contract ()) in
   let () = expect_string_failwith ~raise
     program ~options "main" (e_pair test_params (init_storage 2 0 [keys;gen_keys()])) exp_failwith in
   ()

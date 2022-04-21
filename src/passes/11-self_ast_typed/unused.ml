@@ -11,10 +11,10 @@ type contract_pass_data = Contract_passes.contract_pass_data
 
 module V = struct
   type t = expression_variable
-  let compare x y = Var.compare (Location.unwrap x) (Location.unwrap y)
+  let compare x y = Var.compare x y
 end
 
-module M = Map.Make(V)
+module M = Simple_utils.Map.Make(V)
 
 (* A map recording if a variable is being used * a list of unused variables. *)
 type defuse = bool M.t * V.t list
@@ -40,14 +40,13 @@ let defuse_unions defuse =
   List.fold_left ~f:defuse_union ~init:(defuse,[])
 
 let replace_opt k x m =
-  Stdlib.Option.fold ~none:(M.remove k m) ~some:(fun x -> M.add k x m) x
+  Option.value_map ~default:(M.remove k m) ~f:(fun x -> M.add k x m) x
 
 let add_if_not_generated ?forbidden x xs b =
-  let v = Location.unwrap x in
-  let sv = Format.asprintf "%a" Var.pp v in
-  if not b && not (Var.is_generated v)
-     && (String.get sv 0) <> '_'
-     && Stdlib.Option.fold ~none:true ~some:(fun x -> x <> sv) forbidden
+  let sv = Format.asprintf "%a" Var.pp x in
+  if not b && not (Var.is_generated x)
+     && Char.(<>) (String.get sv 0) '_'
+     && Option.value_map ~default:true ~f:(String.(<>) sv) forbidden
   then x::xs else xs
 
 let remove_defined_var_after defuse binder f expr =
@@ -79,6 +78,8 @@ let rec defuse_of_expr defuse expr : defuse =
      defuse_of_lambda defuse l
   | E_recursive {lambda;_} ->
      defuse_of_lambda defuse lambda
+  | E_type_abstraction {result;_} ->
+     defuse_of_expr defuse result
   | E_let_in {let_binder;rhs;let_result;_} ->
      let defuse,unused = defuse_of_expr defuse rhs in
      let old_binder = M.find_opt let_binder defuse in
@@ -104,6 +105,8 @@ let rec defuse_of_expr defuse expr : defuse =
      defuse_of_expr defuse result
   | E_module_accessor _ ->
      defuse, []
+  | E_type_inst {forall;_} ->
+     defuse_of_expr defuse forall
 
 and defuse_of_lambda defuse {binder; result} =
   remove_defined_var_after defuse binder defuse_of_expr result
@@ -128,7 +131,7 @@ and defuse_of_record defuse {body;fields;_} =
   let defuse = List.fold_left ~f:(fun m (v, v') -> replace_opt v v' m) ~init:defuse vars' in
   (defuse, unused)
 
-let rec unused_map_module ~add_warning : module_fully_typed -> module_fully_typed = function (Module_Fully_Typed p) ->
+let rec unused_map_module ~add_warning : module_ -> module_ = function m ->
   let self = unused_map_module ~add_warning in
   let update_annotations annots =
     List.iter ~f:add_warning annots in
@@ -139,15 +142,15 @@ let rec unused_map_module ~add_warning : module_fully_typed -> module_fully_type
       let _,unused = defuse_of_expr defuse expr in
       let warn_var v =
         `Self_ast_typed_warning_unused
-          (Location.get_location v, Format.asprintf "%a" Var.pp (Location.unwrap v)) in
+          (Var.get_location v, Format.asprintf "%a" Var.pp v) in
       let () = update_annotations @@ List.map ~f:warn_var unused in
       ()
     )
     | Declaration_type _ -> ()
-    | Declaration_module {module_} ->
+    | Declaration_module {module_; module_binder=_;module_attr=_} ->
       let _ = self module_ in
       ()
     | Module_alias _ -> ()
   in
-  let () = List.iter ~f:aux p in
-  (Module_Fully_Typed p)
+  let () = List.iter ~f:aux m in
+  m

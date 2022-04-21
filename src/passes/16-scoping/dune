@@ -1,0 +1,6 @@
+(library
+ (name scoping)
+ (public_name ligo.scoping)
+ (instrumentation
+  (backend bisect_ppx))
+ (libraries simple-utils mini_c predefined ligo_coq_ocaml))

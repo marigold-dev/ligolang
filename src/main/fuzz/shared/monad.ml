@@ -1,3 +1,4 @@
+module Location = Simple_utils.Location
 open QCheck
 
 module type Monad = sig
@@ -24,12 +25,12 @@ module Rnd : Monad = struct
       return (l @ l', r))
   let get_one ?n (x : 'a t) =
     let rand = match n with
-      | None -> Random.State.make_self_init()
+      | None -> Caml.Random.State.make_self_init()
       | Some seed ->
-         let curr = Random.get_state () in
+         let curr = Caml.Random.get_state () in
          Random.init seed;
-         let rand = Random.get_state () in
-         Random.set_state curr;
+         let rand = Caml.Random.get_state () in
+         Caml.Random.set_state curr;
          rand in
     Gen.generate1 ~rand x
   let get_list ?(n = 100) (l : 'a t) =
@@ -107,7 +108,7 @@ module Monad_context (M : Monad) = struct
   let bind_fold_ne_list f init lst =
     let aux x y =
       let* x = x in f x y
-    in Simple_utils.List.Ne.fold_left aux (return init) lst
+    in Simple_utils.List.Ne.fold_left ~f:aux ~init:(return init) lst
 
   let bind_ne_list (hd, tl) =
     let* hd = hd in

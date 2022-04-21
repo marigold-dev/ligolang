@@ -17,3 +17,8 @@ version.ml
 /_coverage_*/
 .history
 /to-dos.html
+/*.ligo
+/*.mligo
+/*.religo
+/*.jsligo
+_esy/

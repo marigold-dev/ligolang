@@ -17,6 +17,10 @@ build-deps:
 	then scripts/setup_switch.sh;
 	fi
 	eval $$(opam config env)
+# NEW-PROTOCOL-TEMPORARY
+	git submodule sync --recursive
+	git submodule update --init --recursive
+# NEW-PROTOCOL-TEMPORARY
 #	Install OCaml build dependencies for Ligo
 	scripts/install_vendors_deps.sh
 
@@ -27,6 +31,7 @@ build: build-deps
 	scripts/build_ligo_local.sh
 
 test: build
+	scripts/check_duplicate_filenames.sh || exit
 	export PATH="/usr/local/bin$${PATH:+:}$${PATH:-}"
 	eval $$(opam config env)
 	scripts/test_ligo.sh

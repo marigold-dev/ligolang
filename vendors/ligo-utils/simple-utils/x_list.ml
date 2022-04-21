@@ -1,4 +1,4 @@
-open Base
+open Core
 include List
 
 let rec remove n = function
@@ -31,7 +31,7 @@ let fold_map2_exn ~f ~init a b =
 let rec fold_map_right ~f ~init = function
     | [] -> (init , [])
     | hd :: tl ->
-        let init,tl = fold_map_right ~f ~init tl in 
+        let init,tl = fold_map_right ~f ~init tl in
         let init,hd = f init hd in
         init,hd::tl
 
@@ -54,7 +54,8 @@ module Ne = struct
   let cons : 'a -> 'a t -> 'a t = fun hd' (hd , tl) -> hd' , hd :: tl
   let iter f (hd, tl : _ t) = f hd ; List.iter ~f tl
   let map f (hd, tl : _ t) = f hd, List.map ~f tl
-  let fold_left f init (hd, tl : _ t) = List.fold_left ~f ~init:(f init hd) tl
+  let fold_left ~f ~init (hd, tl : _ t) = List.fold_left ~f ~init:(f init hd) tl
+  let fold_right ~f ~init (hd, tl : _ t) = f hd (List.fold_right ~f ~init tl)
   let hd_map : _ -> 'a t -> 'a t = fun f (hd , tl) -> (f hd , tl)
   let mapi f (hd, tl : _ t) =
     let lst = List.mapi ~f (hd::tl) in

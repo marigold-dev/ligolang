@@ -1,26 +1,38 @@
-open Trace
+open Simple_utils.Trace
 open Test_helpers
 open Main_errors
 
-let () = Unix.putenv "LIGO_FORCE_NEW_TYPER" "false"
+let () = Unix.putenv ~key:"LIGO_FORCE_NEW_TYPER" ~data:"false"
 type syntax = string
 type group_name = string
 type lang = Meta | Object (* Object = normal LIGO code ; Meta = ligo test framework code *)
-module SnippetsGroup = Map.Make(struct type t = (syntax * group_name) let compare a b = compare a b end)
+module SnippetsGroup = Caml.Map.Make(struct type t = (syntax * group_name * Environment.Protocols.t) let compare a b = Caml.compare a b end)
 
 
 type snippetsmap = (lang * string) SnippetsGroup.t
 
-(**
+let arg_to_string x =
+  match x with
+  | Md.Field s -> s
+  | Md.NameValue (k,v) -> Format.asprintf "%s=%s" k v
+let get_proto p =
+  let opt = try Environment.Protocols.protocols_to_variant p with
+    _ -> None
+  in
+  match opt with
+  | Some x -> x
+  | None -> failwith "unknown protocol"
+let current_proto = get_proto "current"
+(*
   Binds the snippets by (syntax, group_name).
   Syntax and group_name being retrieved from the .md file header & arguments
   e.g. in the .md file:
     ```syntax group=group_name
       <some code>
     ```
-**)
+*)
 let get_groups md_file : snippetsmap =
-  let channel = open_in md_file in
+  let channel = In_channel.create md_file in
   let lexbuf = Lexing.from_channel channel in
   let code_blocks = Md.token lexbuf in
   let aux : snippetsmap -> Md.block -> snippetsmap =
@@ -31,39 +43,62 @@ let get_groups md_file : snippetsmap =
           List.iter ~f:
             (fun arg ->
               match arg with
-              | Md.Field "" | Md.Field "skip" | Md.NameValue ("group",_) | Md.Field "test-ligo" -> ()
-              | Md.Field _ | Md.NameValue _ -> failwith "unknown argument"
+              | Md.Field "" | Md.Field "skip" | Md.NameValue ("group",_) | Md.Field "test-ligo" | Md.NameValue ("protocol",_) -> ()
+              | Md.Field _ | Md.NameValue (_,_) ->
+                failwith (
+                  Format.asprintf "unknown argument '%s' in code block at line %d of file %s" (arg_to_string arg) el.line el.file
+                )
             )
             el.arguments
         in
         match el.arguments with
         | [Md.Field ""] -> (
-          SnippetsGroup.update (s,"ungrouped")
+          SnippetsGroup.update (s,"ungrouped",current_proto)
             (fun arg_content ->
               match arg_content with
-              | Some (lang,ct) -> Some (lang, String.concat "\n" (ct::el.contents))
-              | None -> Some (Object, String.concat "\n" el.contents)
+              | Some (lang,ct) -> Some (lang, String.concat ~sep:"\n" (ct::el.contents))
+              | None -> Some (Object, String.concat ~sep:"\n" el.contents)
             )
             grp_map
         )
         | [Md.Field "skip"] -> grp_map
-        | [Md.Field "test-ligo" ; Md.NameValue ("group", name)] -> (
+        | [Md.Field "test-ligo" ; Md.NameValue ("group", name) ; Md.NameValue ("protocol",x)] -> (
           let lang = Meta in
-          SnippetsGroup.update (s,name)
+          SnippetsGroup.update (s,name,get_proto x)
             (fun arg_content ->
               match arg_content with
-              | Some (lang',ct) when lang = lang' -> Some (lang, String.concat "\n" (ct::el.contents))
-              | _ -> Some (lang, String.concat "\n" el.contents)
+              | Some (lang',ct) when Caml.(=) lang lang' -> Some (lang, String.concat ~sep:"\n" (ct::el.contents))
+              | _ -> Some (lang, String.concat ~sep:"\n" el.contents)
+            )
+            grp_map
+        )
+        | [Md.Field "test-ligo" ; Md.NameValue ("group", name)] -> (
+          let lang = Meta in
+          SnippetsGroup.update (s,name,current_proto)
+            (fun arg_content ->
+              match arg_content with
+              | Some (lang',ct) when Caml.(=) lang lang' -> Some (lang, String.concat ~sep:"\n" (ct::el.contents))
+              | _ -> Some (lang, String.concat ~sep:"\n" el.contents)
+            )
+            grp_map
+        )
+        | [Md.NameValue ("group", name); Md.NameValue ("protocol",x)] -> (
+          let lang = Object in
+          SnippetsGroup.update (s,name,get_proto x)
+            (fun arg_content ->
+              match arg_content with
+              | Some (lang',ct) when Caml.(=) lang lang' -> Some (lang, String.concat ~sep:"\n" (ct::el.contents))
+              | _ -> Some (lang, String.concat ~sep:"\n" el.contents)
             )
             grp_map
         )
         | [Md.NameValue ("group", name)] -> (
           let lang = Object in
-          SnippetsGroup.update (s,name)
+          SnippetsGroup.update (s,name,current_proto)
             (fun arg_content ->
               match arg_content with
-              | Some (lang',ct) when lang = lang' -> Some (lang, String.concat "\n" (ct::el.contents))
-              | _ -> Some (lang, String.concat "\n" el.contents)
+              | Some (lang',ct) when Caml.(=) lang lang' -> Some (lang, String.concat ~sep:"\n" (ct::el.contents))
+              | _ -> Some (lang, String.concat ~sep:"\n" el.contents)
             )
             grp_map
         )
@@ -81,32 +116,30 @@ let get_groups md_file : snippetsmap =
 **)
 let compile_groups ~raise filename grp_list =
   let add_warning _ = () in
-  let aux : (syntax * group_name) * (lang * string) -> unit =
-    fun ((syntax , grp) , (lang , contents)) ->
+  let aux : (syntax * group_name * Environment.Protocols.t) * (lang * string) -> unit =
+    fun ((syntax , grp, protocol_version) , (lang , contents)) ->
       trace ~raise (test_md_file filename syntax grp contents) @@
       fun ~raise -> 
-      let options         = Compiler_options.make () in
+      let options    = Compiler_options.make ~raw_options:Compiler_options.default_raw_options ~protocol_version () in
       let meta       = Ligo_compile.Of_source.make_meta ~raise syntax None in
-      let c_unit,_   = Ligo_compile.Of_source.compile_string ~raise ~options ~meta contents in
+      let c_unit,_   = Ligo_compile.Of_source.compile_string ~raise ~options:options.frontend ~meta contents in
       let imperative = Ligo_compile.Of_c_unit.compile ~raise ~add_warning ~meta c_unit filename in
       let sugar      = Ligo_compile.Of_imperative.compile ~raise imperative in
       let core       = Ligo_compile.Of_sugar.compile sugar in
-      let inferred   = Ligo_compile.Of_core.infer  ~raise~options core in
       match lang with
       | Meta ->
-        let init_env = Environment.default_with_test options.protocol_version in
-        let options = { options with init_env ; test = true } in
-        let typed,_    = Ligo_compile.Of_core.typecheck ~raise ~add_warning ~options Env inferred in
-        let _ = Interpreter.eval_test ~raise ~steps:5000 typed in
+        let init_env = Environment.default_with_test protocol_version in
+        let options = Compiler_options.set_init_env options init_env in
+        let options = Compiler_options.set_test_flag options true in
+        let typed   = Ligo_compile.Of_core.typecheck ~raise ~add_warning ~options Env core in
+        let _ = Interpreter.eval_test ~options ~raise ~steps:5000 typed in
         ()
       | Object ->
-        let typed,_    = Ligo_compile.Of_core.typecheck ~raise ~add_warning ~options Env inferred in
-        let mini_c     = Ligo_compile.Of_typed.compile ~raise typed in
-        let (_michelsons : Stacking.compiled_expression list) =
-          List.map ~f:
-            (fun ((_, _, exp),_) -> Ligo_compile.Of_mini_c.aggregate_and_compile_expression ~raise ~options mini_c exp)
-            mini_c
-        in
+        let typed     = Ligo_compile.Of_core.typecheck ~raise ~add_warning ~options Env core in
+        let agg_prg   = Ligo_compile.Of_typed.compile_program ~raise typed in
+        let aggregated_with_unit = Ligo_compile.Of_typed.compile_expression_in_context ~raise (Ast_typed.e_a_unit ()) agg_prg in
+        let mini_c = Ligo_compile.Of_aggregated.compile_expression ~raise aggregated_with_unit in
+        let _michelson : Stacking__Compiler_program.compiled_expression = Ligo_compile.Of_mini_c.compile_expression ~raise ~options mini_c in
         ()
   in
   let () = List.iter ~f:aux grp_list in
@@ -127,7 +160,7 @@ let get_all_md_files () =
   let () =
     try
       while true do
-        let md_file = input_line ic in
+        let md_file = In_channel.input_line_exn ic in
         if not (List.exists ~f:(String.equal md_file) exclude_files) then
           let grp = get_groups md_file in
           if not (SnippetsGroup.is_empty grp) then
@@ -135,7 +168,7 @@ let get_all_md_files () =
       done
     with
       End_of_file ->
-      close_in ic
+      In_channel.close ic
   in
   !all_input
 

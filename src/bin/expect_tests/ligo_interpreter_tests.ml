@@ -37,7 +37,6 @@ let%expect_test _ =
     - test_var_neg exited with value ().
     - test_sizes exited with value ().
     - test_modi exited with value ().
-    - test_fold_while exited with value ().
     - test_assertion_pass exited with value ().
     - test_map_finds exited with value ().
     - test_map_fold exited with value ().
@@ -47,6 +46,7 @@ let%expect_test _ =
     - test_map_update exited with value ().
     - test_set_add exited with value ().
     - test_set_mem exited with value ().
+    - test_set_remove exited with value ().
     - test_recursion_let_rec_in exited with value ().
     - test_top_level_recursion exited with value ().
     - test_bitwise_ops exited with value ().
@@ -61,7 +61,42 @@ let%expect_test _ =
     - test_add_mutez exited with value ().
     - test_sub_mutez exited with value ().
     - test_div_mutez exited with value ().
-    - test_list_fold_left_sum exited with value (). |}]
+    - test_list_fold_left_sum exited with value ().
+    - test_bytes_sub exited with value ().
+    - test_with_error exited with value ().
+    - test_some exited with value ().
+    - test_some_with_error exited with value ().
+    - test_none exited with value ().
+    - test_none_with_error exited with value ().
+    - test_unopt exited with value ().
+    - test_unopt_with_error exited with value ().
+    - test_sha256 exited with value ().
+    - test_sha512 exited with value ().
+    - test_blake2b exited with value ().
+    - test_keccak exited with value ().
+    - test_sha3 exited with value ().
+    - test_key_hash exited with value ().
+    - test_check exited with value ().
+    - test_int_bls exited with value (). |}]
+
+let%expect_test _ =
+  (* This tests a possible regression on the way modules are evaluated. It is possible that the number of element in the environment explodes. *)
+  run_ligo_good ["run"; "test" ; test "imported_modules/test.mligo" ; "--format" ; "dev" ] ;
+  [%expect {|
+    Everything at the top-level was executed.
+    - test1 exited with value (). |}]
+
+let%expect_test _ =
+  run_ligo_good ["run"; "test" ; test "views_test.mligo" ; "--protocol" ; "hangzhou" ] ;
+  [%expect {|
+    Everything at the top-level was executed.
+    - test exited with value (). |}]
+
+let%expect_test _ =
+  run_ligo_good ["run"; "test" ; test "test_timelock.mligo" ; "--protocol" ; "hangzhou" ] ;
+  [%expect {|
+    Everything at the top-level was executed.
+    - test exited with value (). |}]
 
 let%expect_test _ =
   run_ligo_good ["run"; "test" ; test "interpret_test_log.mligo" ] ;
@@ -96,15 +131,15 @@ let%expect_test _ =
 
 let%expect_test _ =
   run_ligo_good ["run";"test" ; test "test_fail.mligo" ] ;
-  [%expect {|
-  Everything at the top-level was executed.
-  - test exited with value "my contract always fail". |}]
+  [%expect{|
+    Everything at the top-level was executed.
+    - test exited with value "my contract always fail". |}]
 
 let%expect_test _ =
   run_ligo_good ["run";"test" ; test "test_fail_from_file.mligo" ] ;
-  [%expect {|
-  Everything at the top-level was executed.
-  - test exited with value "my contract always fail". |}]
+  [%expect{|
+    Everything at the top-level was executed.
+    - test exited with value "my contract always fail". |}]
 
 
 let%expect_test _ =
@@ -151,6 +186,13 @@ let%expect_test _ =
   Everything at the top-level was executed.
   - test exited with value (). |}]
 
+let%expect_test _ =
+  run_ligo_good ["run";"test" ; test "nesting_modules.mligo" ] ;
+  [%expect {|
+  111
+  Everything at the top-level was executed.
+  - test exited with value (). |}]
+
 (* DEPRECATED
 let%expect_test _ =
 run_ligo_good ["run";"test" ; test "bootstrapped_contracts.mligo" ] ;
@@ -175,8 +217,7 @@ let%expect_test _ =
 
 let%expect_test _ =
   run_ligo_good ["run";"test" ; test "test_fresh.mligo" ] ;
-  [%expect {|
-    Everything at the top-level was executed. |}]
+  [%expect{| Everything at the top-level was executed. |}]
 
 let%expect_test _ =
   run_ligo_good [ "run" ; "test" ; test "test_rec_contract.mligo" ] ;
@@ -208,14 +249,13 @@ let%expect_test _ =
     Everything at the top-level was executed.
     - test exited with value (). |}]
 
-(* DEPRECATED
 let%expect_test _ =
   run_ligo_good [ "run" ; "test" ; test "test_bigmap_set.mligo" ] ;
   [%expect {|
     9n
     0n
     Everything at the top-level was executed.
-    - test exited with value (). |}] *)
+    - test exited with value (). |}]
 
 let%expect_test _ =
   run_ligo_good [ "run" ; "test" ; test "test_module.mligo" ] ;
@@ -244,6 +284,232 @@ let%expect_test _ =
     Everything at the top-level was executed.
     - test_set exited with value 3.
     - test_list exited with value 3. |}]
+
+let%expect_test _ =
+  run_ligo_good [ "run" ; "test" ; test "func_michelson.mligo" ] ;
+  [%expect {|
+    42
+    Everything at the top-level was executed.
+    - test exited with value (). |}]
+
+let%expect_test _ =
+  run_ligo_good [ "run" ; "test" ; test "func_michelson_loop.mligo" ] ;
+  [%expect {|
+    Everything at the top-level was executed.
+    - test exited with value (). |}]
+
+let%expect_test _ =
+  run_ligo_good [ "run" ; "test" ; test "test_many_imports.mligo" ] ;
+  [%expect {|
+    Everything at the top-level was executed.
+    - test exited with value (). |}]
+
+let%expect_test _ =
+  run_ligo_good [ "run" ; "test" ; test "switch_case_part_1.jsligo" ] ;
+  [%expect{|
+    Everything at the top-level was executed.
+    - test1 exited with value ().
+    - test2 exited with value ().
+    - test3 exited with value ().
+    - test4 exited with value ().
+    - test5 exited with value ().
+    - test6 exited with value ().
+    - test7 exited with value ().
+    - test8 exited with value ().
+    - test9 exited with value ().
+    - test10 exited with value ().
+    - test11 exited with value ().
+    - test12 exited with value ().
+    - test13 exited with value ().
+    - test14 exited with value ().
+    - test15 exited with value ().
+    - test16 exited with value ().
+    - test17 exited with value ().
+    - test18 exited with value (). |}]
+
+let%expect_test _ =
+  run_ligo_good [ "run" ; "test" ; test "switch_case_part_2.jsligo" ] ;
+    [%expect{|
+      Everything at the top-level was executed.
+      - test1 exited with value ().
+      - test2 exited with value ().
+      - test3 exited with value ().
+      - test4 exited with value ().
+      - test5 exited with value ().
+      - test6 exited with value ().
+      - test7 exited with value ().
+      - test8 exited with value ().
+      - test9 exited with value ().
+      - test10 exited with value ().
+      - test11 exited with value ().
+      - test12 exited with value ().
+      - test13 exited with value ().
+      - test14 exited with value ().
+      - test15 exited with value ().
+      - test16 exited with value ().
+      - test17 exited with value ().
+      - test18 exited with value ().
+      - test19 exited with value ().
+      - test20 exited with value ().
+      - test21 exited with value ().
+      - test22 exited with value ().
+      - test23 exited with value ().
+      - test24 exited with value ().
+      - test25 exited with value ().
+      - test26 exited with value ().
+      - test27 exited with value ().
+      - test28 exited with value ().
+      - test29 exited with value ().
+      - test30 exited with value ().
+      - test31 exited with value ().
+      - test32 exited with value ().
+      - test33 exited with value ().
+      - test34 exited with value ().
+      - test35 exited with value ().
+      - test36 exited with value ().
+      - test37 exited with value ().
+      - test38 exited with value ().
+      - test39 exited with value ().
+      - test40 exited with value ().
+      - test41 exited with value ().
+      - test42 exited with value ().
+      - test43 exited with value ().
+      - test44 exited with value ().
+      - test45 exited with value ().
+      - test46 exited with value ().
+      - test47 exited with value ().
+      - test48 exited with value ().
+      - test49 exited with value ().
+      - test50 exited with value ().
+      - test51 exited with value ().
+      - test52 exited with value ().
+      - test53 exited with value ().
+      - test54 exited with value (). |}]
+
+let%expect_test _ =
+  run_ligo_good [ "run" ; "test" ; test "switch_case_part_3.jsligo" ] ;
+    [%expect{|
+      Everything at the top-level was executed.
+      - test1 exited with value ().
+      - test2 exited with value ().
+      - test3 exited with value ().
+      - test4 exited with value ().
+      - test5 exited with value ().
+      - test6 exited with value ().
+      - test7 exited with value ().
+      - test8 exited with value ().
+      - test9 exited with value ().
+      - test10 exited with value ().
+      - test11 exited with value ().
+      - test12 exited with value ().
+      - test13 exited with value ().
+      - test14 exited with value ().
+      - test15 exited with value ().
+      - test16 exited with value ().
+      - test17 exited with value ().
+      - test18 exited with value ().
+      - test19 exited with value (). |}]
+
+let%expect_test _ =
+  run_ligo_good [ "run" ; "test" ; test "switch_case_if_else.jsligo" ] ;
+    [%expect{|
+      Everything at the top-level was executed.
+      - test_if_switch_break exited with value ().
+      - test_if_switch_return exited with value ().
+      - test_switch_if_break exited with value ().
+      - test_switch_if_return exited with value ().
+      - test_switch_switch_break exited with value (). |}]
+
+let%expect_test _ =
+  run_ligo_good [ "run" ; "test" ; test "test_negative_big_map_id.mligo" ] ;
+    [%expect{|
+      Everything at the top-level was executed.
+      - test_main exited with value (). |}]
+
+let%expect_test _ =
+  run_ligo_good [ "run"; "test" ; test "test_FA12.mligo" ] ;
+  [%expect {|
+    Everything at the top-level was executed.
+    - test_transfer exited with value ().
+    - test_transfer_not_e_allowance exited with value ().
+    - test_transfer_not_e_balance exited with value ().
+    - test_approve exited with value ().
+    - test_approve_unsafe exited with value ().
+    - test_get_allowance exited with value ().
+    - test_get_balance exited with value ().
+    - test_get_total_supply exited with value (). |}]
+
+let%expect_test _ =
+  run_ligo_good [ "run"; "test" ; test "pack_unpack.mligo" ] ;
+  [%expect {|
+    Everything at the top-level was executed.
+    - test_string exited with value ().
+    - test_int exited with value ().
+    - test_string_int exited with value ().
+    - test_string_string exited with value (). |}]
+
+let%expect_test _ =
+  run_ligo_good [ "run"; "test" ; test "test_pack_unpack.mligo" ] ;
+  [%expect {|
+    Everything at the top-level was executed.
+    - test exited with value (). |}]
+
+let%expect_test _ =
+  run_ligo_good [ "run"; "test" ; test "pairing_check.mligo" ] ;
+  [%expect {|
+    Everything at the top-level was executed.
+    - test exited with value (). |}]
+
+let%expect_test _ =
+  run_ligo_good [ "run"; "test" ; test "gas_consum.mligo" ] ;
+  [%expect {|
+    Everything at the top-level was executed.
+    - test exited with value (1801n , 2125n , 2125n). |}]
+
+let%expect_test _ =
+  run_ligo_good [ "run"; "test" ; test "test_implicit_account.jsligo" ] ;
+  [%expect {|
+    0mutez
+    123mutez
+    Everything at the top-level was executed.
+    - test_addresses exited with value [tz1KqTpEZ7Yob7QbPE4Hy4Wo8fHG8LhKxZSx]. |}]
+
+let%expect_test _ =
+  run_ligo_good [ "run"; "test" ; test "test_accounts.mligo" ] ;
+  [%expect {|
+    Everything at the top-level was executed.
+    - test_new exited with value 110000000mutez.
+    - test_add exited with value 110000000mutez. |}]
+
+let%expect_test _ =
+  run_ligo_good [ "run"; "test" ; test "test_baker_account.mligo" ] ;
+  [%expect {|
+    "STARTING BALANCE AND VOTING POWER"
+    4000000000000mutez
+    500n
+    "BALANCE AND VOTING POWER AFTER ORIGINATE"
+    3999360000000mutez
+    500n
+    "BALANCE AND VOTING POWER AFTER TRANSFER"
+    3998720000000mutez
+    500n
+    Everything at the top-level was executed.
+    - test exited with value (). |}]
+
+let%expect_test _ =
+  run_ligo_good [ "run"; "test" ; test "test_register_delegate.mligo" ] ;
+  [%expect {|
+    "STARTING BALANCE AND VOTING POWER"
+    99360000000mutez
+    12n
+    "BALANCE AND VOTING POWER AFTER ORIGINATE"
+    98720000000mutez
+    12n
+    "BALANCE AND VOTING POWER AFTER TRANSFER"
+    98080000000mutez
+    12n
+    Everything at the top-level was executed.
+    - test exited with value (). |}]
 
 (* do not remove that :) *)
 let () = Sys.chdir pwd
@@ -286,14 +552,13 @@ let%expect_test _ =
 
     An uncaught error occured:
     Ill typed contract:
-      1: { parameter unit ; storage unit ; code { DROP ; PUSH unit Unit } }
-    At line 1 characters 39 to 64,
+      1: { parameter unit ; storage unit ; code { DROP ; UNIT } }
+    At line 1 characters 39 to 54,
       wrong stack type at end of body:
       - expected return stack type:
         [ pair (list operation) unit ],
       - actual stack type:
         [ unit ].
-    Type unit is not compatible with type pair (list operation) unit.
     Type unit is not compatible with type pair (list operation) unit. |}]
 
 let%expect_test _ =
@@ -352,15 +617,72 @@ let%expect_test _ =
      11 |   ()
 
     The source address is not an implicit account
-    KT1DStcZ1kqKBupmwQ23aRXeJ5cEXYbqATEe |}]
+    KT1CJbrhkpX9eeh88JvkC58rSXZvRxGq3RiV |}]
 
 let%expect_test _ =
   run_ligo_bad [ "run" ; "test" ; bad_test "test_source2.mligo" ] ;
   [%expect {|
-    File "../../test/contracts/negative//interpreter_tests/test_source2.mligo", line 10, characters 11-53:
+    File "../../test/contracts/negative//interpreter_tests/test_source2.mligo", line 10, characters 10-52:
       9 |   let () = Test.set_source addr in
-     10 |   let () = Test.transfer_exn addr (Test.eval ()) 0tez in
+     10 |   let _ = Test.transfer_exn addr (Test.eval ()) 0tez in
      11 |   ()
 
     The source address is not an implicit account
-    KT1DStcZ1kqKBupmwQ23aRXeJ5cEXYbqATEe |}]
+    KT1CJbrhkpX9eeh88JvkC58rSXZvRxGq3RiV |}]
+
+let%expect_test _ =
+  run_ligo_bad [ "run" ; "test" ; bad_test "test_run_types.jsligo" ] ;
+  [%expect {|
+    File "../../test/contracts/negative//interpreter_tests/test_run_types.jsligo", line 2, characters 20-45:
+      1 | const foo = (x: {field: int}): {field: int} => {return x};
+      2 | const bar = Test.run(foo, {property: "toto"});
+      3 |
+
+    These types are not matching:
+     - record[field -> int]
+     - record[property -> string] |}]
+
+let%expect_test _ =
+  run_ligo_bad [ "run" ; "test" ; bad_test "test_run_types2.jsligo" ] ;
+  [%expect {|
+    File "../../test/contracts/negative//interpreter_tests/test_run_types2.jsligo", line 2, characters 20-33:
+      1 | const foo = (x:  {b:int}):  {b:int} => {return x};
+      2 | const bar = Test.run(foo, "toto");
+
+    These types are not matching:
+     - record[b -> int]
+     - string |}]
+
+let%expect_test _ =
+  run_ligo_bad [ "run" ; "test" ; bad_test "test_run_types3.jsligo" ] ;
+  [%expect {|
+    File "../../test/contracts/negative//interpreter_tests/test_run_types3.jsligo", line 2, characters 20-42:
+      1 | const foo = (x: int): int => {return x};
+      2 | const bar = Test.run(foo, {field: "toto"});
+
+    These types are not matching:
+     - int
+     - record[field -> string] |}]
+
+let%expect_test _ =
+  run_ligo_bad [ "run" ; "test" ; bad_test "test_decompile.mligo" ] ;
+  [%expect {|
+    File "../../test/contracts/negative//interpreter_tests/test_decompile.mligo", line 3, characters 26-27:
+      2 |   let x = Test.eval 4n in
+      3 |   let y = (Test.decompile x : string) in
+      4 |   ()
+
+    This Michelson value has assigned type 'nat', which does not coincide with expected type 'string'. |}]
+
+let%expect_test _ =
+  run_ligo_bad [ "run"; "test" ; bad_test "test_register_delegate.mligo" ] ;
+  [%expect {|
+    File "../../test/contracts/negative//interpreter_tests/test_register_delegate.mligo", line 19, characters 19-46:
+     18 |   let () = Test.set_baker a in
+     19 |   let (ta, _, _) = Test.originate main 41 5tez in
+     20 |
+
+    Baker cannot bake. Enough rolls? Enough cycles passed?
+    "STARTING BALANCE AND VOTING POWER"
+    100000000000mutez
+    12n |}]

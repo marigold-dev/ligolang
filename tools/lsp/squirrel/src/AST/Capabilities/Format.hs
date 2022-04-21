@@ -1,51 +1,39 @@
 -- | Document formatting capability
 
-module AST.Capabilities.Format where
-
-import Control.Exception.Safe (catchAny)
-import Data.Text (Text)
+module AST.Capabilities.Format
+  ( formatDocument
+  , formatAt
+  ) where
 
 import Language.LSP.Types qualified as J
 
-import AST.Scope
-import AST.Skeleton
-import Cli
-import Duplo.Lattice
-import Duplo.Tree
-import ParseTree
-import Parser
-import Product
-import Range
+import AST.Scope (Info')
+import AST.Skeleton (SomeLIGO (..))
+import Cli (HasLigoClient, callForFormat)
+import Duplo.Lattice (leq)
+import Duplo.Tree (extract, spineTo)
+import Log (Log)
+import ParseTree (Source (Text))
+import Parser (CodeSource (..))
+import Product (getElem)
+import Range (Range (..), toLspRange)
 
-callForFormat :: HasLigoClient m => Lang -> Source -> m (Maybe Text)
-callForFormat lang source =
-    (Just . fst <$> getResult) `catchAny` \_ -> return Nothing
-  where
-    syntax = case lang of
-      Reason -> "reasonligo"
-      Pascal -> "pascaligo"
-      Caml -> "cameligo"
-
-    getResult = callLigo
-      ["pretty-print", "/dev/stdin", "--syntax=" <> syntax]
-      source
-
-formatDocument :: HasLigoClient m => SomeLIGO Info' -> m (J.List J.TextEdit)
-formatDocument (SomeLIGO lang (extract -> info)) = do
+formatDocument :: (HasLigoClient m, Log m) => SomeLIGO Info' -> m (J.List J.TextEdit)
+formatDocument (SomeLIGO _lang (extract -> info)) = do
   let CodeSource source = getElem info
-  let r@Range{rFile} = getElem info
-  out <- callForFormat lang (Text rFile source)
+  let r@Range{_rFile} = getElem info
+  out <- callForFormat (Text _rFile source)
   return . J.List $
     maybe [] (\out' -> [J.TextEdit (toLspRange r) out']) out
 
-formatAt :: HasLigoClient m => Range -> SomeLIGO Info' -> m (J.List J.TextEdit)
-formatAt at (SomeLIGO lang tree) = case spineTo (leq at . getElem) tree of
+formatAt :: (HasLigoClient m, Log m) => Range -> SomeLIGO Info' -> m (J.List J.TextEdit)
+formatAt at (SomeLIGO _lang tree) = case spineTo (leq at . getElem) tree of
   [] -> return $ J.List []
   (node:_) -> do
     let
       info = extract node
       CodeSource source = getElem info
-      r@Range{rFile} = getElem info
-    out <- callForFormat lang (Text rFile source)
+      r@Range{_rFile} = getElem info
+    out <- callForFormat (Text _rFile source)
     return . J.List $
       maybe [] (\out' -> [J.TextEdit (toLspRange r) out']) out

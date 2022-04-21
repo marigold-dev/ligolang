@@ -1,32 +1,26 @@
 {
+
+  nixConfig = {
+    flake-registry = "https://github.com/serokell/flake-registry/raw/master/flake-registry.json";
+  };
+
   inputs = {
-    haskell-nix.url =
-      "github:input-output-hk/haskell.nix";
-    hackage-nix = {
-      url = "github:input-output-hk/hackage.nix";
-      flake = false;
+    haskell-nix = {
+      inputs.hackage.follows = "hackage";
+      inputs.stackage.follows = "stackage";
     };
-    stackage-nix = {
-      url = "github:input-output-hk/stackage.nix";
-      flake = false;
-    };
-    nix-npm-buildpackage.url = "github:serokell/nix-npm-buildpackage";
-    nixpkgs.url = "github:serokell/nixpkgs";
-    flake-utils.url = "github:numtide/flake-utils";
+    hackage.flake = false;
+    stackage.flake = false;
   };
 
   outputs =
-    { self, haskell-nix, hackage-nix, stackage-nix, nix-npm-buildpackage, flake-utils, nixpkgs }@inputs:
+    { self, haskell-nix, hackage, stackage, nix-npm-buildpackage, flake-utils, nixpkgs }@inputs:
     flake-utils.lib.eachSystem [ "x86_64-linux" "x86_64-darwin" ] (system:
       let
-        haskellNix = haskell-nix.internal.overlaysOverrideable {
-          sourcesOverride = { hackage = hackage-nix; stackage = stackage-nix; } // haskell-nix.internal.sources;
-        };
-
         nixpkgsArgs = {
           overlays = [
             nix-npm-buildpackage.overlay
-            haskellNix.combined-eval-on-build
+            haskell-nix.overlay
           ] ++ [
             (final: prev:
               let
@@ -60,6 +54,7 @@
               inherit grammars;
             }) # We don't want any overlays (static, cross, etc) applied to grammars
           ];
+          config = { allowUnfree = true; };
           localSystem = system;
         };
 
@@ -104,8 +99,14 @@
                 + "touch $out";
         };
 
+        # n.b.: If the dependency on ligo is changed for any test, remember to
+        # also update the main functions of the respective tests.
         integration-test = squirrel.checks.integration-test.overrideAttrs (oldAttrs: {
           buildInputs = [ ligo-bin ] ++ oldAttrs.buildInputs;
+        });
+
+        lsp-handlers-test = squirrel.checks.lsp-handlers-test.overrideAttrs (oldAttrs: {
+          buildInputs = [ ligo-bin self.packages.x86_64-linux.squirrel-static ] ++ oldAttrs.buildInputs;
         });
 
         lint = pkgs.stdenv.mkDerivation {
@@ -127,7 +128,7 @@
               cp ${gmp}/lib/* $out/lib
               chmod -R 777 $out/lib/
               install_name_tool -change ${gmp}/lib/libgmp.10.dylib @executable_path/../lib/libgmp.dylib $out/bin/ligo-squirrel
-              install_name_tool -change ${libffi}/lib/libffi.7.dylib /usr/lib/libffi.dylib $out/bin/ligo-squirrel
+              install_name_tool -change ${libffi}/lib/libffi.8.dylib /usr/lib/libffi.dylib $out/bin/ligo-squirrel
               install_name_tool -change ${libiconv}/lib/libiconv.dylib /usr/lib/libiconv.dylib $out/bin/ligo-squirrel
               install_name_tool -change ${darwin.Libsystem}/lib/libSystem.B.dylib /usr/lib/libSystem.B.dylib $out/bin/ligo-squirrel
               install_name_tool -change ${darwin.Libsystem}/lib/libSystem.B.dylib /usr/lib/libSystem.B.dylib $out/lib/libgmp.dylib
@@ -138,7 +139,10 @@
           components.exes.ligo-squirrel =
             pack squirrel.components.exes.ligo-squirrel;
         } else
-          pkgs.pkgsCross.musl64.callPackage ./squirrel { };
+          pkgs.pkgsCross.musl64.callPackage ./squirrel {
+            # Use standard build for hpack because it's available in nix binary cache
+            inherit (pkgs) hpack;
+          };
 
         exes = builtins.mapAttrs
           (_: project: project.components.exes.ligo-squirrel) {
@@ -185,6 +189,7 @@
           inherit squirrel-grammar-test;
           inherit (squirrel.checks) lsp-test;
           inherit (squirrel.checks) ligo-contracts-test;
+          inherit lsp-handlers-test;
           inherit integration-test;
           inherit lint;
         };

@@ -2,9 +2,9 @@ module FV = Helpers.Free_variables
 
 open Ast_typed
 open Errors
-open Trace
+open Simple_utils.Trace
 
-let var_equal = Location.equal_content ~equal:Var.equal
+let var_equal = Var.equal
 
 let rec check_recursive_call ~raise : expression_variable -> bool -> expression -> unit = fun n final_path e ->
   match e.expression_content with
@@ -20,7 +20,9 @@ let rec check_recursive_call ~raise : expression_variable -> bool -> expression 
     check_recursive_call ~raise n false args
   | E_lambda {result;_} ->
     check_recursive_call ~raise n final_path result
-  | E_recursive { fun_name; lambda} ->
+  | E_type_abstraction {result;_} ->
+    check_recursive_call ~raise n final_path result
+  | E_recursive { fun_name; fun_type=_; lambda} ->
     check_recursive_call ~raise fun_name true lambda.result
   | E_let_in {rhs;let_result;_} ->
     check_recursive_call ~raise n false rhs;
@@ -46,6 +48,8 @@ let rec check_recursive_call ~raise : expression_variable -> bool -> expression 
     check_recursive_call ~raise n false update
   | E_module_accessor _ ->
     ()
+  | E_type_inst _ ->
+    ()
 
 and check_recursive_call_in_matching ~raise = fun n final_path c ->
   match c with
@@ -61,7 +65,7 @@ and check_recursive_call_in_matching ~raise = fun n final_path c ->
 let check_tail_expression ~raise : expression -> expression = fun e ->
   let return expression_content = { e with expression_content } in
   match e.expression_content with
-  | E_recursive {fun_name; lambda} as e-> (
+  | E_recursive {fun_name; fun_type=_; lambda} as e-> (
     let () = check_recursive_call ~raise fun_name true lambda.result in
     return e
     )
@@ -71,7 +75,7 @@ let check_tail_expression ~raise : expression -> expression = fun e ->
 let remove_rec_expression : expression -> expression = fun e ->
   let return expression_content = { e with expression_content } in
   match e.expression_content with
-  | E_recursive {fun_name; lambda} as e-> (
+  | E_recursive {fun_name; fun_type=_; lambda} as e-> (
     let _, fv = FV.expression lambda.result in
     if List.mem fv fun_name ~equal:var_equal then
       return e

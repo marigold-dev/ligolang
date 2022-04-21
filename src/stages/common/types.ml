@@ -1,36 +1,37 @@
+module Location = Simple_utils.Location
+module List     = Simple_utils.List
+module Var      = Var
 include Enums
 
-module SMap = Map.Make(String)
+module SMap = Simple_utils.Map.Make(String)
 
 type location = Location.t
 type 'a location_wrap = 'a Location.wrap
 
 type attributes = string list
 
-type expression_
-and expression_variable = expression_ Var.t Location.wrap
-let expression_variable_to_yojson var = Location.wrap_to_yojson (Var.to_yojson) var
-let expression_variable_of_yojson var = Location.wrap_of_yojson (Var.of_yojson) var
-let equal_expression_variable t1 t2 = Location.equal_content ~equal:Var.equal t1 t2
+type known_attributes = {
+  inline: bool ;
+  no_mutation: bool;
+  view : bool;
+  public: bool;
+}
 
-type type_
-and type_variable = type_ Var.t
-let type_variable_to_yojson var = Var.to_yojson var
-let type_variable_of_yojson var = Var.of_yojson var
-type module_variable = string
-let module_variable_to_yojson var = `String var
-let module_variable_of_yojson var = `String var
-let compare_module_variable = String.compare
-let equal_module_variable = String.equal
+type expression_variable = Var.t [@@deriving yojson, equal, compare]
+type type_variable       = Var.t [@@deriving yojson, equal, compare]
+type module_variable     = Var.t [@@deriving yojson, equal, compare]
+
+type kind = unit [@@deriving yojson,equal,compare]
 
 type label = Label of string
 let label_to_yojson (Label l) = `List [`String "Label"; `String l]
 let label_of_yojson = function
   | `List [`String "Label"; `String l] -> Ok (Label l)
-  | _ -> Utils.error_yojson_format "Label of string"
+  | _ -> Simple_utils.Utils.error_yojson_format "Label of string"
+let equal_label (Label a) (Label b) = String.equal a b
+let compare_label (Label a) (Label b) = String.compare a b
 
-
-module LMap = Map.Make( struct type t = label let compare (Label a) (Label b) = String.compare a b end)
+module LMap = Simple_utils.Map.Make(struct type t = label let compare = compare_label end)
 type 'a label_map = 'a LMap.t
 
 let const_name = function
@@ -64,8 +65,8 @@ type 'a module_access = {
 
 (* Type level types *)
 type 'ty_exp abstraction = {
-  ty_binder : type_variable Location.wrap ; 
-  kind : unit ;
+  ty_binder : type_variable;
+  kind : kind ;
   type_ : 'ty_exp ;
 }
 
@@ -144,6 +145,8 @@ type 'exp update   = {record: 'exp; path: 'exp access list; update: 'exp}
 type 'exp record_accessor = {record: 'exp; path: label}
 type 'exp record_update   = {record: 'exp; path: label; update: 'exp}
 
+type ('exp) type_abs = {type_binder:type_variable;result:'exp}
+
 type ('exp,'ty_exp) ascription = {anno_expr: 'exp; type_annotation: 'ty_exp}
 
 type 'exp conditional = {
@@ -217,10 +220,10 @@ type ('exp , 'ty_exp) match_exp = {
 type 'ty_exp declaration_type = {
     type_binder : type_variable ;
     type_expr : 'ty_exp ;
+    type_attr : attributes ;
   }
 
 and ('exp,'ty_exp) declaration_constant = {
-    name : string option;
     binder : 'ty_exp binder;
     attr : attributes ;
     expr : 'exp ;
@@ -229,6 +232,7 @@ and ('exp,'ty_exp) declaration_constant = {
 and ('exp,'ty_expr) declaration_module = {
     module_binder : module_variable ;
     module_ : ('exp,'ty_expr) module' ;
+    module_attr : attributes
   }
 
 and module_alias = {

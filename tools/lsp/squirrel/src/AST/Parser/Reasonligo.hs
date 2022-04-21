@@ -1,6 +1,8 @@
 -- | Parser for ReasonLigo contract
 
-module AST.Parser.Reasonligo where
+module AST.Parser.Reasonligo
+  ( recognise
+  ) where
 
 import AST.Skeleton
 
@@ -8,10 +10,6 @@ import Duplo.Tree
 
 import ParseTree
 import Parser
-  (CodeSource (CodeSource), Info, ParserM, ShowRange (N), boilerplate, boilerplate', fallthrough,
-  field, fieldOpt, fields, withComments)
-import Product
-
 
 recognise :: SomeRawTree -> ParserM (SomeLIGO Info)
 recognise (SomeRawTree dialect rawTree)
@@ -54,10 +52,10 @@ recognise (SomeRawTree dialect rawTree)
         "annot_pattern"          -> IsAnnot  <$> field  "subject"     <*> field "type"
         "list_pattern"           -> IsList   <$> fields "pattern"
         "var_pattern"            -> IsVar    <$> field  "var"
-        "nullary_constr_pattern" -> IsConstr <$> field  "constructor" <*> return Nothing
-        "unary_constr_pattern"   -> IsConstr <$> field  "constructor" <*> fieldOpt "arg"
+        "constr_pattern"         -> IsConstr <$> field  "constructor" <*> fieldOpt "arg"
         "spread_pattern"         -> IsSpread <$> field  "expr"
         "record_pattern"         -> IsRecord <$> fields "field"
+        "paren_pattern"          -> IsParen  <$> field  "pattern"
         "wildcard"               -> return IsWildcard
         _                        -> fallthrough
 
@@ -118,6 +116,12 @@ recognise (SomeRawTree dialect rawTree)
         ("mod", _)    -> return $ Op "mod"
         ("/", _)      -> return $ Op "/"
         ("*", _)      -> return $ Op "*"
+        ("land", _)   -> return $ Op "land"
+        ("lor", _)    -> return $ Op "lor"
+        ("lxor", _)   -> return $ Op "lxor"
+        ("lsl", _)    -> return $ Op "lsl"
+        ("lsr", _)    -> return $ Op "lsr"
+        ("++", _)     -> return $ Op "++"
         (">", _)      -> return $ Op ">"
         ("<", _)      -> return $ Op "<"
         (">=", _)     -> return $ Op ">="
@@ -149,10 +153,20 @@ recognise (SomeRawTree dialect rawTree)
       boilerplate $ \case
         -- TODO: We forget "rec" field in let
         "let_decl"  -> BConst     <$> field "binding"   <*> fieldOpt "type"    <*> fieldOpt "value"
-        "type_decl" -> BTypeDecl  <$> field "type_name" <*> field "type_value"
+        "type_decl" -> BTypeDecl  <$> field "type_name" <*> fieldOpt "params"  <*> field "type_value"
         "attr_decl" -> BAttribute <$> field "name"
-        "include"   -> BInclude   <$> field "filename"
+        "p_include" -> BInclude   <$> field "filename"
+        "p_import"  -> BImport    <$> field "filename" <*> field "alias"
+        "fun_arg"   -> BParameter <$> field "argument" <*> fieldOpt "type"
+        "module_decl" -> BModuleDecl <$> field "moduleName" <*> fields "declaration"
+        "module_alias" -> BModuleAlias <$> field "moduleName" <*> field "module"
         _           -> fallthrough
+
+    -- TypeParams
+  , Descent do
+      boilerplate \case
+        "type_params" -> TypeParams <$> fields "param"
+        _             -> fallthrough
 
     -- MichelsonCode
   , Descent do
@@ -183,12 +197,14 @@ recognise (SomeRawTree dialect rawTree)
     -- Type
   , Descent do
       boilerplate $ \case
+        "string_type"      -> TString  <$> field  "value"
         "fun_type"         -> TArrow   <$> field  "domain"  <*> field "codomain"
         "app_type"         -> TApply   <$> field  "functor" <*> fields "argument"
         "record_type"      -> TRecord  <$> fields "field"
         "tuple_type"       -> TProduct <$> fields "element"
         "sum_type"         -> TSum     <$> fields "variant"
         "TypeWildcard"     -> pure TWildcard
+        "var_type"         -> TVariable <$> field "name"
         _                  -> fallthrough
 
     -- Module access:
@@ -197,13 +213,6 @@ recognise (SomeRawTree dialect rawTree)
         "module_TypeName" -> ModuleAccess <$> fields "path" <*> field "type"
         "module_access"   -> ModuleAccess <$> fields "path" <*> field "field"
         _                 -> fallthrough
-
-   -- Michelson pair types
-  , Descent do
-      boilerplate' $ \case
-        ("type_string", i) -> return $ TString i
-        _                  -> fallthrough
-
 
     -- Variant
   , Descent do
@@ -223,6 +232,12 @@ recognise (SomeRawTree dialect rawTree)
         ("TypeName", name) -> return $ TypeName name
         _                  -> fallthrough
 
+    -- TypeVariableName
+  , Descent do
+      boilerplate' \case
+        ("TypeVariableName", name) -> pure $ TypeVariableName name
+        _                          -> fallthrough
+
     -- FieldName
   , Descent do
       boilerplate' $ \case
@@ -237,12 +252,8 @@ recognise (SomeRawTree dialect rawTree)
         ("None", _)            -> return $ Ctor "None"
         ("Bool", b)            -> return $ Ctor b
         ("Unit", _)            -> return $ Ctor "Unit"
-        ("Nil", _)             -> return $ Ctor "Nil"
         _                      -> fallthrough
 
   -- Err
-  , Descent do
-      \(r :> _, ParseTree _ children source) -> do
-        withComments do
-          return (r :> N :> CodeSource source :> Nil, Error source children)
+  , Descent noMatch
   ]

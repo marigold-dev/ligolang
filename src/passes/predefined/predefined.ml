@@ -41,6 +41,8 @@ module Tree_abstraction = struct
   *)
   let pseudo_modules x =
     match x with
+    | "Tezos.voting_power"       -> some_const C_VOTING_POWER
+    | "Tezos.total_voting_power" -> some_const C_TOTAL_VOTING_POWER
     | "Tezos.chain_id"           -> some_const C_CHAIN_ID
     | "Tezos.balance"            -> some_const C_BALANCE
     | "Tezos.now"                -> some_const C_NOW
@@ -61,6 +63,9 @@ module Tree_abstraction = struct
     | "Tezos.level"              -> some_const C_LEVEL
     | "Tezos.pairing_check"      -> some_const C_PAIRING_CHECK
     | "Tezos.never"              -> some_const C_NEVER
+    | "Tezos.open_chest"         -> some_const C_OPEN_CHEST
+    | "Tezos.call_view"          -> some_const C_VIEW
+    | "Tezos.constant"           -> some_const C_GLOBAL_CONSTANT
 
     (* Sapling *)
     | "Tezos.sapling_empty_state" -> some_const C_SAPLING_EMPTY_STATE
@@ -195,11 +200,23 @@ module Tree_abstraction = struct
     | "Test.run" -> some_const C_TEST_RUN
     | "Test.eval" -> some_const C_TEST_EVAL
     | "Test.compile_contract" -> some_const C_TEST_COMPILE_CONTRACT
+    | "Test.decompile" -> some_const C_TEST_DECOMPILE
     | "Test.to_contract" -> some_const C_TEST_TO_CONTRACT
     | "Test.nth_bootstrap_typed_address" -> some_const C_TEST_NTH_BOOTSTRAP_TYPED_ADDRESS
     | "Test.to_entrypoint" -> some_const C_TEST_TO_ENTRYPOINT
     | "Test.to_typed_address" -> some_const C_TEST_TO_TYPED_ADDRESS
+    | "Test.random" -> some_const C_TEST_RANDOM
     | "Test.set_big_map" -> some_const C_TEST_SET_BIG_MAP
+    | "Test.cast_address" -> some_const C_TEST_CAST_ADDRESS
+    | "Test.create_chest" -> some_const C_TEST_CREATE_CHEST
+    | "Test.create_chest_key" -> some_const C_TEST_CREATE_CHEST_KEY
+    | "Test.add_account" -> some_const C_TEST_ADD_ACCOUNT
+    | "Test.new_account" -> some_const C_TEST_NEW_ACCOUNT
+    | "Test.baker_account" -> some_const C_TEST_BAKER_ACCOUNT
+    | "Test.register_delegate" -> some_const C_TEST_REGISTER_DELEGATE
+    | "Test.bake_until_n_cycle_end" -> some_const C_TEST_BAKE_UNTIL_N_CYCLE_END
+    | "Test.get_voting_power" -> some_const C_TEST_GET_VOTING_POWER
+    | "Test.get_total_voting_power" -> some_const C_TEST_GET_TOTAL_VOTING_POWER
 
     (* Operator module *)
 
@@ -244,6 +261,9 @@ module Tree_abstraction = struct
     | C_CONTRACT                -> "Tezos.get_contract"
     | C_CONTRACT_ENTRYPOINT     -> "Tezos.get_entrypoint"
     | C_NEVER                   -> "Tezos.never"
+    | C_OPEN_CHEST              -> "Tezos.open_chest"
+    | C_VIEW                    -> "Tezos.call_view"
+    | C_GLOBAL_CONSTANT         -> "Tezos.constant"
 
     (* Operator module *)
 
@@ -369,7 +389,6 @@ module Tree_abstraction = struct
     | C_TEST_GET_NTH_BS -> "Test.nth_bootstrap_account"
     | C_TEST_LAST_ORIGINATIONS -> "Test.last_originations"
     | C_TEST_COMPILE_META_VALUE -> "Test.compile_value"
-    | C_TEST_MUTATE_COUNT -> "Test.mutate_count"
     | C_TEST_MUTATE_VALUE -> "Test.mutate_value"
     | C_TEST_MUTATION_TEST -> "Test.mutation_test"
     | C_TEST_MUTATION_TEST_ALL -> "Test.mutation_test_all"
@@ -377,11 +396,23 @@ module Tree_abstraction = struct
     | C_TEST_RUN -> "Test.run"
     | C_TEST_EVAL -> "Test.eval"
     | C_TEST_COMPILE_CONTRACT -> "Test.compile_contract"
+    | C_TEST_DECOMPILE -> "Test.decompile"
     | C_TEST_TO_CONTRACT -> "Test.to_contract"
     | C_TEST_NTH_BOOTSTRAP_TYPED_ADDRESS -> "Test.nth_bootstrap_typed_address"
     | C_TEST_TO_ENTRYPOINT -> "Test.to_entrypoint"
     | C_TEST_TO_TYPED_ADDRESS -> "Test.to_typed_address"
+    | C_TEST_RANDOM -> "Test.random"
     | C_TEST_SET_BIG_MAP -> "Test.set_big_map"
+    | C_TEST_CAST_ADDRESS -> "Test.cast_address"
+    | C_TEST_CREATE_CHEST -> "Test.create_chest"
+    | C_TEST_ADD_ACCOUNT -> "Test.add_account"
+    | C_TEST_NEW_ACCOUNT -> "Test.new_account"
+    | C_TEST_BAKER_ACCOUNT -> "Test.baker_account"
+    | C_TEST_REGISTER_DELEGATE -> "Test.register_delegate"
+    | C_TEST_BAKE_UNTIL_N_CYCLE_END -> "Test.bake_until_n_cycle_end"
+    | C_TEST_GET_VOTING_POWER -> "Test.get_voting_power"
+    | C_TEST_GET_TOTAL_VOTING_POWER -> "Test.get_total_voting_power"
+
 
     | _ as c -> failwith @@ Format.asprintf "Constant not handled : %a" Stage_common.PP.constant' c
 
@@ -486,6 +517,8 @@ module Tree_abstraction = struct
       | "assert_with_error"      -> some_const C_ASSERTION_WITH_ERROR
       | "assert_some"            -> some_const C_ASSERT_SOME
       | "assert_some_with_error" -> some_const C_ASSERT_SOME_WITH_ERROR
+      | "assert_none"            -> some_const C_ASSERT_NONE
+      | "assert_none_with_error" -> some_const C_ASSERT_NONE_WITH_ERROR
       | "size"                   -> some_deprecated C_SIZE (* Deprecated *)
 
       | _ as c                   -> pseudo_modules c
@@ -568,20 +601,14 @@ module Tree_abstraction = struct
       | "Bitwise.land"        -> some_deprecated C_AND (* Deprecated *)
       | "Bitwise.lxor"        -> some_deprecated C_XOR (* Deprecated *)
 
-      (* Loop module *)
-
-      | "Loop.fold_while" -> some_deprecated C_FOLD_WHILE    (* Deprecated *)
-      | "Loop.resume"     -> some_deprecated C_FOLD_CONTINUE (* Deprecated *)
-      | "continue"        -> some_deprecated C_FOLD_CONTINUE (* Deprecated *)
-      | "Loop.stop"       -> some_deprecated C_FOLD_STOP     (* Deprecated *)
-      | "stop"            -> some_deprecated C_FOLD_STOP     (* Deprecated *)
-
       (* Others *)
 
       | "assert"                 -> some_const C_ASSERTION
       | "assert_with_error"      -> some_const C_ASSERTION_WITH_ERROR
       | "assert_some"            -> some_const C_ASSERT_SOME
       | "assert_some_with_error" -> some_const C_ASSERT_SOME_WITH_ERROR
+      | "assert_none"            -> some_const C_ASSERT_NONE
+      | "assert_none_with_error" -> some_const C_ASSERT_NONE_WITH_ERROR
       | "true"         -> some_const C_TRUE
       | "false"        -> some_const C_FALSE
 
@@ -667,20 +694,14 @@ module Tree_abstraction = struct
       | "Bitwise.land"        -> some_deprecated C_AND (* Deprecated *)
       | "Bitwise.lxor"        -> some_deprecated C_XOR (* Deprecated *)
 
-      (* Loop module *)
-
-      | "Loop.fold_while" -> some_deprecated C_FOLD_WHILE    (* Deprecated *)
-      | "Loop.resume"     -> some_deprecated C_FOLD_CONTINUE (* Deprecated *)
-      | "continue"        -> some_deprecated C_FOLD_CONTINUE (* Deprecated *)
-      | "Loop.stop"       -> some_deprecated C_FOLD_STOP     (* Deprecated *)
-      | "stop"            -> some_deprecated C_FOLD_STOP     (* Deprecated *)
-
       (* Others *)
 
       | "assert"                 -> some_const C_ASSERTION
       | "assert_with_error"      -> some_const C_ASSERTION_WITH_ERROR
       | "assert_some"            -> some_const C_ASSERT_SOME
       | "assert_some_with_error" -> some_const C_ASSERT_SOME_WITH_ERROR
+      | "assert_none"            -> some_const C_ASSERT_NONE
+      | "assert_none_with_error" -> some_const C_ASSERT_NONE_WITH_ERROR
       | "true"         -> some_const C_TRUE
       | "false"        -> some_const C_FALSE
 
@@ -767,12 +788,8 @@ module Stacking = struct
     | C_MAP_FIND_OPT       , _   -> Some ( simple_binary @@ prim "GET")
     | C_MAP_ADD            , _   -> Some ( simple_ternary @@ seq [dip (i_some) ; prim "UPDATE"])
     | C_MAP_UPDATE         , _   -> Some ( simple_ternary @@ prim "UPDATE")
-    | (C_MAP_GET_AND_UPDATE|C_BIG_MAP_GET_AND_UPDATE) , Edo ->
+    | (C_MAP_GET_AND_UPDATE|C_BIG_MAP_GET_AND_UPDATE) , _ ->
       Some (simple_ternary @@ seq [prim "GET_AND_UPDATE"; prim "PAIR"])
-    | C_FOLD_WHILE         , _   ->
-      Some ( simple_binary @@ seq [i_swap ; (i_push (prim "bool") (prim "True"));prim ~children:[seq [dip i_dup; i_exec; i_unpair]] "LOOP" ;i_swap ; i_drop])
-    | C_FOLD_CONTINUE         , _   -> Some ( simple_unary @@ seq [(i_push (prim "bool") (prim "True")); i_pair])
-    | C_FOLD_STOP             , _   -> Some ( simple_unary @@ seq [(i_push (prim "bool") (prim "False")); i_pair])
     | C_SIZE                  , _   -> Some ( simple_unary @@ prim "SIZE")
     | C_FAILWITH              , _   -> Some ( simple_unary @@ prim "FAILWITH")
     | C_NEVER                 , _   -> Some ( simple_unary @@ prim "NEVER")
@@ -780,6 +797,8 @@ module Stacking = struct
     | C_UNOPT_WITH_ERROR      , _   -> Some ( simple_binary @@ i_if_none (i_failwith) (seq [ i_swap; i_drop]))
     | C_ASSERT_SOME           , _   -> Some ( simple_unary @@ i_if_none (seq [i_push_string "failed assert some" ; i_failwith]) (seq [i_drop; i_push_unit]))
     | C_ASSERT_SOME_WITH_ERROR, _   -> Some ( simple_binary @@ i_if_none (i_failwith) (seq [i_dropn 2; i_push_unit]))
+    | C_ASSERT_NONE           , _   -> Some ( simple_unary @@ i_if_none (seq [i_push_unit]) (seq [i_push_string "failed assert none" ; i_failwith]))
+    | C_ASSERT_NONE_WITH_ERROR, _   -> Some ( simple_binary @@ i_if_none (seq [i_drop; i_push_unit]) (seq[i_drop;i_failwith]))
     | C_ASSERT_INFERRED    , _   -> Some ( simple_binary @@ i_if (seq [i_failwith]) (seq [i_drop ; i_push_unit]))
     | C_ASSERTION          , _   -> Some ( simple_unary @@ i_if (seq [i_push_unit]) (seq [i_push_string "failed assertion" ; i_failwith]))
     | C_ASSERTION_WITH_ERROR, _  -> Some ( simple_binary @@ i_if (seq [i_drop; i_push_unit]) (i_failwith))
@@ -832,12 +851,12 @@ module Stacking = struct
     | C_MAP_REMOVE         , _   -> Some (special (fun with_args -> seq [dip (with_args "NONE"); prim "UPDATE"]))
     | C_LEFT               , _   -> Some (trivial_special "LEFT")
     | C_RIGHT              , _   -> Some (trivial_special "RIGHT")
-    | C_TICKET             , Edo -> Some ( simple_binary @@ prim "TICKET" )
-    | C_READ_TICKET        , Edo -> Some ( simple_unary @@ seq [ prim "READ_TICKET" ; prim "PAIR" ] )
-    | C_SPLIT_TICKET       , Edo -> Some ( simple_binary @@ prim "SPLIT_TICKET" )
-    | C_JOIN_TICKET        , Edo -> Some ( simple_unary @@ prim "JOIN_TICKETS" )
-    | C_SAPLING_EMPTY_STATE, Edo -> Some (trivial_special "SAPLING_EMPTY_STATE")
-    | C_SAPLING_VERIFY_UPDATE , Edo -> Some (simple_binary @@ prim "SAPLING_VERIFY_UPDATE")
+    | C_TICKET             , _ -> Some ( simple_binary @@ prim "TICKET" )
+    | C_READ_TICKET        , _ -> Some ( simple_unary @@ seq [ prim "READ_TICKET" ; prim "PAIR" ] )
+    | C_SPLIT_TICKET       , _ -> Some ( simple_binary @@ prim "SPLIT_TICKET" )
+    | C_JOIN_TICKET        , _ -> Some ( simple_unary @@ prim "JOIN_TICKETS" )
+    | C_SAPLING_EMPTY_STATE, _ -> Some (trivial_special "SAPLING_EMPTY_STATE")
+    | C_SAPLING_VERIFY_UPDATE , _ -> Some (simple_binary @@ prim "SAPLING_VERIFY_UPDATE")
     | C_PAIRING_CHECK , _ -> Some (simple_binary @@ prim "PAIRING_CHECK")
     | C_CONTRACT           , _   ->
       Some (special
@@ -861,7 +880,22 @@ module Stacking = struct
               (fun with_args ->
                  seq [with_args "CREATE_CONTRACT";
                       i_pair]))
-
+    | C_OPEN_CHEST , Hangzhou -> (
+      Some (simple_ternary @@ seq [
+        prim "OPEN_CHEST" ;
+        i_if_left
+          ( prim "RIGHT" ~children:[t_or t_unit t_unit])
+          ( i_if
+            (seq [ i_push_unit ; prim "LEFT" ~children:[t_unit] ; prim "LEFT" ~children:[t_bytes] ])
+            (seq [ i_push_unit ; prim "RIGHT" ~children:[t_unit] ; prim "LEFT" ~children:[t_bytes] ])
+          )
+      ])
+    )
+    | C_VIEW , Hangzhou -> Some (trivial_special "VIEW")
+    | C_GLOBAL_CONSTANT , Hangzhou ->
+      Some (special
+        (fun with_args ->  with_args "PUSH")
+        )
     | _ -> None
 
 end

@@ -6,8 +6,7 @@ exception Should_exit_good
 exception Should_exit_bad
 
 (* ugh, can we avoid this? *)
-let () = Unix.putenv "TERM" "dumb"
-let () = Unix.putenv "LIGO_FORCE_NEW_TYPER" "false"
+let () = Unix.putenv ~key:"TERM" ~data:"dumb"
 
 let bad_test basename =
   "../../test/contracts/negative/" ^ basename
@@ -17,8 +16,8 @@ let test basename =
 
 (* Temporary breaking *)
 let run_ligo args =
-  Var.reset_counter ();
-  let argv = Array.of_list ("ligo" :: args) in
+  Stage_common.Var.reset_counter ();
+  let argv = ("ligo" :: args) in
   let result = Cli.run ~argv () in
   result
 

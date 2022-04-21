@@ -1,12 +1,15 @@
 open Simple_utils.Display
 
 module Raw = Cst.Cameligo
-module Parsing = Parsing.Cameligo
+module Parsing  = Parsing.Cameligo
+module Region   = Simple_utils.Region
+module Snippet  = Simple_utils.Snippet
+module Location = Simple_utils.Location
 
 let stage = "abstracter"
 
 type abs_error = [
-  | `Concrete_cameligo_recursive_fun of Region.t
+  | `Concrete_cameligo_untyped_recursive_fun of Region.t
   | `Concrete_cameligo_unknown_constant of string * Location.t
   | `Concrete_cameligo_unsupported_pattern_type of Raw.pattern list
   | `Concrete_cameligo_unsupported_string_singleton of Raw.type_expr
@@ -15,33 +18,8 @@ type abs_error = [
   | `Concrete_cameligo_recursion_on_non_function of Location.t
   | `Concrete_cameligo_missing_funarg_annotation of Raw.variable
   | `Concrete_cameligo_funarg_tuple_type_mismatch of Region.t * Raw.pattern * Raw.type_expr
-  ]
-
-let untyped_recursive_fun reg : abs_error =
-  `Concrete_cameligo_recursive_fun reg
-let unknown_constant s loc : abs_error =
-  `Concrete_cameligo_unknown_constant (s,loc)
-
-let unsupported_pattern_type pl : abs_error =
-  `Concrete_cameligo_unsupported_pattern_type pl
-
-let unsupported_string_singleton te : abs_error =
-  `Concrete_cameligo_unsupported_string_singleton te
-
-let recursion_on_non_function reg : abs_error =
-  `Concrete_cameligo_recursion_on_non_function reg
-
-let michelson_type_wrong texpr name : abs_error =
-  `Concrete_cameligo_michelson_type_wrong (texpr,name)
-
-let michelson_type_wrong_arity loc name : abs_error =
-  `Concrete_cameligo_michelson_type_wrong_arity (loc,name)
-
-let missing_funarg_annotation v : abs_error =
-  `Concrete_cameligo_missing_funarg_annotation v
-
-let funarg_tuple_type_mismatch r p t : abs_error =
-  `Concrete_cameligo_funarg_tuple_type_mismatch (r, p, t)
+  | `Concrete_cameligo_type_params_not_annotated of Region.t
+  ] [@@deriving poly_constructor { prefix = "concrete_cameligo_" }]
 
 let error_ppformat : display_format:string display_format ->
   Format.formatter -> abs_error -> unit =
@@ -49,7 +27,7 @@ let error_ppformat : display_format:string display_format ->
   match display_format with
   | Human_readable | Dev -> (
     match a with
-    | `Concrete_cameligo_recursive_fun reg ->
+    | `Concrete_cameligo_untyped_recursive_fun reg ->
       Format.fprintf f
       "@[<hv>%a@.Invalid function declaration.@.Recursive functions are required to have a type annotation (for now). @]"
         Snippet.pp_lift reg
@@ -88,11 +66,15 @@ let error_ppformat : display_format:string display_format ->
       let t = Parsing.pretty_print_type_expr texpr |> Buffer.contents in
       Format.fprintf
         f
-        "@[<hv>%a@.The tuple \"%s\" does not match the type \"%s\". @]"
+        "@[<hv>%a@.The tuple \"%s\" does not have the expected type \"%s\". @]"
         Snippet.pp_lift region
         p
         t
     )
+    | `Concrete_cameligo_type_params_not_annotated reg ->
+      Format.fprintf f
+        "@[<hv>%a@.Functions with type parameters need to be annotated. @]"
+        Snippet.pp_lift reg
   )
 
 
@@ -104,7 +86,7 @@ let error_jsonformat : abs_error -> Yojson.Safe.t = fun a ->
       ("content",  content )]
   in
   match a with
-  | `Concrete_cameligo_recursive_fun reg ->
+  | `Concrete_cameligo_untyped_recursive_fun reg ->
     let message = `String "Untyped recursive functions are not supported yet" in
     let loc = Format.asprintf "%a" Location.pp_lift reg in
     let content = `Assoc [
@@ -141,8 +123,7 @@ let error_jsonformat : abs_error -> Yojson.Safe.t = fun a ->
       ("location", `String loc) ] in
     json_error ~stage ~content
   | `Concrete_cameligo_michelson_type_wrong (texpr,name) ->
-    let message = Format.asprintf "Argument %s of %s must be a string singleton"
-        (Cst_cameligo.Printer.type_expr_to_string ~offsets:true ~mode:`Point texpr) name in
+    let message = Format.asprintf "Type argument %s must be a string singleton" name in
     let loc = Format.asprintf "%a" Location.pp_lift (Raw.type_expr_to_region texpr) in
     let content = `Assoc [
       ("message", `String message );
@@ -163,7 +144,15 @@ let error_jsonformat : abs_error -> Yojson.Safe.t = fun a ->
       ("location", `String loc); ] in
     json_error ~stage ~content
   | `Concrete_cameligo_funarg_tuple_type_mismatch (r, _, _) ->
-    let message = Format.asprintf "The tuple does not match the type." in
+    let message = Format.asprintf "The tuple does not have the expected type." in
+    let loc = Format.asprintf "%a" Location.pp_lift r in
+    let content = `Assoc [
+      ("message", `String message );
+      ("location", `String loc);
+    ] in
+    json_error ~stage ~content
+  | `Concrete_cameligo_type_params_not_annotated r ->
+    let message = Format.asprintf "Functions with type parameters need to be annotated." in
     let loc = Format.asprintf "%a" Location.pp_lift r in
     let content = `Assoc [
       ("message", `String message );

@@ -1,15 +1,23 @@
-type z = Z.t
-type ligo_string = Simple_utils.Ligo_string.t
+type z = Z.t [@@deriving ord]
 
-let [@warning "-32"] z_to_yojson x = `String (Z.to_string x)
-let [@warning "-32"] z_of_yojson x =
-  try match x with
-    | `String s -> Ok (Z.of_string s)
-    | _ -> Utils.error_yojson_format "JSON string"
+type ligo_string = Simple_utils.Ligo_string.t [@@deriving yojson, ord]
+
+let[@warning "-32"] z_to_yojson x = `String (Z.to_string x)
+
+let[@warning "-32"] z_of_yojson x =
+  try
+    match x with
+    | `String s ->
+        Ok (Z.of_string s)
+    | _ ->
+        Simple_utils.Utils.error_yojson_format "JSON string"
   with
   | Invalid_argument _ ->
-    Error "Invalid formatting.
-            The Zarith library does not know how to handle this formatting."
+      Error
+        "Invalid formatting.\n\
+        \            The Zarith library does not know how to handle this \
+         formatting."
+
 
 let bytes_to_yojson b = `String (Bytes.to_string b)
 
@@ -31,6 +39,51 @@ type literal =
   | Literal_key_hash of string
   | Literal_chain_id of string
   | Literal_operation of bytes
+  | Literal_bls12_381_g1 of bytes
+  | Literal_bls12_381_g2 of bytes
+  | Literal_bls12_381_fr of bytes
+  | Literal_chest of bytes
+  | Literal_chest_key of bytes
+[@@deriving yojson, ord]
+
+let literal_to_enum = function
+  | Literal_unit ->
+      1
+  | Literal_int _ ->
+      2
+  | Literal_nat _ ->
+      3
+  | Literal_timestamp _ ->
+      4
+  | Literal_mutez _ ->
+      5
+  | Literal_string _ ->
+      6
+  | Literal_bytes _ ->
+      7
+  | Literal_address _ ->
+      8
+  | Literal_signature _ ->
+      9
+  | Literal_key _ ->
+      10
+  | Literal_key_hash _ ->
+      11
+  | Literal_chain_id _ ->
+      12
+  | Literal_operation _ ->
+      13
+  | Literal_bls12_381_g1 _ ->
+      14
+  | Literal_bls12_381_g2 _ ->
+      15
+  | Literal_bls12_381_fr _ ->
+      16
+  | Literal_chest _ ->
+      17
+  | Literal_chest_key _ ->
+      18
+
 
 type constant' =
   | C_INT
@@ -47,14 +100,13 @@ type constant' =
   | C_ASSERTION_WITH_ERROR
   | C_ASSERT_SOME
   | C_ASSERT_SOME_WITH_ERROR
+  | C_ASSERT_NONE
+  | C_ASSERT_NONE_WITH_ERROR
   | C_ASSERT_INFERRED
   | C_FAILWITH
   | C_UPDATE
   (* Loops *)
   | C_ITER
-  | C_FOLD_WHILE
-  | C_FOLD_CONTINUE
-  | C_FOLD_STOP
   | C_LOOP_LEFT
   | C_LOOP_CONTINUE
   | C_LOOP_STOP
@@ -144,7 +196,6 @@ type constant' =
   | C_SHA256
   | C_SHA512
   | C_BLAKE2b
-  | C_HASH
   | C_HASH_KEY
   | C_CHECK_SIGNATURE
   | C_CHAIN_ID
@@ -165,6 +216,8 @@ type constant' =
   | C_IMPLICIT_ACCOUNT
   | C_SET_DELEGATE
   | C_CREATE_CONTRACT
+  | C_OPEN_CHEST
+  | C_VIEW
   (* Tests - ligo interpreter only *)
   | C_TEST_ORIGINATE [@only_interpreter]
   | C_TEST_GET_STORAGE [@only_interpreter]
@@ -185,7 +238,6 @@ type constant' =
   | C_TEST_NTH_BOOTSTRAP_CONTRACT [@only_interpreter]
   | C_TEST_LAST_ORIGINATIONS [@only_interpreter]
   | C_TEST_COMPILE_META_VALUE [@only_interpreter]
-  | C_TEST_MUTATE_COUNT [@only_interpreter]
   | C_TEST_MUTATE_VALUE [@only_interpreter]
   | C_TEST_MUTATION_TEST [@only_interpreter]
   | C_TEST_MUTATION_TEST_ALL [@only_interpreter]
@@ -193,12 +245,24 @@ type constant' =
   | C_TEST_RUN [@only_interpreter]
   | C_TEST_EVAL [@only_interpreter]
   | C_TEST_COMPILE_CONTRACT [@only_interpreter]
+  | C_TEST_DECOMPILE [@only_interpreter]
   | C_TEST_TO_CONTRACT [@only_interpreter]
   | C_TEST_TO_ENTRYPOINT [@only_interpreter]
   | C_TEST_ORIGINATE_FROM_FILE [@only_interpreter]
   | C_TEST_TO_TYPED_ADDRESS [@only_interpreter]
   | C_TEST_NTH_BOOTSTRAP_TYPED_ADDRESS [@only_interpreter]
-  | C_TEST_SET_BIG_MAP
+  | C_TEST_SET_BIG_MAP [@only_interpreter]
+  | C_TEST_CAST_ADDRESS [@only_interpreter]
+  | C_TEST_CREATE_CHEST [@only_interpreter]
+  | C_TEST_CREATE_CHEST_KEY [@only_interpreter]
+  | C_TEST_RANDOM [@only_interpreter]
+  | C_TEST_ADD_ACCOUNT [@only_interpreter]
+  | C_TEST_NEW_ACCOUNT [@only_interpreter]
+  | C_TEST_BAKER_ACCOUNT [@only_interpreter]
+  | C_TEST_REGISTER_DELEGATE [@only_interpreter]
+  | C_TEST_BAKE_UNTIL_N_CYCLE_END [@only_interpreter]
+  | C_TEST_GET_VOTING_POWER [@only_interpreter]
+  | C_TEST_GET_TOTAL_VOTING_POWER [@only_interpreter]
   (* New with EDO*)
   | C_SHA3
   | C_KECCAK
@@ -212,14 +276,15 @@ type constant' =
   | C_PAIRING_CHECK
   | C_SAPLING_VERIFY_UPDATE
   | C_SAPLING_EMPTY_STATE
+  | C_GLOBAL_CONSTANT
   (* JsLIGO *)
-  | C_POLYMORPHIC_ADD
-[@@deriving only_interpreter_tags]
+  | C_POLYMORPHIC_ADD [@print "C_POLYMORPHIC_ADD"]
+[@@deriving enum, yojson, print_constant, only_interpreter_tags]
 
-type deprecated = {
-  name : string ;
-  const : constant' ;
-}
+type deprecated =
+  { name : string
+  ; const : constant'
+  }
 
 type rich_constant =
   | Deprecated of deprecated

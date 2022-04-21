@@ -1,6 +1,17 @@
-module AST.Capabilities.Find where
+module AST.Capabilities.Find
+  ( CanSearch
+  , TypeDefinitionRes (..)
+  , findScopedDecl
+  , findNodeAtPoint
+  , rangeOf
+  , definitionOf
+  , typeDefinitionOf
+  , typeDefinitionAt
+  , dereferenceTspec
+  , referencesOf
+  ) where
 
-import Control.Lens (_Just, (^.), (^?))
+import Control.Lens (_Just, _2, (^.), (^?))
 import Control.Monad
 import Data.Maybe (fromMaybe, listToMaybe)
 import Data.Text (Text)
@@ -10,20 +21,18 @@ import Duplo.Tree
 
 import AST.Scope (Level (..), lookupEnv, ofLevel)
 import AST.Scope.ScopedDecl
-  (DeclarationSpecifics (..), Scope, ScopedDecl (..), Type (..), TypeDeclSpecifics (..),
-  ValueDeclSpecifics (..), _TypeSpec, _ValueSpec, extractRefName, sdSpec, vdsTspec)
+  (Scope, ScopedDecl (..), Type (..), TypeDeclSpecifics (..), _TypeSpec,
+   _ValueSpec, extractRefName, sdSpec, vdsTspec)
 import AST.Skeleton (LIGO, SomeLIGO, nestedLIGO)
 
 import Product
 import Range
 
 type CanSearch xs =
-  ( Contains [ScopedDecl] xs
+  ( Contains Scope xs
   , Contains Range xs
   , Contains (Maybe Level) xs
   , Contains [Text] xs
-  , Modifies (Product xs)
-  , Eq (Product xs)
   )
 
 findScopedDecl
@@ -40,12 +49,12 @@ findScopedDecl pos tree = do
   lookupEnv (ppToText $ void node) filtered
 
 findInfoAtPoint
-  :: (Contains Range xs, Eq (Product xs))
+  :: Contains Range xs
   => Range -> SomeLIGO xs -> Maybe (Product xs)
 findInfoAtPoint pos tree = extract <$> findNodeAtPoint pos tree
 
 findNodeAtPoint
-  :: (Contains Range xs, Eq (Product xs))
+  :: Contains Range xs
   => Range -> SomeLIGO xs -> Maybe (LIGO xs)
 findNodeAtPoint pos tree =
   listToMaybe (spineTo (\i -> pos `leq` getRange i) (tree ^. nestedLIGO))
@@ -77,7 +86,7 @@ definitionOf pos tree =
 data TypeDefinitionRes
   = TypeNotFound
   | TypeDeclared ScopedDecl
-  | TypeInlined TypeDeclSpecifics
+  | TypeInlined (TypeDeclSpecifics Type)
 
 typeDefinitionOf :: CanSearch xs => Range -> SomeLIGO xs -> TypeDefinitionRes
 typeDefinitionOf pos tree = fromMaybe TypeNotFound $ do
@@ -103,21 +112,10 @@ typeDefinitionAt pos tree = case typeDefinitionOf pos tree of
 -- aliased type. Otherwise, leave it be.
 --
 -- If the aliased name is undeclared, leave the type be.
-dereferenceTspec :: Scope -> TypeDeclSpecifics -> TypeDeclSpecifics
+dereferenceTspec :: Scope -> TypeDeclSpecifics Type -> TypeDeclSpecifics Type
 dereferenceTspec scope tspec = fromMaybe tspec $ do
   refDecl <- findTypeRefDeclaration scope (_tdsInit tspec)
-  refDecl ^? sdSpec . _TypeSpec
-
-implementationOf
-  :: CanSearch xs
-  => Range
-  -> SomeLIGO xs
-  -> Maybe Range
-implementationOf pos tree = do
-  decl <- findScopedDecl pos tree
-  case _sdSpec decl of
-    ValueSpec vspec -> _vdsInitRange vspec
-    TypeSpec tspec -> pure (_tdsInitRange tspec)
+  refDecl ^? sdSpec . _TypeSpec . _2
 
 referencesOf
   :: CanSearch xs

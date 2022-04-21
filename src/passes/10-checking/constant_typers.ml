@@ -1,5 +1,7 @@
 module H=Helpers
-open Trace
+module Ligo_proto = Environment.Protocols
+module Option = Simple_utils.Option
+open Simple_utils.Trace
 open Errors
 open Ast_typed
 open H
@@ -61,7 +63,7 @@ let sub ~raise loc = typer_2 ~raise loc "SUB" @@ fun a b ->
   then t_timestamp () else
   if (eq_2 (a , b) (t_mutez ()))
   then t_mutez () else
-    raise.raise (bad_subtraction loc)
+    raise.raise (bad_substraction loc)
 
 let some ~raise loc = typer_1 ~raise loc "SOME" @@ fun a -> t_option a
 
@@ -120,7 +122,7 @@ let map_find_opt ~raise loc : typer = typer_2 ~raise loc "MAP_FIND_OPT" @@ fun k
 
 let map_iter ~raise loc : typer = typer_2 ~raise loc "MAP_ITER" @@ fun f m ->
   let (k, v) = trace_option ~raise (expected_map loc m) @@ get_t_map m in
-  let (arg , res) = trace_option ~raise (expected_function loc f) @@ get_t_function f in
+  let { type1 = arg ; type2 = res } = trace_option ~raise (expected_function loc f) @@ get_t_arrow f in
   let kv = t_pair k v in
   let unit = t_unit () in
   let () = assert_eq_1 ~raise ~loc arg kv in
@@ -129,7 +131,7 @@ let map_iter ~raise loc : typer = typer_2 ~raise loc "MAP_ITER" @@ fun f m ->
 
 let map_map ~raise loc : typer = typer_2 ~raise loc "MAP_MAP" @@ fun f m ->
   let (k, v) = trace_option ~raise (expected_map loc m) @@ get_t_map m in
-  let (arg , res) = trace_option ~raise (expected_function loc f) @@ get_t_function f in
+  let { type1 = arg ; type2 = res } = trace_option ~raise (expected_function loc f) @@ get_t_arrow f in
   let kv = t_pair k v in
   let () = assert_eq_1 ~raise ~loc arg kv in
   t_map k res
@@ -293,7 +295,7 @@ let transaction ~raise loc = typer_3 ~raise loc "CALL" @@ fun param amount contr
   t_operation ()
 
 let create_contract ~raise loc = typer_4 ~raise loc "CREATE_CONTRACT" @@ fun f kh_opt amount init_storage  ->
-  let (args , ret) = trace_option ~raise (expected_function loc f) @@ get_t_function f in
+  let { type1 = args ; type2 = ret } = trace_option ~raise (expected_function loc f) @@ get_t_arrow f in
   let (_,s) = trace_option ~raise (expected_pair loc args) @@ get_t_pair args in
   let (oplist,s') = trace_option ~raise (expected_pair loc ret) @@ get_t_pair ret in
   let () = trace_option ~raise (expected_mutez loc amount) @@ assert_t_mutez amount in
@@ -360,14 +362,33 @@ let is_nat ~raise loc = typer_1 ~raise loc "ISNAT" @@ fun t ->
   t_option (t_nat ())
 
 let neg ~raise loc = typer_1 ~raise loc "NEG" @@ fun t ->
-  let () = Assert.assert_true ~raise (wrong_neg loc t) @@ (eq_1 t (t_nat ()) || eq_1 t (t_int ())) in
-  t_int ()
+  if eq_1 t (t_int ())
+  then (t_int ()) else
+  if eq_1 t (t_nat ())
+  then (t_int ()) else
+  if eq_1 t (t_bls12_381_g1 ())
+  then (t_bls12_381_g1 ()) else
+  if eq_1 t (t_bls12_381_g2 ())
+  then (t_bls12_381_g2 ()) else
+  if eq_1 t (t_bls12_381_fr ())
+  then (t_bls12_381_fr ()) else
+  if eq_1 t (t_bls12_381_fr ())
+  then (t_bls12_381_fr ()) else
+    raise.raise @@ typeclass_error loc
+              [
+                [t_int()] ;
+                [t_nat()] ;
+                [t_bls12_381_g1()] ;
+                [t_bls12_381_g2()] ;
+                [t_bls12_381_fr()] ;
+              ]
+              [t]
 
-let unopt ~raise loc = typer_1 ~raise loc "ASSERT" @@ fun a ->
+let unopt ~raise loc = typer_1 ~raise loc "UNOPT" @@ fun a ->
   let a  = trace_option ~raise (expected_option loc a) @@ get_t_option a in
   a
 
-let unopt_with_error ~raise loc = typer_2 ~raise loc "ASSERT" @@ fun a b ->
+let unopt_with_error ~raise loc = typer_2 ~raise loc "UNOPT_WITH_ERROR" @@ fun a b ->
   let a  = trace_option ~raise (expected_option loc a) @@ get_t_option a in
   let () = trace_option ~raise (expected_option loc a) @@ assert_t_string b in
   a
@@ -386,6 +407,15 @@ let assert_some ~raise loc = typer_1 ~raise loc "ASSERT_SOME" @@ fun a ->
   t_unit ()
 
 let assert_some_with_error ~raise loc = typer_2 ~raise loc "ASSERT_SOME_WITH_ERROR" @@ fun a b ->
+  let () = trace_option ~raise (expected_option loc a) @@ assert_t_option a in
+  let () = trace_option ~raise (expected_string loc b) @@ assert_t_string b in
+  t_unit ()
+
+let assert_none ~raise loc = typer_1 ~raise loc "ASSERT_NONE" @@ fun a ->
+  let () = trace_option ~raise (expected_option loc a) @@ assert_t_option a in
+  t_unit ()
+
+let assert_none_with_error ~raise loc = typer_2 ~raise loc "ASSERT_NONE_WITH_ERROR" @@ fun a b ->
   let () = trace_option ~raise (expected_option loc a) @@ assert_t_option a in
   let () = trace_option ~raise (expected_string loc b) @@ assert_t_string b in
   t_unit ()
@@ -515,7 +545,7 @@ let add ~raise loc = typer_2 ~raise loc "ADD" @@ fun a b ->
   if (eq_1 a (t_timestamp ()) && eq_1 b (t_int ())) || (eq_1 b (t_timestamp ()) && eq_1 a (t_int ()))
   then t_timestamp () else
     raise.raise @@ typeclass_error loc
-              [ 
+              [
                 [t_bls12_381_g1();t_bls12_381_g1()] ;
                 [t_bls12_381_g2();t_bls12_381_g2()] ;
                 [t_bls12_381_fr();t_bls12_381_fr()] ;
@@ -549,7 +579,7 @@ let polymorphic_add ~raise loc = typer_2 ~raise loc "POLYMORPHIC_ADD" @@ fun a b
   if (eq_1 a (t_timestamp ()) && eq_1 b (t_int ())) || (eq_1 b (t_timestamp ()) && eq_1 a (t_int ()))
   then t_timestamp () else
     raise.raise @@ typeclass_error loc
-              [ 
+              [
                 [t_string();t_string()] ;
                 [t_bls12_381_g1();t_bls12_381_g1()] ;
                 [t_bls12_381_g2();t_bls12_381_g2()] ;
@@ -580,7 +610,7 @@ let set_remove ~raise loc = typer_2 ~raise loc "SET_REMOVE" @@ fun elt set ->
   set
 
 let set_iter ~raise loc = typer_2 ~raise loc "SET_ITER" @@ fun body set ->
-  let (arg , res) = trace_option ~raise (expected_function loc body) @@ get_t_function body in
+  let { type1 = arg ; type2 = res } = trace_option ~raise (expected_function loc body) @@ get_t_arrow body in
   let () = assert_eq_1 ~raise ~loc res (t_unit ()) in
   let key = trace_option ~raise (expected_set loc set) @@ get_t_set set in
   let () = assert_eq_1 ~raise ~loc key arg in
@@ -594,20 +624,20 @@ let list_empty ~raise loc = typer_0 ~raise loc "LIST_EMPTY" @@ fun tv_opt ->
     t
 
 let list_iter ~raise loc = typer_2 ~raise loc "LIST_ITER" @@ fun body lst ->
-  let (arg , res) = trace_option ~raise (expected_function loc body) @@ get_t_function body in
+  let { type1 = arg ; type2 = res } = trace_option ~raise (expected_function loc body) @@ get_t_arrow body in
   let () = assert_eq_1 ~raise ~loc res (t_unit ()) in
   let key = trace_option ~raise (expected_list loc lst) @@ get_t_list lst in
   let () = assert_eq_1 ~raise ~loc key arg in
   (t_unit ())
 
 let list_map ~raise loc = typer_2 ~raise loc "LIST_MAP" @@ fun body lst ->
-  let (arg , res) = trace_option ~raise (expected_function loc body) @@ get_t_function body in
+  let { type1 = arg ; type2 = res } = trace_option ~raise (expected_function loc body) @@ get_t_arrow body in
   let key = trace_option ~raise (expected_list loc lst) @@ get_t_list lst in
   let () = assert_eq_1 ~raise ~loc key arg in
   (t_list res )
 
 let fold ~raise loc = typer_3 ~raise loc "FOLD" @@ fun body container init ->
-  let (arg , res) = trace_option ~raise (expected_function loc body) @@ get_t_function body in
+  let { type1 = arg ; type2 = res } = trace_option ~raise (expected_function loc body) @@ get_t_arrow body in
   let (prec , cur) = trace_option ~raise (expected_pair loc arg) @@ get_t_pair arg in
   let key = trace_option ~raise (expected_list loc container) @@ Option.map_pair_or (get_t_list,get_t_set) container in
   let () = assert_eq_1 ~raise ~loc key cur in
@@ -615,7 +645,7 @@ let fold ~raise loc = typer_3 ~raise loc "FOLD" @@ fun body container init ->
   let () = assert_eq_1 ~raise ~loc res init in
   res
 let list_fold ~raise loc = typer_3 ~raise loc "LIST_FOLD" @@ fun body lst init ->
-  let (arg , res) = trace_option ~raise (expected_function loc body) @@ get_t_function body in
+  let { type1 = arg ; type2 = res } = trace_option ~raise (expected_function loc body) @@ get_t_arrow body in
   let (prec , cur) = trace_option ~raise (expected_pair loc arg) @@ get_t_pair arg in
   let key = trace_option ~raise (expected_list loc lst) @@ get_t_list lst in
   let () = assert_eq_1 ~raise ~loc key cur in
@@ -624,7 +654,7 @@ let list_fold ~raise loc = typer_3 ~raise loc "LIST_FOLD" @@ fun body lst init -
   res
 
 let list_fold_left ~raise loc = typer_3 ~raise loc "LIST_FOLD_LEFT" @@ fun body init lst ->
-  let (arg , res) = trace_option ~raise (expected_function loc body) @@ get_t_function body in
+  let { type1 = arg ; type2 = res } = trace_option ~raise (expected_function loc body) @@ get_t_arrow body in
   let (prec , cur) = trace_option ~raise (expected_pair loc arg) @@ get_t_pair arg in
   let key = trace_option ~raise (expected_list loc lst) @@ get_t_list lst in
   let () = assert_eq_1 ~raise ~loc key cur in
@@ -633,7 +663,7 @@ let list_fold_left ~raise loc = typer_3 ~raise loc "LIST_FOLD_LEFT" @@ fun body 
   res
 
 let list_fold_right ~raise loc = typer_3 ~raise loc "LIST_FOLD_RIGHT" @@ fun body lst init ->
-  let (arg , res) = trace_option ~raise (expected_function loc body) @@ get_t_function body in
+  let { type1 = arg ; type2 = res } = trace_option ~raise (expected_function loc body) @@ get_t_arrow body in
   let (cur , prec) = trace_option ~raise (expected_pair loc arg) @@ get_t_pair arg in
   let key = trace_option ~raise (expected_list loc lst) @@ get_t_list lst in
   let () = assert_eq_1 ~raise ~loc key cur in
@@ -650,7 +680,7 @@ let list_tail_opt ~raise loc = typer_1 ~raise loc "LIST_TAIL_OPT" @@ fun lst ->
   t_option ~loc @@ t_list ~loc key
 
 let set_fold ~raise loc = typer_3 ~raise loc "SET_FOLD" @@ fun body lst init ->
-  let (arg , res) = trace_option ~raise (expected_function loc body) @@ get_t_function body in
+  let { type1 = arg ; type2 = res } = trace_option ~raise (expected_function loc body) @@ get_t_arrow body in
   let (prec , cur) = trace_option ~raise (expected_pair loc arg) @@ get_t_pair arg in
   let key = trace_option ~raise (expected_set loc lst) @@ get_t_set lst in
   let () = assert_eq_1 ~raise ~loc key cur in
@@ -659,7 +689,7 @@ let set_fold ~raise loc = typer_3 ~raise loc "SET_FOLD" @@ fun body lst init ->
   res
 
 let set_fold_desc ~raise loc = typer_3 ~raise loc "SET_FOLD_DESC" @@ fun body lst init ->
-  let (arg , res) = trace_option ~raise (expected_function loc body) @@ get_t_function body in
+  let { type1 = arg ; type2 = res } = trace_option ~raise (expected_function loc body) @@ get_t_arrow body in
   let (cur , prec) = trace_option ~raise (expected_pair loc arg) @@ get_t_pair arg in
   let key = trace_option ~raise (expected_set loc lst) @@ get_t_set lst in
   let () = assert_eq_1 ~raise ~loc key cur in
@@ -668,7 +698,7 @@ let set_fold_desc ~raise loc = typer_3 ~raise loc "SET_FOLD_DESC" @@ fun body ls
   res
 
 let map_fold ~raise loc = typer_3 ~raise loc "MAP_FOLD" @@ fun body map init ->
-  let (arg , res) = trace_option ~raise (expected_function loc body) @@ get_t_function body in
+  let { type1 = arg ; type2 = res } = trace_option ~raise (expected_function loc body) @@ get_t_arrow body in
   let (prec , cur) = trace_option ~raise (expected_pair loc arg) @@ get_t_pair arg in
   let (key , value) = trace_option ~raise (expected_map loc map) @@ get_t_map map in
   let kv = t_pair key value in
@@ -677,24 +707,18 @@ let map_fold ~raise loc = typer_3 ~raise loc "MAP_FOLD" @@ fun body map init ->
   let () = assert_eq_1 ~raise ~loc res init in
   res
 
-(** FOLD_WHILE is a fold operation that takes an initial value of a certain type
-    and then iterates on it until a condition is reached. The auxillary function
-    that does the fold returns either boolean true or boolean false to indicate
-    whether the fold should continue or not. Necessarily then the initial value
-    must match the input parameter of the auxillary function, and the auxillary
-    should return type (bool * input) *)
-let fold_while ~raise loc = typer_2 ~raise loc "FOLD_WHILE" @@ fun body init ->
-  let (arg, result) = trace_option ~raise (expected_function loc body) @@ get_t_function body in
+let loop_left ~raise loc = typer_2 ~raise loc "LOOP_LEFT" @@ fun body init ->
+  let { type1 = arg ; type2 = result } = trace_option ~raise (expected_function loc body) @@ get_t_arrow body in
+  let (left,right) = trace_option ~raise (expected_variant loc result) @@ get_t_or result in
   let () = assert_eq_1 ~raise ~loc arg init in
-  let () = assert_eq_1 ~raise ~loc (t_pair (t_bool ()) init) result
-  in init
+  let () = assert_eq_1 ~raise ~loc init left
+  in right
 
-(* Continue and Stop are just syntactic sugar for building a pair (bool * a') *)
-let continue ~raise loc = typer_1 ~raise loc "CONTINUE" @@ fun arg ->
-  t_pair (t_bool ()) arg
+let loop_continue ~raise loc = typer_1 ~raise loc "CONTINUE" @@ fun arg ->
+  t_sum_ez [("left",arg);("right",arg)]
 
-let stop ~raise loc = typer_1 ~raise loc "STOP" @@ fun arg ->
-  (t_pair (t_bool ()) arg)
+let loop_stop ~raise loc = typer_1 ~raise loc "STOP" @@ fun arg ->
+  t_sum_ez [("left",arg);("right",arg)]
 
 let not_ ~raise loc = typer_1 ~raise loc "NOT" @@ fun elt ->
   if eq_1 elt (t_bool ())
@@ -935,8 +959,14 @@ let sapling_verify_update ~raise loc = typer_2 ~raise loc "SAPLING_VERIFY_UPDATE
 let sapling_empty_state ~raise loc = typer_0 ~raise loc "SAPLING_EMPTY_STATE" @@ fun tv_opt ->
   trace_option ~raise (not_annotated loc) @@ tv_opt
 
+let open_chest ~raise loc = typer_3 ~raise loc "OPEN_CHEST" @@ fun key chest n ->
+  let () = assert_eq_1 ~raise ~loc key (t_chest_key ()) in
+  let () = assert_eq_1 ~raise ~loc chest (t_chest ()) in
+  let () = trace_option ~raise (expected_nat loc n) @@ get_t_nat n in
+  t_chest_opening_result ()
+
 let test_originate ~raise loc = typer_3 ~raise loc "TEST_ORIGINATE" @@ fun main storage balance ->
-  let in_ty,_ = trace_option ~raise (expected_function loc main) @@ get_t_function main in
+  let { type1 = in_ty ; type2 = _ } = trace_option ~raise (expected_function loc main) @@ get_t_arrow main in
   let param_ty,storage_ty = trace_option ~raise (expected_pair loc in_ty) @@ get_t_pair in_ty in
   let () = assert_eq_1 ~raise ~loc balance (t_mutez ()) in
   let () = assert_eq_1 ~raise ~loc storage storage_ty in
@@ -949,7 +979,7 @@ let test_state_reset ~raise loc = typer_2 ~raise loc "TEST_STATE_RESET" @@ fun n
   (t_unit ())
 
 let test_bootstrap_contract ~raise loc = typer_3 ~raise loc "TEST_BOOTSTRAP_CONTRACT" @@ fun balance main storage ->
-  let in_ty,_ = trace_option ~raise (expected_function loc main) @@ get_t_function main in
+  let { type1 = in_ty ; type2 = _ } = trace_option ~raise (expected_function loc main) @@ get_t_arrow main in
   let _,storage_ty = trace_option ~raise (expected_pair loc in_ty) @@ get_t_pair in_ty in
   let () = assert_eq_1 ~raise ~loc balance (t_mutez ()) in
   let () = assert_eq_1 ~raise ~loc storage storage_ty in
@@ -975,7 +1005,7 @@ let test_external_call_to_contract_exn ~raise loc = typer_3 ~raise loc "TEST_EXT
   let contract_ty = trace_option ~raise (expected_contract loc addr) @@ get_t_contract addr in
   let () = assert_eq_1 ~raise ~loc amt (t_mutez ()) in
   let () = assert_eq_1 ~raise ~loc p contract_ty in
-  (t_unit ())
+  (t_nat ())
 
 let test_external_call_to_contract ~raise loc = typer_3 ~raise loc "TEST_EXTERNAL_CALL_TO_CONTRACT" @@ fun addr p amt  ->
   let contract_ty = trace_option ~raise (expected_contract loc addr) @@ get_t_contract addr in
@@ -987,7 +1017,7 @@ let test_external_call_to_address_exn ~raise loc = typer_3 ~raise loc "TEST_EXTE
   let () = assert_eq_1 ~raise ~loc addr (t_address ()) in
   let () = assert_eq_1 ~raise ~loc amt (t_mutez ()) in
   let () = assert_eq_1 ~raise ~loc p (t_michelson_code ()) in
-  (t_unit ())
+  (t_nat ())
 
 let test_external_call_to_address ~raise loc = typer_3 ~raise loc "TEST_EXTERNAL_CALL_TO_ADDRESS" @@ fun addr p amt  ->
   let () = assert_eq_1 ~raise ~loc addr (t_address ()) in
@@ -996,7 +1026,7 @@ let test_external_call_to_address ~raise loc = typer_3 ~raise loc "TEST_EXTERNAL
   (t_test_exec_result ())
 
 let test_get_storage ~raise loc = typer_1 ~raise loc "TEST_GET_STORAGE" @@ fun c ->
-  let (_, storage_ty) = trace_option ~raise (expected_contract loc c) @@ get_t_typed_address c in
+  let (_, storage_ty) = trace_option ~raise (expected_typed_address loc c) @@ get_t_typed_address c in
   storage_ty
 
 let test_get_storage_of_address ~raise loc = typer_1 ~raise loc "TEST_GET_STORAGE_OF_ADDRESS" @@ fun addr ->
@@ -1026,12 +1056,12 @@ let test_mutate_value ~raise loc = typer_2 ~raise loc "TEST_MUTATE_VALUE" @@ fun
   (t_option (t_pair expr (t_mutation ())))
 
 let test_mutation_test ~raise loc = typer_2 ~raise loc "TEST_MUTATION_TEST" @@ fun expr tester ->
-  let (arg , res) = trace_option ~raise (expected_function loc tester) @@ get_t_function tester in
+  let { type1 = arg ; type2 = res } = trace_option ~raise (expected_function loc tester) @@ get_t_arrow tester in
   let () = assert_eq_1 ~raise ~loc arg expr in
   (t_option (t_pair res (t_mutation ())))
 
 let test_mutation_test_all ~raise loc = typer_2 ~raise loc "TEST_MUTATION_TEST_ALL" @@ fun expr tester ->
-  let (arg , res) = trace_option ~raise (expected_function loc tester) @@ get_t_function tester in
+  let { type1 = arg ; type2 = res } = trace_option ~raise (expected_function loc tester) @@ get_t_arrow tester in
   let () = assert_eq_1 ~raise ~loc arg expr in
   (t_list (t_pair res (t_mutation ())))
 
@@ -1040,11 +1070,19 @@ let test_save_mutation ~raise loc = typer_2 ~raise loc "TEST_SAVE_MUTATION" @@ f
   let () = assert_eq_1 ~raise ~loc dir (t_string ()) in
   (t_option (t_string ()))
 
-let test_run ~raise loc = typer_2 ~raise loc "TEST_RUN" @@ fun _ _ ->
+let test_run ~raise loc = typer_2 ~raise loc "TEST_RUN" @@ fun lambda expr ->
+  let { type1 = arg ; type2 = _ } = trace_option ~raise (expected_function loc lambda) @@ get_t_arrow lambda in
+  let () = assert_eq_1 ~raise ~loc arg expr in
   (t_michelson_code ())
 
 let test_eval ~raise loc = typer_1 ~raise loc "TEST_EVAL" @@ fun _ ->
   (t_michelson_code ())
+
+let test_decompile ~raise loc = typer_1_opt ~raise loc "TEST_DECOMPILE" @@ fun mich tv_opt ->
+  let () = trace_option ~raise (expected_michelson_code loc mich) @@ get_t_michelson_code mich in
+  match tv_opt with
+  | None -> raise.raise (not_annotated loc)
+  | Some t -> t
 
 let test_to_contract ~raise loc = typer_1 ~raise loc "TEST_TO_CONTRACT" @@ fun t ->
   let param_ty, _ = trace_option ~raise (expected_typed_address loc t) @@
@@ -1075,22 +1113,101 @@ let test_to_typed_address ~raise loc = typer_1_opt ~raise loc "TEST_TO_TYPED_ADD
   let () = assert_eq_1 ~raise ~loc parameter_ty parameter_ty' in
   t_typed_address parameter_ty storage_ty
 
+let test_random ~raise loc = typer_1_opt ~raise loc "TEST_RANDOM" @@ fun unit tv_opt ->
+  let () = assert_eq_1 ~raise ~loc unit (t_unit ()) in
+  let tv = trace_option ~raise (not_annotated loc) tv_opt in
+  tv
+
 let test_set_big_map ~raise loc = typer_2 ~raise loc "TEST_SET_BIG_MAP" @@ fun id bm ->
   let () = assert_eq_1 ~raise ~loc id (t_int ()) in
   let _ = trace_option ~raise (expected_big_map loc bm) @@ get_t_big_map bm in
   t_unit ()
 
-let test_originate_from_file ~raise loc = typer_4 ~raise loc "TEST_ORIGINATE_FROM_FILE" @@ fun source_file entrypoint storage balance ->
-  let () = trace_option ~raise (expected_string loc source_file) @@ assert_t_string source_file in
-  let () = trace_option ~raise (expected_string loc entrypoint) @@ assert_t_string entrypoint in
-  let () = trace_option ~raise (expected_michelson_code loc storage) @@ assert_t_michelson_code storage in
-  let () = assert_eq_1 ~raise ~loc balance (t_mutez ()) in
-  (t_triplet (t_address ()) (t_michelson_code ()) (t_int ()))
+let test_originate_from_file ~raise ~(options : Compiler_options.middle_end) loc =
+  match (options.protocol_version : Ligo_proto.t) with
+  | Edo ->
+    typer_4 ~raise loc "TEST_ORIGINATE_FROM_FILE" @@ fun source_file entrypoint storage balance ->
+      let () = trace_option ~raise (expected_string loc source_file) @@ assert_t_string source_file in
+      let () = trace_option ~raise (expected_string loc entrypoint) @@ assert_t_string entrypoint in
+      let () = trace_option ~raise (expected_michelson_code loc storage) @@ assert_t_michelson_code storage in
+      let () = assert_eq_1 ~raise ~loc balance (t_mutez ()) in
+      (t_triplet (t_address ()) (t_michelson_code ()) (t_int ()))
+  | Hangzhou ->
+    typer_5 ~raise loc "TEST_ORIGINATE_FROM_FILE" @@ fun source_file entrypoint views storage balance ->
+      let tlist = trace_option ~raise (expected_list loc views) @@ get_t_list views in
+      let () = trace_option ~raise (expected_string loc tlist) @@ assert_t_string tlist in
+      let () = trace_option ~raise (expected_string loc source_file) @@ assert_t_string source_file in
+      let () = trace_option ~raise (expected_string loc entrypoint) @@ assert_t_string entrypoint in
+      let () = trace_option ~raise (expected_michelson_code loc storage) @@ assert_t_michelson_code storage in
+      let () = assert_eq_1 ~raise ~loc balance (t_mutez ()) in
+      (t_triplet (t_address ()) (t_michelson_code ()) (t_int ()))
 
 let test_compile_contract ~raise loc = typer_1 ~raise loc "TEST_COMPILE_CONTRACT" @@ fun _ ->
   (t_michelson_code ())
 
-let constant_typers ~raise ~test loc c : typer = match c with
+let test_cast_address ~raise loc = typer_1_opt ~raise loc "TEST_CAST_ADDRESS" @@ fun addr tv_opt ->
+  let cast_t = trace_option ~raise (not_annotated loc) @@ tv_opt in
+  let (pty,sty) = trace_option ~raise (expected_typed_address loc cast_t) @@ get_t_typed_address cast_t in
+  let () = trace_option ~raise (expected_address loc addr) @@ get_t_address addr in
+  t_typed_address pty sty
+
+let test_add_account ~raise loc = typer_2 ~raise loc "TEST_ADD_ACCOUNT" @@ fun sk pk ->
+  let _ = trace_option ~raise (expected_string loc pk) @@ get_t_string sk in
+  let _ = trace_option ~raise (expected_key loc pk) @@ get_t_key pk in
+  (t_unit ())
+
+let test_new_account ~raise loc = typer_1 ~raise loc "TEST_NEW_ACCOUNT" @@ fun u ->
+  let _ = trace_option ~raise (expected_unit loc u) @@ get_t_unit u in
+  (t_pair (t_string ()) (t_key ()))
+
+let test_baker_account ~raise loc = typer_2 ~raise loc "TEST_BAKER_ACCOUNT" @@ fun acc opt ->
+  let bkamt = trace_option ~raise (expected_option loc opt) @@ get_t_option opt in
+  let () = trace_option ~raise (expected_mutez loc bkamt) @@ get_t_mutez bkamt in
+  let sk, pk = trace_option ~raise (expected_pair loc acc) @@ get_t_pair acc in
+  let () = trace_option ~raise (expected_string loc sk) @@ get_t_string sk in
+  let () = trace_option ~raise (expected_key loc pk) @@ get_t_key pk in
+  (t_unit ())
+
+let test_register_delegate ~raise loc = typer_1 ~raise loc "TEST_REGISTER_DELEGATE" @@ fun pkh ->
+  let () = trace_option ~raise (expected_key_hash loc pkh) @@ assert_t_key_hash pkh in
+  t_unit ()
+
+let test_bake_until_n_cycle_end ~raise loc = typer_1 ~raise loc "TEST_BAKE_UNTIL_N_CYCLE_END" @@ fun n ->
+  let () = trace_option ~raise (expected_nat loc n) @@ assert_t_nat n in
+  t_unit ()
+
+let test_get_voting_power ~raise loc = typer_1 ~raise loc "C_TEST_GET_VOTING_POWER" @@ fun u ->
+  let _ = trace_option ~raise (expected_string loc u) @@ get_t_key_hash u in
+  t_nat ()
+
+let test_get_total_voting_power ~raise loc = typer_0 ~raise loc "C_TEST_GET_TOTAL_VOTING_POWER" @@ fun _ ->
+  t_nat ()
+
+let test_create_chest ~raise loc = typer_2 ~raise loc "TEST_CREATE_CHEST" @@ fun payload time ->
+  let () = trace_option ~raise (expected_bytes loc payload) @@ get_t_bytes payload in
+  let () = trace_option ~raise (expected_nat loc time) @@ get_t_nat time in
+  t_pair (t_chest ()) (t_chest_key ())
+
+let test_create_chest_key ~raise loc = typer_2 ~raise loc "TEST_CREATE_CHEST_KEY" @@ fun chest time ->
+  let () = assert_eq_1 ~raise ~loc (t_chest ()) chest in
+  let () = trace_option ~raise (expected_nat loc time) @@ get_t_nat time in
+  (t_chest_key ())
+
+let view ~raise loc = typer_3_opt ~raise loc "TEST_VIEW" @@ fun name _arg addr tv_opt ->
+  let () = trace_option ~raise (expected_string loc name) @@ get_t_string name in
+  let () = trace_option ~raise (expected_address loc addr) @@ get_t_address addr in
+  let view_ret_t = trace_option ~raise (not_annotated loc) @@ tv_opt in
+  let _ : type_expression = trace_option ~raise (expected_option loc view_ret_t) @@ get_t_option view_ret_t in
+  view_ret_t
+
+let test_global_constant ~raise loc = typer_1_opt ~raise loc "TEST_GLOBAL_CONSTANT" @@ fun hash_str tv_opt ->
+  let () = trace_option ~raise (expected_string loc hash_str) @@ get_t_string hash_str in
+  let ret_t = trace_option ~raise (not_annotated loc) @@ tv_opt in
+  ret_t
+
+let rec constant_typers ~raise ~(options : Compiler_options.middle_end) loc c : typer = 
+  let test = options.test in
+  match c with
   | C_INT                 -> int ~raise loc ;
   | C_UNIT                -> unit ~raise loc ;
   | C_NEVER               -> never ~raise loc ;
@@ -1106,11 +1223,14 @@ let constant_typers ~raise ~test loc c : typer = match c with
   | C_ASSERTION_WITH_ERROR-> assertion_with_error ~raise loc ;
   | C_ASSERT_SOME         -> assert_some ~raise loc ;
   | C_ASSERT_SOME_WITH_ERROR -> assert_some_with_error ~raise loc ;
+  | C_ASSERT_NONE         -> assert_none ~raise loc ;
+  | C_ASSERT_NONE_WITH_ERROR -> assert_none_with_error ~raise loc ;
   | C_FAILWITH            -> failwith_ ~raise loc ;
     (* LOOPS *)
-  | C_FOLD_WHILE          -> fold_while ~raise loc ;
-  | C_FOLD_CONTINUE       -> continue ~raise loc ;
-  | C_FOLD_STOP           -> stop ~raise loc ;
+  | C_LOOP_LEFT           -> loop_left ~raise loc ;
+  | C_LEFT                -> loop_continue ~raise loc ;
+  | C_LOOP_CONTINUE       -> loop_continue ~raise loc ;
+  | C_LOOP_STOP           -> loop_stop ~raise loc ;
   | C_FOLD                -> fold ~raise loc ;
    (* MATH *)
   | C_NEG                 -> neg ~raise loc ;
@@ -1211,6 +1331,8 @@ let constant_typers ~raise ~test loc c : typer = match c with
   | C_PAIRING_CHECK -> pairing_check ~raise loc ;
   | C_SAPLING_VERIFY_UPDATE -> sapling_verify_update ~raise loc ;
   | C_SAPLING_EMPTY_STATE -> sapling_empty_state ~raise loc ;
+  | C_OPEN_CHEST -> open_chest ~raise loc ;
+  | C_VIEW -> view ~raise loc ;
   (* TEST *)
   | C_TEST_ORIGINATE -> test_originate ~raise loc ;
   | C_TEST_SET_NOW -> test_set_now ~raise loc ;
@@ -1237,13 +1359,37 @@ let constant_typers ~raise ~test loc c : typer = match c with
   | C_TEST_RUN -> test_run ~raise loc ;
   | C_TEST_EVAL -> test_eval ~raise loc ;
   | C_TEST_COMPILE_CONTRACT -> test_compile_contract ~raise loc ;
+  | C_TEST_DECOMPILE -> test_decompile ~raise loc ;
   | C_TEST_TO_CONTRACT -> test_to_contract ~raise loc ;
   | C_TEST_NTH_BOOTSTRAP_TYPED_ADDRESS -> test_nth_bootstrap_typed_address ~raise loc ;
   | C_TEST_TO_ENTRYPOINT -> test_to_entrypoint ~raise loc ;
   | C_TEST_TO_TYPED_ADDRESS -> test_to_typed_address ~raise loc ;
+  | C_TEST_RANDOM -> test_random ~raise loc ;
   | C_TEST_SET_BIG_MAP -> test_set_big_map ~raise loc ;
-  | C_TEST_ORIGINATE_FROM_FILE -> test_originate_from_file ~raise loc ;
+  | C_TEST_ORIGINATE_FROM_FILE -> test_originate_from_file ~raise ~options loc ;
   | C_TEST_SAVE_MUTATION -> test_save_mutation ~raise loc ;
+  | C_TEST_CAST_ADDRESS -> test_cast_address ~raise loc;
+  | C_TEST_CREATE_CHEST -> only_supported_hangzhou ~raise ~options c @@ test_create_chest ~raise loc
+  | C_TEST_CREATE_CHEST_KEY -> only_supported_hangzhou ~raise ~options c @@ test_create_chest_key ~raise loc
+  | C_TEST_ADD_ACCOUNT -> test_add_account ~raise loc;
+  | C_TEST_NEW_ACCOUNT -> test_new_account ~raise loc;
+  | C_TEST_BAKER_ACCOUNT -> test_baker_account ~raise loc;
+  | C_TEST_REGISTER_DELEGATE -> test_register_delegate ~raise loc;
+  | C_TEST_BAKE_UNTIL_N_CYCLE_END -> test_bake_until_n_cycle_end ~raise loc;
+  | C_TEST_GET_VOTING_POWER -> test_get_voting_power ~raise loc;
+  | C_TEST_GET_TOTAL_VOTING_POWER -> test_get_total_voting_power ~raise loc;
+  | C_GLOBAL_CONSTANT -> only_supported_hangzhou ~raise ~options c @@ test_global_constant ~raise loc
   (* JsLIGO *)
   | C_POLYMORPHIC_ADD  -> polymorphic_add ~raise loc ;
   | _ as cst -> raise.raise (corner_case @@ Format.asprintf "typer not implemented for constant %a" PP.constant' cst)
+
+and only_supported_hangzhou = fun ~raise ~options c default  ->
+  let protocol_version = options.Compiler_options.protocol_version in 
+  match protocol_version with
+  | Ligo_proto.Hangzhou -> default
+  | Ligo_proto.Edo ->
+    raise.raise @@ corner_case (
+      Format.asprintf "Unsupported constant %a in protocol %s"
+        PP.constant' c
+        (Ligo_proto.variant_to_string protocol_version)
+    )

@@ -1,24 +1,26 @@
-{-# LANGUAGE RecordWildCards #-}
-
 module AST.Scope.ScopedDecl.Parser
   ( parseType
   , parseTypeDeclSpecifics
+  , parseTypeParams
+  , parseParameters
   ) where
 
+import Control.Lens ((??))
 import Data.Foldable (asum)
+import Data.Functor ((<&>))
 import Data.Maybe (fromMaybe, mapMaybe)
-import Duplo.Tree (layer)
+import Duplo.Tree (layer, match)
 
 import AST.Pretty (PPableLIGO, ppToText)
 import AST.Scope.ScopedDecl
-  (Type (..), TypeConstructor (..), TypeDeclSpecifics (..), TypeField (..))
 import AST.Skeleton (LIGO)
 import AST.Skeleton qualified as LIGO
-  (Ctor (..), FieldName (..), TField (..), Type (..), Variant (..))
-import Range (getRange)
+import Product (Contains)
+import Range (Range, getRange)
 
+-- * Parsers for type.
 
-parseTypeDeclSpecifics :: PPableLIGO info => LIGO info -> TypeDeclSpecifics
+parseTypeDeclSpecifics :: PPableLIGO info => LIGO info -> TypeDeclSpecifics Type
 parseTypeDeclSpecifics node = TypeDeclSpecifics
   { _tdsInitRange = getRange node
   , _tdsInit = parseType node
@@ -31,13 +33,30 @@ parseTypeDeclSpecifics node = TypeDeclSpecifics
 -- Also see 'parseAliasType'.
 parseType :: PPableLIGO info => LIGO info -> Type
 parseType node =
-  fromMaybe (parseAliasType node) (asum (map ($ node) parsers))
+  fromMaybe (parseAliasType node) (asum (parsers ?? node))
   where
     parsers =
       [ parseRecordType
       , parseVariantType
       , parseTupleType
+      , parseApplyType
+      , parseArrowType
+      , parseVariableType
       ]
+
+parseArrowType :: PPableLIGO info => LIGO info -> Maybe Type
+parseArrowType node = do
+  LIGO.TArrow left right <- layer node
+  let left' = parseType left
+  let right' = parseType right
+  pure $ ArrowType left' right'
+
+parseApplyType :: PPableLIGO info => LIGO info -> Maybe Type
+parseApplyType node = do
+  LIGO.TApply name types <- layer node
+  let name' = parseType name
+  let types' = map parseType types
+  pure $ ApplyType name' types'
 
 parseRecordType :: PPableLIGO info => LIGO info -> Maybe Type
 parseRecordType node = do
@@ -70,9 +89,89 @@ parseTupleType node = do
   let elements = map parseTypeDeclSpecifics elementNodes
   pure (TupleType elements)
 
+parseVariableType :: Contains Range info => LIGO info -> Maybe Type
+parseVariableType node = do
+  LIGO.TVariable t <- layer node
+  VariableType <$> parseTypeVariable t
+
 -- Since we don't care right now about distinguishing functions or whatever, we
 -- just treat the whole node as a type name. It _is_ possible that the node is
 -- not even a type: it could be an error node. However we choose to fail, we'll
 -- lose the whole type structure instead of this one leaf.
 parseAliasType :: PPableLIGO info => LIGO info -> Type
 parseAliasType node = AliasType (ppToText node)
+
+-- * Parsers for type variables.
+
+parseTypeParams :: Contains Range info => LIGO info -> Maybe TypeParams
+parseTypeParams node = asum
+  [ do
+      LIGO.TypeParam t <- layer node
+      TypeParam <$> parseTypeVariableSpecifics t
+  , do
+      LIGO.TypeParams ts <- layer node
+      pure $ TypeParams $ mapMaybe parseTypeVariableSpecifics ts
+  ]
+
+parseTypeVariableSpecifics
+  :: Contains Range info
+  => LIGO info
+  -> Maybe (TypeDeclSpecifics TypeVariable)
+parseTypeVariableSpecifics node = do
+  LIGO.TVariable var <- layer node
+  (r, LIGO.TypeVariableName name) <- match var
+  pure TypeDeclSpecifics
+    { _tdsInitRange = getRange r
+    , _tdsInit = TypeVariable name
+    }
+
+parseTypeVariable :: Contains Range info => LIGO info -> Maybe TypeVariable
+parseTypeVariable = fmap _tdsInit . parseTypeVariableSpecifics
+
+-- * Parsers for parameters.
+
+parseParameter :: PPableLIGO info => LIGO info -> Maybe Parameter
+parseParameter node = asum (parsers ?? node)
+  where
+    parsers =
+      [ fmap ParameterPattern . parsePattern
+      , parseBParameter
+      ]
+
+parseBParameter :: PPableLIGO info => LIGO info -> Maybe Parameter
+parseBParameter node = do
+  LIGO.BParameter name typ <- layer node
+  ParameterBinding <$> parsePattern name <*> pure (parseType <$> typ)
+
+parseParameters :: PPableLIGO info => [LIGO info] -> [Parameter]
+parseParameters = mapMaybe parseParameter
+
+-- * Parsers for patterns.
+
+parseConstant :: LIGO info -> Maybe Constant
+parseConstant node = layer node <&> \case
+  LIGO.Int    i -> Int    i
+  LIGO.Nat    n -> Nat    n
+  LIGO.String s -> String s
+  LIGO.Float  f -> Float  f
+  LIGO.Bytes  b -> Bytes  b
+  LIGO.Tez    t -> Tez    t
+
+parsePattern :: PPableLIGO info => LIGO info -> Maybe Pattern
+parsePattern node = layer node >>= \case
+  LIGO.IsConstr name patM -> pure $ IsConstr (ppToText name) (parsePattern =<< patM)
+  LIGO.IsConstant constant -> IsConstant <$> parseConstant constant
+  LIGO.IsVar name -> pure $ IsVar $ ppToText name
+  LIGO.IsCons left right -> IsCons <$> parsePattern left <*> parsePattern right
+  LIGO.IsAnnot pat typ -> IsAnnot <$> parsePattern pat <*> pure (parseType typ)
+  LIGO.IsWildcard -> pure IsWildcard
+  LIGO.IsSpread pat -> IsSpread <$> parsePattern pat
+  LIGO.IsList pats -> pure $ IsList $ mapMaybe parsePattern pats
+  LIGO.IsTuple pats -> pure $ IsTuple $ mapMaybe parsePattern pats
+  LIGO.IsRecord pats -> pure $ IsRecord $ mapMaybe parseRecordFieldPattern pats
+  LIGO.IsParen pat -> IsParen <$> parsePattern pat
+
+parseRecordFieldPattern :: PPableLIGO info => LIGO info -> Maybe RecordFieldPattern
+parseRecordFieldPattern node = layer node >>= \case
+  LIGO.IsRecordField name body -> IsRecordField (ppToText name) <$> parsePattern body
+  LIGO.IsRecordCapture name -> pure $ IsRecordCapture (ppToText name)

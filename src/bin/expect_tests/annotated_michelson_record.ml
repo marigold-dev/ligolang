@@ -77,15 +77,12 @@ let%expect_test _ =
              Hint: replace it by "_action" to prevent this warning.
 
              { parameter unit ;
-               storage (pair (int %ana) (pair (string %anb) (nat %anc))) ;
+               storage (pair (int %ana) (string %anb) (nat %anc)) ;
                code { DROP ;
-                      PUSH int 1 ;
-                      PUSH string "" ;
                       PUSH nat 1 ;
-                      SWAP ;
-                      PAIR ;
-                      SWAP ;
-                      PAIR ;
+                      PUSH string "" ;
+                      PUSH int 1 ;
+                      PAIR 3 ;
                       NIL operation ;
                       PAIR } } |}];
   run_ligo_good [ "compile" ; "contract" ; contract "annotated_michelson_record_comb.mligo" ; "--entry-point" ; "main_comb_five" ] ;
@@ -124,8 +121,7 @@ let%expect_test _ =
 
              { parameter unit ;
                storage
-                 (pair (int %an_One)
-                       (pair (string %an_Two) (pair (bool %an_Three) (pair (nat %an_Four) (int %an_Five))))) ;
+                 (pair (int %an_One) (string %an_Two) (bool %an_Three) (nat %an_Four) (int %an_Five)) ;
                code { CDR ; NIL operation ; PAIR } } |}]
 
 let%expect_test _ =

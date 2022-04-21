@@ -1,14 +1,10 @@
--- We need this pragma because of the following situation:
--- * If we remove this pragma, GHC will warn that `_deprecated` from the
---   `SymbolInformation` type is deprecated and CI will fail.
--- * If we remove `_deprecated`, it will complain that such strict field was not
---   initialized and build will fail.
 {-# OPTIONS_GHC -Wno-deprecations #-}
 
-module AST.Capabilities.DocumentSymbol where
+module AST.Capabilities.DocumentSymbol
+  ( extractDocumentSymbols
+  ) where
 
 import Control.Lens ((^.))
-import Control.Monad.Catch.Pure (MonadCatch)
 import Control.Monad.Writer.Strict
 import Data.Maybe (fromMaybe)
 import Data.Text
@@ -23,27 +19,28 @@ import AST.Skeleton
 import Product
 import Range
 
+-- We need the pragma at the top because of the following situation:
+-- * If we remove this pragma, GHC will warn that `_deprecated` from the
+--   `SymbolInformation` type is deprecated and CI will fail.
+-- * If we remove `_deprecated`, it will complain that such strict field was not
+--   initialized and build will fail.
 
 -- | Extract document symbols for some specific parsed ligo contract which
 -- is realisable by @haskell-lsp@ client.
 extractDocumentSymbols
-  :: forall m.
-     (MonadCatch m)
-  => J.Uri
+  :: J.Uri
   -> SomeLIGO Info'
-  -> m [SymbolInformation]
+  -> [SymbolInformation]
 extractDocumentSymbols uri tree =
-  execWriterT $ collectFromContract (tree ^. nestedLIGO)
+  execWriter $ collectFromContract (tree ^. nestedLIGO)
   where
-    collectFromContract :: LIGO Info' -> WriterT [SymbolInformation] m ()
+    collectFromContract :: LIGO Info' -> Writer [SymbolInformation] ()
     collectFromContract (match @RawContract -> Just (_, RawContract decls))
       = mapM_ collectDecl decls
-    collectFromContract (match @Contract-> Just (_, ContractCons contr contrs))
-      = collectFromContract contr *> collectFromContract contrs
     collectFromContract _
       = pure ()
 
-    collectDecl :: LIGO Info' -> WriterT [SymbolInformation] m ()
+    collectDecl :: LIGO Info' -> Writer [SymbolInformation] ()
     collectDecl (match @Binding -> Just (_, binding)) = case binding of
           (BFunction _ (match @NameDecl -> Just (getElem @Range -> r, _)) _ _ _)->
             tellScopedDecl
@@ -51,14 +48,20 @@ extractDocumentSymbols uri tree =
               J.SkFunction
               (const Nothing)
 
-          -- TODO: currently we do not count imports as declarations in scopes
+          -- TODO: currently we do not count includes and imports as declarations in scopes
           (BInclude (match @Constant -> Just (getElem @Range -> r, _))) ->
+            tellSymbolInfo
+              r
+              J.SkNamespace
+              ("some include at " <> pack (show r))
+
+          (BImport (match @Constant -> Just (getElem @Range -> r, _)) _) ->
             tellSymbolInfo
               r
               J.SkNamespace
               ("some import at " <> pack (show r))
 
-          (BTypeDecl (match @TypeName -> Just (getElem @Range -> r, _)) _) ->
+          (BTypeDecl (match @TypeName -> Just (getElem @Range -> r, _)) _ _) ->
             tellScopedDecl
               r
               J.SkTypeParameter
@@ -89,6 +92,7 @@ extractDocumentSymbols uri tree =
               r
               J.SkConstant
               (\ScopedDecl {_sdName} -> Just ("const " <> _sdName))
+          (IsParen x) -> collectDecl x
 
           _ -> pure ()
 
@@ -108,8 +112,8 @@ extractDocumentSymbols uri tree =
     -- ignore the declaration if not found.
     withScopedDecl
       :: Range
-      -> (ScopedDecl -> WriterT [SymbolInformation] m ())
-      -> WriterT [SymbolInformation] m ()
+      -> (ScopedDecl -> Writer [SymbolInformation] ())
+      -> Writer [SymbolInformation] ()
     withScopedDecl r f = maybe (pure ()) f (findScopedDecl r tree)
 
     -- | Tell to the writer symbol information that we may find in scope or
@@ -118,7 +122,7 @@ extractDocumentSymbols uri tree =
       :: Range
       -> J.SymbolKind
       -> (ScopedDecl -> Maybe Text)
-      -> WriterT [SymbolInformation] m ()
+      -> Writer [SymbolInformation] ()
     tellScopedDecl range kind' mkName =
       withScopedDecl range $ \sd@ScopedDecl{..} ->
         tell
@@ -139,7 +143,7 @@ extractDocumentSymbols uri tree =
       :: Range
       -> J.SymbolKind
       -> Text
-      -> WriterT [SymbolInformation] m ()
+      -> Writer [SymbolInformation] ()
     tellSymbolInfo range kind' name =
         tell
           [ SymbolInformation

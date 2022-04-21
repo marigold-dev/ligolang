@@ -1,29 +1,20 @@
-open Errors
-open Trace
 
 module I = Ast_core
 module O = Ast_typed
 
 module Errors = Errors
-module Environment = O.Environment
+open Errors
+open Simple_utils.Trace
 
-type environment = Environment.t
 
-val type_module      : raise:typer_error raise -> test:bool -> init_env:environment -> I.module_ -> environment * O.module_fully_typed
-val type_declaration : raise:typer_error raise -> test:bool -> environment -> I.declaration Location.wrap -> environment * O.declaration Location.wrap
-val evaluate_type    : raise:typer_error raise -> environment -> I.type_expression -> O.type_expression
-val type_expression  : raise:typer_error raise -> test:bool -> environment -> ?tv_opt:O.type_expression -> I.expression -> O.environment * O.expression
-val type_constant    : raise:typer_error raise -> test:bool -> I.constant' -> Location.t -> O.type_expression list -> O.type_expression option -> O.constant' * O.type_expression
-(*
-val untype_type_value : O.type_value -> (I.type_expression) result
-val untype_literal : O.literal -> I.literal result
-*)
+val type_program     : raise:typer_error raise -> options:Compiler_options.middle_end -> ?env:Environment.t -> I.module_ -> O.program
+val type_declaration : raise:typer_error raise -> options:Compiler_options.middle_end -> ?env:Environment.t -> I.declaration Location.wrap -> O.declaration Location.wrap
+val type_expression  : raise:typer_error raise -> options:Compiler_options.middle_end -> ?env:Environment.t -> ?tv_opt:O.type_expression -> I.expression -> O.expression
+
+
+val untype_type_expression : O.type_expression -> I.type_expression
 val untype_expression : O.expression -> I.expression
-(*
-val untype_matching : ('o -> 'i result) -> 'o O.matching -> ('i I.matching) result
-*)
 
-val untype_module_fully_typed : O.module_fully_typed -> I.module_
+val untype_program : O.program -> I.module_
 
 val assert_type_expression_eq : raise:typer_error raise -> Location.t -> O.type_expression * O.type_expression -> unit
-val decompile_env : O.Environment.t -> I.Environment.t

@@ -1,5 +1,6 @@
 include Simple_utils.Trace
 
+module List = Simple_utils.List
 module AE = Memory_proto_alpha.Alpha_environment
 module TP = Tezos_error_monad.Error_monad
 
@@ -25,6 +26,16 @@ let trace_alpha_tzresult :
 
 let trace_alpha_tzresult_lwt ~raise tracer (x:_ AE.Error_monad.tzresult Lwt.t) : _ =
   trace_alpha_tzresult ~raise tracer @@ Lwt_main.run x
+
+let trace_alpha_shell_tzresult :
+  raise:'b raise -> (tezos_alpha_error list -> 'b) -> 'a AE.Error_monad.shell_tzresult -> 'a =
+  fun ~raise tracer err -> match err with
+  | Ok x -> x
+  | Error errs ->
+    raise.raise @@ tracer (List.map ~f:of_tz_error @@ errs)
+
+let trace_alpha_shell_tzresult_lwt ~raise tracer (x:_ AE.Error_monad.shell_tzresult Lwt.t) : _ =
+  trace_alpha_shell_tzresult ~raise tracer @@ Lwt_main.run x
 
 let trace_tzresult :
   raise: 'b raise ->

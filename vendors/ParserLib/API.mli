@@ -3,6 +3,7 @@
 (* Vendor dependencies *)
 
 module Region = Simple_utils.Region
+module Utils  = Simple_utils.Utils
 
 (* Generic signature of tokens *)
 
@@ -53,16 +54,23 @@ module type PARSER =
 
     (* The incremental API. *)
 
-    module MenhirInterpreter :
-      sig
-        include MenhirLib.IncrementalEngine.INCREMENTAL_ENGINE
-                with type token = token
-      end
+    module MenhirInterpreter : MenhirLib.IncrementalEngine.EVERYTHING
+           with type token = token
 
     module Incremental :
       sig
         val main :
           Lexing.position -> tree MenhirInterpreter.checkpoint
+      end
+
+    (* The recovery API. *)
+
+    module Recovery :
+      sig
+        include Merlin_recovery.RECOVERY_GENERATED
+                with module I := MenhirInterpreter
+
+        val default_value : Region.t -> 'a MenhirInterpreter.symbol -> 'a
       end
   end
 
@@ -74,10 +82,32 @@ module type PAR_ERR =
     val message : int -> string
   end
 
+
+(* Parser configuration *)
+
+module type CONFIG =
+  sig
+    (* Assume that positions refer to bytes or code points.
+       It mostly affects the position of synthesized tokens in the error recovery
+       mode because menhir requires to convert [Pos.t] type to the poorer
+       representation - [Lexing.position]. *)
+
+    val mode : [`Byte | `Point]
+
+    (* Enable debug printing in the recovery algorithm *)
+
+    val error_recovery_tracing : bool
+
+    (* Path to a log file or [None] that means to use stdout *)
+
+    val tracing_output : string option
+  end
+
 (* The functor integrating the parser with its errors *)
 
 module Make (Lexer  : LEXER)
-            (Parser : PARSER with type token = Lexer.token) :
+            (Parser : PARSER with type token = Lexer.token)
+            (Config : CONFIG) :
   sig
     type token = Lexer.token
 
@@ -103,4 +133,28 @@ module Make (Lexer  : LEXER)
     val incr_from_channel : (module PAR_ERR) -> in_channel    parser
     val incr_from_string  : (module PAR_ERR) -> string        parser
     val incr_from_file    : (module PAR_ERR) -> file_path     parser
+
+    (* Incremental API with recovery *)
+
+    (* returns [Ok (tree, [])] if ['src] contains correct contract
+            or [Ok (repaired_tree, errors)] if any syntax error was encountered
+            or [Error (errors)] if non-syntax error happened and we cannot
+               return any tree (e. g. file does not found or lexer error) *)
+
+    type 'src recovery_parser =
+      'src -> (Parser.tree * message list, message Utils.nseq) Stdlib.result
+
+
+    (* Helper function that converts original type to simple one *)
+
+    val extract_recovery_results :
+      (Parser.tree * message list, message Utils.nseq) Stdlib.result ->
+      Parser.tree option * message list
+
+    (* Parsing with recovery from various sources *)
+
+    val recov_from_lexbuf  : (module PAR_ERR) -> Lexing.lexbuf recovery_parser
+    val recov_from_channel : (module PAR_ERR) -> in_channel    recovery_parser
+    val recov_from_string  : (module PAR_ERR) -> string        recovery_parser
+    val recov_from_file    : (module PAR_ERR) -> file_path     recovery_parser
   end

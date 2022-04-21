@@ -28,6 +28,10 @@ let of_yojson = function
   | _ ->
     Utils.error_yojson_format "File Region.t | Virtual String"
 
+let to_human_yojson = function
+  | File reg  -> Region.to_human_yojson reg
+  | Virtual v -> `Assoc [("virtual", `String v)]
+
 let pp = fun ppf t ->
   match t with
   | Virtual _s -> Format.fprintf ppf ""
@@ -39,6 +43,7 @@ let compare a b = match a,b with
   | (Virtual _, File _) -> 1
   | (Virtual a, Virtual b) -> String.compare a b
 
+let equal a b = (compare a b = 0)
 
 let make (start_pos:Lexing.position) (end_pos:Lexing.position) : t =
   File (Region.make ~start:(Pos.from_byte start_pos)
@@ -51,6 +56,10 @@ let generated = virtual_location "generated"
 let is_dummy_or_generated = function
   | Virtual "dummy" | Virtual "generated" -> true
   | _ -> false
+
+let is_virtual = function
+  | File _ -> false
+  | Virtual _ -> true
 
 type 'a wrap = {
   wrap_content : 'a ;

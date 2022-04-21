@@ -1,31 +1,18 @@
 open Types
 
 let extend :
-  env -> expression_variable -> ?no_mutation:bool -> (Ast_typed.type_expression * value) -> env
+  env -> expression_variable -> ?no_mutation:bool -> (Ast_aggregated.type_expression * value) -> env
   = fun env name ?(no_mutation = false) (ast_type,eval_term) ->
   Expression {name ; item = { ast_type = ast_type ; eval_term } ; no_mutation } :: env
-
-let extend_mod :
-  env -> module_variable -> env -> env
-  = fun env name item ->
-  Module {name; item} :: env
 
 let expressions :
   env -> (expression_variable * (value_expr * bool)) list
   = fun env ->
-  List.filter_map env ~f:(function | Expression {name;item;no_mutation} -> Some (name, (item, no_mutation)) | Module _ -> None)
+  List.filter_map env ~f:(function | Expression {name;item;no_mutation} -> Some (name, (item, no_mutation)))
 
-let modules :
-  env -> (module_variable * env) list
-  = fun env ->
-  List.filter_map env ~f:(function | Module {name;item} -> Some (name, item) | Expression _ -> None)
-
-let lookup :
-  env -> expression_variable -> (value_expr * bool) option
+let lookup : env -> expression_variable -> (value_expr * bool) option
   = fun env var ->
-  let open Location in
-  let equal a b = Var.compare a.wrap_content b.wrap_content = 0 in
-  List.Assoc.find (expressions env) ~equal var
+  List.Assoc.find (expressions env) ~equal:Var.equal var
 
 let empty_env = []
 

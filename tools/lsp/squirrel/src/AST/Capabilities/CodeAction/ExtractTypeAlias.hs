@@ -31,20 +31,21 @@
 -- note that type alias is added *after* the block with includes. I (awkure) decided
 -- that's its more convenient this way.
 
-module AST.Capabilities.CodeAction.ExtractTypeAlias where
-
-import Control.Exception.Safe (MonadCatch)
+module AST.Capabilities.CodeAction.ExtractTypeAlias
+  ( typeExtractionCodeAction
+  , extractedTypeNameAlias
+  ) where
 
 import Control.Monad.Trans.Writer
-import Data.Text qualified as T
-
 import Data.HashMap.Strict qualified as HM
+import Data.HashSet qualified as HS
+import Data.Text qualified as T
+import Duplo
 import Language.LSP.Types qualified as J
 
 import AST.Pretty
 import AST.Scope
 import AST.Skeleton
-import Duplo
 import Parser
 import Product
 import Range
@@ -53,12 +54,7 @@ extractedTypeNameAlias :: String
 extractedTypeNameAlias = "extractedTypeName"
 
 -- | Construct all code actions regarding type extraction for the contract.
-typeExtractionCodeAction
-  :: MonadCatch m
-  => Range
-  -> J.Uri
-  -> SomeLIGO Info'
-  -> m [J.CodeAction]
+typeExtractionCodeAction :: Range -> J.Uri -> SomeLIGO Info' -> [J.CodeAction]
 typeExtractionCodeAction at uri (SomeLIGO dialect tree) =
   let
     isPreprocessor = \case
@@ -71,24 +67,29 @@ typeExtractionCodeAction at uri (SomeLIGO dialect tree) =
         filteredSubtreeRange = case filteredSubtree of
           [] -> getElem @Range i
           (x:_) -> getElem @Range $ extract x
-        strippedTree =  make (i, RawContract filteredSubtree)
+        strippedTree = fastMake i (RawContract filteredSubtree)
+        typeAliasName = genTypeName tree
+        typeVars = extractTypeVariableNames strippedTree
       case spineTo (leq at . getElem) strippedTree of
         ((match -> Just (info, TypeName tn)):_) -> do
-          typeAliasName <- genTypeName tree
-          typeEdits <- makeReplaceTypeEdits typeAliasName (Right tn) strippedTree
           let
+            typeEdits = makeReplaceTypeEdits typeAliasName (Right tn) strippedTree
             replaceRange = getElem @Range info
-            typeAlias = constructTypeAlias dialect typeAliasName (Left tn) filteredSubtreeRange
-          return $ mkCodeAction uri replaceRange (typeEdits <> [typeAlias])
+            typeAlias = constructTypeAlias dialect typeAliasName typeVars (Left tn) filteredSubtreeRange
+          mkCodeAction uri replaceRange (typeEdits <> [typeAlias])
         (typeNode@(match @Type -> Just (info, exactType)):_) -> do
-          typeAliasName <- genTypeName tree
-          typeEdits <- makeReplaceTypeEdits typeAliasName (Left exactType) strippedTree
           let
+            typeEdits = makeReplaceTypeEdits typeAliasName (Left exactType) strippedTree
             replaceRange = getElem @Range info
-            typeAlias = constructTypeAlias dialect typeAliasName (Right typeNode) filteredSubtreeRange
-          return $ mkCodeAction uri replaceRange (typeEdits <> [typeAlias])
-        _ -> return [] -- Matched everything but type, ignore
-    _ -> return [] -- Malformed tree with error nodes passed, ignore
+            typeAlias = constructTypeAlias dialect typeAliasName typeVars (Right typeNode) filteredSubtreeRange
+          mkCodeAction uri replaceRange (typeEdits <> [typeAlias])
+        _ -> [] -- Matched everything but type, ignore
+    _ -> [] -- Malformed tree with error nodes passed, ignore
+
+extractTypeVariableNames :: LIGO Info' -> HS.HashSet T.Text
+extractTypeVariableNames = execWriter . visit'
+  [ Visit \_ (TypeVariableName typeVar) -> tell $ HS.singleton typeVar
+  ]
 
 -- | Generate fresh type alias that is not found
 -- in the given tree.
@@ -97,7 +98,7 @@ typeExtractionCodeAction at uri (SomeLIGO dialect tree) =
 -- in our ASTMap with scopes as well. So I (awkure) decided
 -- that we return blank `extractedTypeNameAlias` instead for now
 -- since user may want to rename the type anyway.
-genTypeName :: Monad m => LIGO Info' -> m T.Text
+genTypeName :: LIGO Info' -> T.Text
 genTypeName _tree =
   -- let
   --   decls = getElem @[SD.ScopedDecl] $ extract tree
@@ -109,17 +110,18 @@ genTypeName _tree =
   --     = head
   --     . filterOutFirst (isJust . findInTree)
   --     $ ("t"<>) . T.pack . show @Integer <$> [0..]
-  return $ T.pack extractedTypeNameAlias
+  T.pack extractedTypeNameAlias
 
 -- | Reconstructs type definition node from given alias name and
 -- either if it's a typename or some other complex type.
 constructTypeAlias
   :: Lang
-  -> T.Text -- Given type alias
-  -> Either T.Text (LIGO Info') -- Either type name or type node
-  -> Range -- range of the topmost level of the stripped tree
+  -> T.Text -- ^ Given type alias
+  -> HS.HashSet T.Text -- ^ Type variables in the node
+  -> Either T.Text (LIGO Info') -- ^ Either type name or type node
+  -> Range -- ^ Range of the topmost level of the stripped tree
   -> J.TextEdit
-constructTypeAlias dialect alias t Range{rStart = (sl, sc, _)} =
+constructTypeAlias dialect alias typeVars t Range{_rStart = (sl, sc, _)} =
   J.TextEdit
     { _range = toLspRange $ point sl sc
     , _newText = T.pack . (<>"\n") . show . lppDialect @(LIGO Info') dialect $
@@ -128,16 +130,23 @@ constructTypeAlias dialect alias t Range{rStart = (sl, sc, _)} =
             defaultState :< inject @Binding
               (BTypeDecl
                 (defaultState :< inject @TypeName (TypeName alias))
+                typeVarNode
                 (defaultState :< inject @TypeName (TypeName typeName)))
           (Right typeNode) ->
             defaultState :< inject @Binding
               (BTypeDecl
                 (defaultState :< inject @TypeName (TypeName alias))
+                typeVarNode
                 typeNode)
     }
+  where
+    typeVarNode = case (defaultState :<) . inject . TypeVariableName <$> HS.toList typeVars of
+      []     -> Nothing
+      [tVar] -> Just $ defaultState :< inject (TypeParam tVar)
+      tVars  -> Just $ defaultState :< inject (TypeParams tVars)
 
 defaultState :: Product Info'
-defaultState = [] :> Nothing :> [] :> point 1 1 :> N :> CodeSource "" :> Nil
+defaultState = [] :> Nothing :> PreprocessedRange (point 1 1) :> [] :> [] :> point 1 1 :> CodeSource "" :> Nil
 
 -- | Diagnostics collected for every type that allows for
 -- type extraction code action to be clicked.
@@ -179,24 +188,21 @@ mkCodeAction uri replaceRange typeEdits =
 -- | Construct edits for replacing existing type that matches either
 -- the given constructed type or type alias.
 makeReplaceTypeEdits
-  :: (MonadCatch m)
-  => T.Text -- New type name to be replaced with
+  :: T.Text -- New type name to be replaced with
   -> Either (Type (LIGO Info')) T.Text -- Either it's a constructed type or a type alias
   -> LIGO Info'
-  -> m [J.TextEdit]
-makeReplaceTypeEdits newTypeName (Left typeNode) originTree =
-  execWriterT $ visit
-    [ Visit @Type $ \case
-        (getElem @Range -> r, typeNode') | typeNode == typeNode' ->
+  -> [J.TextEdit]
+makeReplaceTypeEdits newTypeName (Left typeNode) =
+  execWriter . visit'
+    [ Visit @Type \(getRange -> r) -> \case
+        typeNode' | typeNode == typeNode' ->
           tell [J.TextEdit { _range = toLspRange r, _newText = newTypeName }]
         _ -> pure ()
     ]
-    originTree
-makeReplaceTypeEdits newTypeName (Right oldTypeName) originTree =
-  execWriterT $ visit
-    [ Visit @TypeName $ \case
-        (getElem @Range -> r, TypeName typeName') | oldTypeName == typeName' ->
+makeReplaceTypeEdits newTypeName (Right oldTypeName) =
+  execWriter . visit'
+    [ Visit @TypeName \(getRange -> r) -> \case
+        TypeName typeName' | oldTypeName == typeName' ->
           tell [J.TextEdit { _range = toLspRange r, _newText = newTypeName }]
         _ -> pure ()
     ]
-    originTree

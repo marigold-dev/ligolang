@@ -8,55 +8,72 @@ function mkOp($, opExpr) {
   );
 }
 
+// These rules were extracted as they require a function argument
+// Thanks, I hate it
+const sum_type_rules = suffix => ({
+  // Cat of string | Person of string * string
+  ['sum_type' + suffix]: $ => prec.left(10,
+    choice(
+      common.sepBy1('|', field("variant", $['variant' + suffix])),
+      common.withAttrs($, seq('|', common.sepBy1('|', field("variant", $['variant' + suffix])))),
+    )
+  ),
+
+  // Person of string * string
+  ['variant' + suffix]: $ => common.withAttrs($, seq(
+    field("constructor", $.ConstrName),
+    optional(seq(
+      "of",
+      field("type", $[suffix])
+    ))
+  )),
+})
+
 module.exports = grammar({
   name: 'CameLigo',
 
   word: $ => $.Keyword,
-  externals: $ => [$.ocaml_comment, $.comment],
-  extras: $ => [$.ocaml_comment, $.comment, /\s/],
+  externals: $ => [$.ocaml_comment, $.comment, $.line_marker],
+  extras: $ => [$.ocaml_comment, $.comment, $.line_marker, /\s/],
 
   rules: {
     source_file: $ => repeat(field("declaration", $._declaration)),
 
     _declaration: $ =>
       choice(
+        $._decl,
+        $.preprocessor,
+      ),
+
+    _decl: $ =>
+      choice(
         $.type_decl,
         $.let_decl,
         $.fun_decl,
-        $.preprocessor,
+        $.module_decl,
+        $.module_alias,
       ),
 
     /// TYPE DECLARATION
 
     type_decl: $ => seq(
       "type",
+      optional(field("params", $._type_params)),
       field("name", $.TypeName),
       "=",
-      field("type", $._type_def_body)
+      field("type", $._type_expr)
     ),
 
-    _type_def_body: $ => choice(
-      $.sum_type,
-      $.record_type,
-      $._type_expr,
+    _type_params: $ => choice(
+      $.type_param,
+      $.type_params,
     ),
 
-    sum_type: $ =>
-      prec.left(10,
-        seq(choice(
-          common.sepBy1('|', field("variant", $.variant)),
-          common.withAttrs($, seq('|', common.sepBy1('|', field("variant", $.variant)))),
-        ))
-      ),
+    type_param: $ => field("param", $.var_type),
 
-    // Cat of string, Person of string * string
-    variant: $ => common.withAttrs($, seq(
-      field("constructor", $.ConstrName),
-      optional(seq(
-        "of",
-        field("type", $._type_expr)
-      ))
-    )),
+    type_params: $ => common.par(
+      common.sepBy1(",", field("param", $.var_type)),
+    ),
 
     // { field1 : a; field2 : b }
     record_type: $ => common.withAttrs($, seq(
@@ -73,44 +90,76 @@ module.exports = grammar({
       field("type", $._type_expr)
     )),
 
-    _type_expr: $ => choice(
+    ...sum_type_rules('_prod_type_level'),
+
+    _lambda_app_type: $ => choice(
+      $._prod_type_level,
+      $.sum_type_prod_type_level,
+    ),
+
+    _prod_type_level: $ => choice(
+      $.prod_type,
+      $._type_core,
+    ),
+
+    _fun_type_level: $ => choice(
+      $.fun_type,
+      $._prod_type_level,
+    ),
+
+    _type_core: $ => choice(
       $.Int,
       $.TypeWildcard,
+      $.string_type,
       $.TypeName,
-      $.fun_type,
-      $.prod_type,
-      $.app_type,
       $.tuple_type,
+      $.app_type,
+      $.record_type,
       $.module_TypeName,
+      $.var_type,
+    ),
+
+    ...sum_type_rules('_fun_type_level'),
+
+    _type_expr: $ => choice(
+      $._fun_type_level,
+      $.sum_type_fun_type_level,
+    ),
+
+    var_type: $ => seq(
+      "'",
+      field("name", $.TypeVariableName),
     ),
 
     // int -> string
     fun_type: $ => prec.right(8, seq(
-      field("domain", $._type_expr),
+      field("domain", $._prod_type_level),
       "->",
-      field("codomain", $._type_expr)
+      field("codomain", $._fun_type_level)
     )),
 
     // string * integer
     prod_type: $ => prec.right(5, seq(
-      field("x", $._type_expr),
+      field("x", $._type_core),
       common.some(seq(
         "*",
-        field("x", $._type_expr)
+        field("x", $._type_core)
       ))
     )),
 
     // a t, (a, b) t
     app_type: $ => prec(10, seq(
-      field("x", $._type_expr),
+      field("x", choice(
+        $._type_core,
+      )),
       field("f", $.TypeName)
     )),
 
-    tuple_type: $ => seq(
-      "(",
-      common.sepBy1(",", field("x", choice($._type_expr, $.String))),
-      ")"
-    ),
+    tuple_type: $ => common.par(seq(
+      common.sepBy1(",", field("x", $._type_expr)),
+    )),
+
+    string_type: $ => field("value", $.String),
 
     module_TypeName: $ =>
       seq(
@@ -150,16 +199,33 @@ module.exports = grammar({
       field("body", $._program),
     )),
 
+    /// MODULES
+
+    module_decl: $ => seq(
+      "module",
+      field("moduleName", $.ModuleName),
+      "=",
+      "struct",
+      repeat(field("declaration", $._declaration)),
+      "end"
+    ),
+
+    module_alias: $ => seq(
+      "module",
+      field("moduleName", $.ModuleName),
+      "=",
+      common.sepBy('.', field("module", $.ModuleName))
+    ),
+
     /// PROGRAM
 
     _program: $ => choice(
       $.let_in,
-      $.type_decl,
       $._expr
     ),
 
     let_in: $ => seq(
-      field("decl", choice($.let_decl, $.fun_decl)),
+      field("decl", $._decl),
       "in",
       field("body", $._program)
     ),
@@ -188,7 +254,7 @@ module.exports = grammar({
     // [1;2]
     list_pattern: $ => seq(
       "[",
-      common.sepBy(';', field("item", $._pattern)),
+      common.sepEndBy(';', field("item", $._pattern)),
       "]"
     ),
 
@@ -314,18 +380,19 @@ module.exports = grammar({
 
     // - a
     unary_op_app: $ => prec(19, seq(
-      field("negate", "-"),
+      field("negate", choice("-", "not")),
       field("arg", $._expr)
     )),
 
     binary_op_app: $ => choice(
-      prec.left(16, mkOp($, "mod")),
-      prec.left(15, mkOp($, choice("/", "*"))),
-      prec.left(14, mkOp($, choice("-", "+"))),
-      prec.right(13, mkOp($, "::")),
-      prec.right(12, mkOp($, "^")),
-      prec.left(11, mkOp($, choice("&&", "||"))),
-      prec.left(10, mkOp($, choice("=", "<>", "==", "<", "<=", ">", ">="))),
+      prec.right(17, mkOp($, choice("lsl", "lsr"))),
+      prec.left(16, mkOp($, choice("/", "*", "mod", "land", "lor", "lxor"))),
+      prec.left(15, mkOp($, choice("-", "+"))),
+      prec.right(14, mkOp($, "::")),
+      prec.right(13, mkOp($, "^")),
+      prec.left(12, mkOp($, choice("=", "<>", "<", "<=", ">", ">="))),
+      prec.left(11, mkOp($, "&&")),
+      prec.left(10, mkOp($, choice("or", "||"))),
     ),
 
     tup_expr: $ => prec.right(9, seq(
@@ -337,17 +404,21 @@ module.exports = grammar({
     )),
 
     _sub_expr: $ => choice(
+      $._core_expr,
+      $.fun_app,
+      $.if_expr,
+      $.lambda_expr,
+      $.match_expr,
+    ),
+
+    _core_expr: $ => choice(
       $.ConstrName,
       $.Name,
       $._literal,
-      $.fun_app,
       $.paren_expr,
       $.annot_expr,
       $.record_expr,
       $.record_literal,
-      $.if_expr,
-      $.lambda_expr,
-      $.match_expr,
       $.list_expr,
       $.data_projection,
       $.module_access,
@@ -357,8 +428,8 @@ module.exports = grammar({
 
     // f a
     fun_app: $ => prec.left(20, seq(
-      field("f", $._sub_expr),
-      field("x", $._sub_expr)
+      field("f", $._core_expr),
+      repeat1(field("x", $._core_expr))
     )),
 
     paren_expr: $ => seq(
@@ -420,12 +491,16 @@ module.exports = grammar({
       ))
     )),
 
-    lambda_expr: $ => seq(
+    lambda_expr: $ => common.withAttrs($, seq(
       "fun",
-      repeat1(field("arg", $._irrefutable)),
+      repeat1(field("arg", $._sub_irrefutable)),
+      optional(seq(
+        ":",
+        field("type", $._lambda_app_type),
+      )),
       "->",
       field("body", $._program)
-    ),
+    )),
 
     // match x with ...
     match_expr: $ => prec.right(1, seq(
@@ -445,7 +520,7 @@ module.exports = grammar({
 
     list_expr: $ => seq(
       "[",
-      common.sepBy(";", field("item", $._expr)),
+      common.sepEndBy(";", field("item", $._expr)),
       "]"
     ),
 
@@ -494,30 +569,42 @@ module.exports = grammar({
 
     /// PREPROCESSOR
 
+    // I (@heitor.toledo) decided to keep the preprocessors here since we still
+    // attempt to parse the contract even if `ligo preprocess` failed.
     preprocessor: $ => field("preprocessor_command", choice(
-      $.include,
+      $.p_include,
       $.p_if,
       $.p_error,
-      $.p_warning,
       $.p_define,
     )),
 
-    include: $ => seq(
-      '#include',
+    p_include: $ => seq(
+      '#',
+      'include',
       field("filename", $.String)
+    ),
+
+    p_import: $ => seq(
+      '#',
+      'import',
+      field("filename", $.String),
+      field("alias", $.String),
     ),
 
     p_if: $ => choice(
       seq(
-        choice('#if', '#ifdef', '#ifndef', '#elif', '#else'),
+        '#',
+        choice('if', 'elif', 'else'),
         field("rest", $._till_newline),
       ),
-      '#endif',
+      seq(
+        '#',
+        'endif',
+      ),
     ),
 
-    p_error: $ => seq('#error', field("message", $._till_newline)),
-    p_warning: $ => seq('#warning', field("message", $._till_newline)),
-    p_define: $ => seq(choice('#define', '#undef'), field("definition", $._till_newline)),
+    p_error: $ => seq('#', 'error', field("message", $._till_newline)),
+    p_define: $ => seq('#', choice('define', 'undef'), field("definition", $._till_newline)),
 
     /// MISCELLANEOUS UTILITIES
 
@@ -542,6 +629,7 @@ module.exports = grammar({
     TypeName: $ => $._Name,
     Name: $ => $._Name,
     NameDecl: $ => $._Name,
+    TypeVariableName: $ => $._Name,
 
     _till_newline: $ => /[^\n]*\n/,
 

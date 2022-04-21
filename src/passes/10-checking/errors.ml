@@ -1,3 +1,6 @@
+module Snippet  = Simple_utils.Snippet
+module Location = Simple_utils.Location
+module Var      = Simple_utils.Var
 open Simple_utils.Display
 
 let stage = "typer"
@@ -6,23 +9,23 @@ type typer_error = [
   | `Typer_missing_funarg_annotation of Ast_typed.expression_variable
   | `Typer_michelson_comb_no_record of Location.t
   | `Typer_michelson_comb_no_variant of Location.t
-  | `Typer_unbound_module_variable of Ast_typed.Environment.t * Ast_typed.module_variable * Location.t
-  | `Typer_unbound_type_variable of Ast_typed.Environment.t * Ast_typed.type_variable * Location.t
-  | `Typer_unbound_variable of Ast_typed.Environment.t * Ast_typed.expression_variable * Location.t
+  | `Typer_unbound_module_variable of Ast_typed.module_variable * Location.t
+  | `Typer_unbound_type_variable of Ast_typed.type_variable * Location.t
+  | `Typer_unbound_variable of Ast_typed.expression_variable * Location.t
   | `Typer_match_missing_case of Ast_core.label list * Ast_core.label list * Location.t
   | `Typer_match_extra_case of Ast_core.label list * Ast_core.label list * Location.t
-  | `Typer_unbound_constructor of Ast_typed.Environment.t * Ast_core.label * Location.t
-  | `Typer_redundant_constructor of Ast_typed.Environment.t * Ast_core.label * Location.t
+  | `Typer_unbound_constructor of Ast_core.label * Location.t
+  | `Typer_redundant_constructor of Ast_core.label * Location.t
   | `Typer_type_constant_wrong_number_of_arguments of Ast_core.type_variable option * int * int * Location.t
   | `Typer_michelson_or_no_annotation of Ast_core.label * Location.t
   | `Typer_module_tracer of Ast_core.module_ * typer_error
-  | `Typer_constant_declaration_tracer of Ast_core.expression_variable * Ast_core.expression * (Ast_typed.type_expression option) * typer_error
+  | `Typer_constant_declaration_tracer of Location.t * Ast_core.expression_variable * Ast_core.expression * (Ast_typed.type_expression option) * typer_error
   | `Typer_match_error of Ast_typed.type_expression * Ast_typed.type_expression * Location.t
   | `Typer_needs_annotation of Ast_core.expression * string
   | `Typer_fvs_in_create_contract_lambda of Ast_core.expression * Ast_typed.expression_variable
   | `Typer_create_contract_lambda of Ast_core.constant' * Ast_core.expression
   | `Typer_should_be_a_function_type of Ast_typed.type_expression * Ast_core.expression
-  | `Typer_bad_record_access of Ast_core.label * Ast_core.expression * Ast_typed.type_expression * Location.t
+  | `Typer_bad_record_access of Ast_typed.label * Ast_typed.expression * Location.t
   | `Typer_expression_tracer of Ast_core.expression * typer_error
   | `Typer_record_access_tracer of Ast_typed.expression * typer_error
   | `Typer_assert_equal of Location.t * Ast_typed.type_expression * Ast_typed.type_expression
@@ -76,7 +79,6 @@ type typer_error = [
   | `Typer_different_types of Ast_typed.type_expression * Ast_typed.type_expression
   | `Typer_variant_redefined_error of Location.t
   | `Typer_record_redefined_error of Location.t
-  | `Typer_constant_tag_number_of_arguments of string * Ast_typed.constant_tag * Ast_typed.constant_tag * int * int
   | `Typer_typeclass_not_a_rectangular_matrix
   | `Typer_internal_error of string * string
   | `Trace_debug of string * typer_error
@@ -84,104 +86,12 @@ type typer_error = [
   | `Typer_pattern_do_not_conform_type of Ast_core.type_expression Ast_core.pattern * Ast_typed.type_expression
   | `Typer_redundant_pattern of Location.t
   | `Typer_wrong_type_for_unit_pattern of Location.t * Ast_typed.type_expression
-]
+  | `Typer_poly_not_applied of Location.t
+  | `Typer_wrong_generalizable of Location.t * Ast_core.type_variable
+] [@@deriving poly_constructor { prefix = "typer_" }]
 
-let wrong_type_for_unit_pattern l t = `Typer_wrong_type_for_unit_pattern (l,t)
-let pattern_do_not_conform_type p t = `Typer_pattern_do_not_conform_type (p,t)
-let pattern_do_not_match loc = `Typer_pattern_do_not_match loc
-let missing_funarg_annotation v = `Typer_missing_funarg_annotation v
-let variant_redefined_error (loc:Location.t) = `Typer_variant_redefined_error loc
-let record_redefined_error (loc:Location.t) = `Typer_record_redefined_error loc
-let michelson_comb_no_record (loc:Location.t) = `Typer_michelson_comb_no_record loc
-let michelson_comb_no_variant (loc:Location.t) = `Typer_michelson_comb_no_variant loc
-let unbound_module_variable (e:Ast_typed.Environment.t) (mv:Ast_typed.module_variable) (loc:Location.t) = `Typer_unbound_module_variable (e,mv,loc)
-let unbound_type_variable (e:Ast_typed.Environment.t) (tv:Ast_typed.type_variable) (loc:Location.t) = `Typer_unbound_type_variable (e,tv,loc)
-let unbound_variable (e:Ast_typed.Environment.t) (v:Ast_typed.expression_variable) (loc:Location.t) = `Typer_unbound_variable (e,v,loc)
-let match_missing_case (m:Ast_core.label list) (v:Ast_core.label list) (loc:Location.t) = `Typer_match_missing_case (m, v, loc)
-let match_extra_case (m:Ast_core.label list) (v:Ast_core.label list) (loc:Location.t) = `Typer_match_extra_case (m, v, loc)
-let unbound_constructor (e:Ast_typed.Environment.t) (c:Ast_core.label) (loc:Location.t) = `Typer_unbound_constructor (e,c,loc)
-let type_constant_wrong_number_of_arguments (op:Ast_core.type_variable option) (expected:int) (actual:int) loc = `Typer_type_constant_wrong_number_of_arguments (op,expected,actual,loc)
-let redundant_constructor (e:Ast_typed.Environment.t) (c:Ast_core.label) (loc:Location.t) = `Typer_redundant_constructor (e,c,loc)
-let michelson_or (c:Ast_core.label) (loc:Location.t) = `Typer_michelson_or_no_annotation (c,loc)
-let module_error_tracer (p:Ast_core.module_) (err:typer_error) = `Typer_module_tracer (p,err)
-let constant_declaration_error_tracer (name:Ast_core.expression_variable) (ae:Ast_core.expression) (expected: Ast_typed.type_expression option) (err:typer_error) =
-  `Typer_constant_declaration_tracer (name,ae,expected,err)
 let match_error ~(expected: Ast_typed.type_expression) ~(actual: Ast_typed.type_expression) (loc:Location.t) =
-  `Typer_match_error (expected,actual,loc)
-let needs_annotation (e:Ast_core.expression) (case:string) = `Typer_needs_annotation (e,case)
-let fvs_in_create_contract_lambda (e:Ast_core.expression) (fvar:Ast_typed.expression_variable) = `Typer_fvs_in_create_contract_lambda (e,fvar)
-let create_contract_lambda (cst : Ast_core.constant') (e : Ast_core.expression) = `Typer_create_contract_lambda (cst,e)
-let type_error_approximate ~(actual: Ast_typed.type_expression) ~(expression:Ast_core.expression) =
-  `Typer_should_be_a_function_type (actual,expression)
-let bad_record_access (field:Ast_core.label) (ae:Ast_core.expression) (t:Ast_typed.type_expression) (loc:Location.t) =
-  `Typer_bad_record_access (field,ae,t,loc)
-let expression_tracer ae err = `Typer_expression_tracer (ae,err)
-let record_access_tracer (e:Ast_typed.expression) (err:typer_error) = `Typer_record_access_tracer (e,err)
-let assert_equal (loc:Location.t) (expected:Ast_typed.type_expression) (actual:Ast_typed.type_expression) = `Typer_assert_equal (loc,expected,actual)
-let corner_case desc = `Typer_corner_case desc
-let bad_collect_loop (t:Ast_typed.type_expression) (loc:Location.t) = `Typer_bad_collect_loop (t,loc)
-let declaration_order_record (loc:Location.t) = `Typer_declaration_order_record loc
-let too_small_record (loc:Location.t) = `Typer_too_small_record loc
-let expected_record (loc:Location.t) (t:Ast_typed.type_expression) = `Typer_expected_record (loc,t)
-let expected_variant (loc:Location.t) (t:Ast_typed.type_expression) = `Typer_expected_variant (loc,t)
-let wrong_param_number (loc:Location.t) (name:string) (expected:int) (actual:Ast_typed.type_expression list) =
-  `Typer_wrong_param_number (loc,name,expected,actual)
-let bad_list_fold_tracer err = `Typer_bad_list_fold_tracer err
-let bad_set_fold_tracer err = `Typer_bad_set_fold_tracer err
-let bad_map_fold_tracer err = `Typer_bad_map_fold_tracer err
-let expected_function (loc:Location.t) (t:Ast_typed.type_expression) = `Typer_expected_function (loc,t)
-let expected_pair (loc:Location.t) (t:Ast_typed.type_expression) = `Typer_expected_pair (loc,t)
-let expected_list (loc:Location.t) (t:Ast_typed.type_expression) = `Typer_expected_list (loc,t)
-let expected_sapling_transaction (loc:Location.t) (t:Ast_typed.type_expression) = `Typer_expected_sapling_transaction (loc,t)
-let expected_sapling_state (loc:Location.t) (t:Ast_typed.type_expression) = `Typer_expected_sapling_state (loc,t)
-let expected_ligo_code (loc:Location.t) (t:Ast_typed.type_expression) = `Typer_expected_ligo_code (loc,t)
-let expected_michelson_code (loc:Location.t) (t:Ast_typed.type_expression) = `Typer_expected_michelson_code (loc,t)
-let expected_address (loc:Location.t) (t:Ast_typed.type_expression) = `Typer_expected_address (loc,t)
-let expected_set (loc:Location.t) (t:Ast_typed.type_expression) = `Typer_expected_set (loc,t)
-let expected_map (loc:Location.t) (t:Ast_typed.type_expression) = `Typer_expected_map (loc,t)
-let expected_big_map (loc:Location.t) (t:Ast_typed.type_expression) = `Typer_expected_big_map (loc,t)
-let expected_option (loc:Location.t) (t:Ast_typed.type_expression) = `Typer_expected_option (loc,t)
-let expected_nat (loc:Location.t) (t:Ast_typed.type_expression) = `Typer_expected_nat (loc,t)
-let expected_bytes (loc:Location.t) (t:Ast_typed.type_expression) = `Typer_expected_bytes (loc,t)
-let expected_key (loc:Location.t) (t:Ast_typed.type_expression) = `Typer_expected_key (loc,t)
-let expected_signature (loc:Location.t) (t:Ast_typed.type_expression) = `Typer_expected_signature (loc,t)
-let expected_contract (loc:Location.t) (t:Ast_typed.type_expression) = `Typer_expected_contract (loc,t)
-let expected_typed_address (loc:Location.t) (t:Ast_typed.type_expression) = `Typer_expected_typed_address (loc,t)
-let expected_ticket (loc:Location.t) (t:Ast_typed.type_expression) = `Typer_expected_ticket (loc,t)
-let expected_string (loc:Location.t) (t:Ast_typed.type_expression) = `Typer_expected_string (loc,t)
-let expected_key_hash (loc:Location.t) (t:Ast_typed.type_expression) = `Typer_expected_key_hash (loc,t)
-let expected_mutez (loc:Location.t) (t:Ast_typed.type_expression) = `Typer_expected_mutez (loc,t)
-let expected_op_list (loc:Location.t) (t:Ast_typed.type_expression) = `Typer_expected_op_list (loc,t)
-let expected_int (loc:Location.t) (t:Ast_typed.type_expression) = `Typer_expected_int (loc,t)
-let expected_bool (loc:Location.t) (t:Ast_typed.type_expression) = `Typer_expected_bool (loc,t)
-let expected_unit (loc:Location.t) (t:Ast_typed.type_expression) = `Typer_expected_unit (loc,t)
-let expected_ascription (t:Ast_core.expression) = `Typer_expected_ascription t
-let not_matching (loc:Location.t) (t1:Ast_typed.type_expression) (t2:Ast_typed.type_expression) = `Typer_not_matching (loc,t1,t2)
-let not_annotated (loc: Location.t) = `Typer_not_annotated loc
-let contract_not_annotated (loc: Location.t) = `Typer_contract_not_annotated loc
-let bad_subtraction (loc:Location.t) = `Typer_bad_substraction loc
-let wrong_size (loc:Location.t) (t:Ast_typed.type_expression) = `Typer_wrong_size (loc,t)
-let wrong_neg (loc:Location.t) (t:Ast_typed.type_expression) = `Typer_wrong_neg (loc,t)
-let wrong_not (loc:Location.t) (t:Ast_typed.type_expression) = `Typer_wrong_not (loc,t)
-let typeclass_error (loc:Location.t) (exps:Ast_typed.type_expression list list) (acts:Ast_typed.type_expression list) =
-  `Typer_typeclass_error (loc,exps,acts)
-let wrong_converter (t:Ast_typed.type_expression) = `Typer_converter t
-let uncomparable_types (loc:Location.t) (a:Ast_typed.type_expression) (b:Ast_typed.type_expression) =
-  `Typer_uncomparable_types (loc,a,b)
-let comparator_composed (loc:Location.t) (a:Ast_typed.type_expression) = `Typer_comparator_composed (loc,a)
-let unrecognized_type_constant (e:Ast_core.type_expression) = `Typer_unrecognized_type_constant e
-
-(* new typer errors *)
-let constant_declaration_tracer (name: Ast_core.expression_variable) (ae:Ast_core.expression) (expected: Ast_typed.type_expression option) (err:typer_error) =
-  `Typer_constant_decl_tracer (name,ae,expected,err)
-let different_types a b = `Typer_different_types (a,b)
-let different_constant_tag_number_of_arguments loc opa opb lena lenb = `Typer_constant_tag_number_of_arguments (loc, opa, opb, lena, lenb)
-let typeclass_not_a_rectangular_matrix = `Typer_typeclass_not_a_rectangular_matrix
-let internal_error (loc : string) (msg : string) : typer_error = `Typer_internal_error (loc, msg)
-let could_not_remove = fun constraints -> `Typer_could_not_remove constraints
-let trace_debug (msg : string) (err : typer_error) : typer_error = `Trace_debug (msg,err)
-let redundant_pattern (x : Location.t) : typer_error = `Typer_redundant_pattern x
-
+  match_error expected actual loc
 
 let rec error_ppformat : display_format:string display_format ->
   Format.formatter -> typer_error -> unit =
@@ -202,10 +112,10 @@ let rec error_ppformat : display_format:string display_format ->
       Format.fprintf f
         "@[<hv>%a@.Pattern do not match returned expression.@]"
           Snippet.pp loc
-    | `Typer_missing_funarg_annotation v ->
+    | `Typer_missing_funarg_annotation (v) ->
       Format.fprintf f
         "@[<hv>%a@.Missing a type annotation for argument \"%a\".@]"
-          Snippet.pp v.location
+          Snippet.pp (Stage_common.Var.get_location v)
           Ast_typed.PP.expression_variable v
     | `Typer_michelson_comb_no_record loc ->
       Format.fprintf f
@@ -215,30 +125,30 @@ let rec error_ppformat : display_format:string display_format ->
       Format.fprintf f
         "@[<hv>%a@.Invalid usage of type \"michelson_or\".@.The \"michelson_or\" type expects a variant type as argument. @]"
         Snippet.pp loc
-    | `Typer_unbound_module_variable (_env,mv,loc) ->
+    | `Typer_unbound_module_variable (mv,loc) ->
       Format.fprintf f
         "@[<hv>%a@.Module \"%a\" not found. @]"
         Snippet.pp loc
         Ast_typed.PP.module_variable mv
-    | `Typer_unbound_type_variable (_env,tv,loc) ->
+    | `Typer_unbound_type_variable (tv,loc) ->
       Format.fprintf f
         "@[<hv>%a@.Type \"%a\" not found. @]"
         Snippet.pp loc
         Ast_typed.PP.type_variable tv
-    | `Typer_unbound_variable (_env,v,loc) ->
+    | `Typer_unbound_variable (v,loc) ->
       Format.fprintf f
         "@[<hv>%a@.Variable \"%a\" not found. @]"
         Snippet.pp loc
         Ast_typed.PP.expression_variable v
     | `Typer_match_missing_case (m, v, loc) ->
       let missing = List.fold_left ~f:(fun all o ->
-        match List.find ~f:(fun f -> f = o) v with
+        match List.find ~f:(fun f -> Ast_typed.Compare.label f o = 0) v with
         | Some _ -> all
         | None ->
           let (Label o) = o in
           o :: all
       ) ~init:[] m in
-      let missing = String.concat ", " missing in
+      let missing = String.concat ~sep:", " missing in
       Format.fprintf f
         "@[<hv>%a@.Pattern matching is not exhaustive.@.Cases that are missing: %s. @]"
         Snippet.pp loc
@@ -247,9 +157,9 @@ let rec error_ppformat : display_format:string display_format ->
       let open Ast_core in
       let rec extra (processed: string list) (redundant: string list) (unknown: string list) = function
       | Label l :: remaining -> (
-        match (List.find ~f:(fun f -> f = Label l) m)  with
+        match (List.find ~f:(fun f -> Ast_typed.Compare.label (Label l) f = 0) m)  with
         | Some _ -> (
-          match (List.find ~f:(fun f -> f = l) processed) with
+          match (List.find ~f:(fun f -> String.equal f l) processed) with
           | Some _ -> extra processed (l :: redundant) unknown remaining
           | None -> extra (l :: processed) redundant unknown remaining
         )
@@ -260,25 +170,25 @@ let rec error_ppformat : display_format:string display_format ->
       Format.fprintf f "@[<hv>%a@.Pattern matching over too many cases.@]"
         Snippet.pp loc;
       if List.length redundant > 0 then (
-        let redundant = String.concat ", " redundant in
+        let redundant = String.concat ~sep:", " redundant in
         Format.fprintf f
           "@[<hv>@.These case(s) are duplicate:@.%s@]"
           redundant
       );
       if List.length unknown > 0 then (
-        let unknown = String.concat ", " unknown in
+        let unknown = String.concat ~sep:", " unknown in
         Format.fprintf f
           "@[<hv>@.These case(s) don't belong to the variant:@.%s@]"
           unknown
       );
       Format.fprintf f
           "@[<hv>@.Please remove the extra cases. @]"
-    | `Typer_unbound_constructor (_env,c,loc) ->
+    | `Typer_unbound_constructor (c,loc) ->
       Format.fprintf f
         "@[<hv>%a@.Constructor \"%a\" not found. @]"
         Snippet.pp loc
         Ast_core.PP.label c
-    | `Typer_redundant_constructor (_env,c,loc) ->
+    | `Typer_redundant_constructor (c,loc) ->
       Format.fprintf f
         "@[<hv>%a@.Invalid variant.@.Constructor \"%a\" already exists as part of another variant. @]"
         Snippet.pp loc
@@ -304,7 +214,7 @@ let rec error_ppformat : display_format:string display_format ->
       Format.fprintf f
         "%a"
         (error_ppformat ~display_format) err
-    | `Typer_constant_declaration_tracer (_,_,_,err) ->
+    | `Typer_constant_declaration_tracer (_,_,_,_,err) ->
       error_ppformat ~display_format f err
     | `Typer_match_error (expected,actual,loc) ->
       Format.fprintf f
@@ -331,12 +241,12 @@ let rec error_ppformat : display_format:string display_format ->
         "@[<hv>%a@.Invalid type.@.Expected a function type, but got \"%a\". @]"
         Snippet.pp e.location
         Ast_typed.PP.type_expression actual
-    | `Typer_bad_record_access (field,ae,_t,loc) ->
+    | `Typer_bad_record_access (field,e,loc) ->
       Format.fprintf f
         "@[<hv>%a@.Invalid record field \"%a\" in record \"%a\". @]"
         Snippet.pp loc
         Ast_core.PP.label field
-        Ast_core.PP.expression ae
+        Ast_typed.PP.expression e
     | `Typer_corner_case desc ->
       Format.fprintf f
         "@[<hv>A type system corner case occurred:@.%s@]"
@@ -563,7 +473,7 @@ let rec error_ppformat : display_format:string display_format ->
         Ast_typed.PP.type_expression t
     | `Typer_not_matching (loc,t1,t2) ->
       Format.fprintf f
-        "@[<hv>%a@.These types are not matching:@ - %a@ - %a@]"
+        "@[<hv>%a@.These types are not matching:@. - %a@. - %a@]"
         Snippet.pp loc
         Ast_typed.PP.type_expression t1
         Ast_typed.PP.type_expression t2
@@ -594,13 +504,6 @@ let rec error_ppformat : display_format:string display_format ->
       Format.fprintf f
         "@[<hv>%a@.Redefined record. @]"
         Snippet.pp loc
-    | `Typer_constant_tag_number_of_arguments (loc, opa, _opb, lena, lenb) ->
-      Format.fprintf f
-        "@[<hv> different number of arguments to type constructors.@ \
-        Expected these two n-ary type constructors to be the same, but they have different number\
-        of arguments (both use the %s type constructor, but they have %d and %d arguments, respectively)@ \
-        Thrown by compiler at %s@]"
-        (Format.asprintf "%a" Ast_typed.PP.constant_tag opa) lena lenb loc
     | `Typer_typeclass_not_a_rectangular_matrix ->
       Format.fprintf f "@[<hv>internal error: typeclass is not represented as a rectangular matrix with one column per argument@]"
     | `Typer_internal_error (loc, msg) -> Format.fprintf f "internal error at %s: %s" loc msg
@@ -611,14 +514,21 @@ let rec error_ppformat : display_format:string display_format ->
         | File _ -> ()
       in
       Format.fprintf f
-        "@[<hv>%a@.Pattern %ado not conform type %a @]"
+        "@[<hv>%a@.Pattern %anot of the expected type %a @]"
         Snippet.pp p.location pf p Ast_typed.PP.type_expression t
     | `Typer_redundant_pattern loc ->
       Format.fprintf f
         "@[<hv>%a@.Redundant pattern matching@]"
         Snippet.pp loc
+    | `Typer_poly_not_applied loc ->
+      Format.fprintf f
+        "@[<hv>%a@.Polymorphic value is not applied enough@]"
+        Snippet.pp loc
+    | `Typer_wrong_generalizable (loc, t) ->
+      Format.fprintf f
+        "@[<hv>%a@.Invalid type name: %a is a generalizable variable@]"
+        Snippet.pp loc Ast_core.PP.type_variable t
   )
-
 let rec error_jsonformat : typer_error -> Yojson.Safe.t = fun a ->
   let json_error ~stage ~content =
     `Assoc [
@@ -658,7 +568,7 @@ let rec error_jsonformat : typer_error -> Yojson.Safe.t = fun a ->
     let content = `Assoc [
       ("value", Stage_common.Types.expression_variable_to_yojson v );
       ("message", `String message );
-      ("location", Location.to_yojson v.location); ] in
+      ("location", Location.to_yojson @@ Stage_common.Var.get_location v); ] in
     json_error ~stage ~content
   | `Typer_michelson_comb_no_record loc ->
     let message = `String "michelson pair comb can only be used on a record type" in
@@ -676,45 +586,39 @@ let rec error_jsonformat : typer_error -> Yojson.Safe.t = fun a ->
       ("location", `String loc)
     ] in
     json_error ~stage ~content
-  | `Typer_unbound_module_variable (env,mv,loc) ->
+  | `Typer_unbound_module_variable (mv,loc) ->
     let message = `String "unbound module" in
     let loc = Format.asprintf "%a" Location.pp loc in
     let value = Format.asprintf "%a" Ast_typed.PP.module_variable mv in
-    let env = Format.asprintf "%a" Ast_typed.Environment.PP.environment env in
     let content = `Assoc [
       ("message", message);
       ("location", `String loc);
       ("value", `String value);
-      ("env", `String env);
     ] in
     json_error ~stage ~content
-  | `Typer_unbound_type_variable (env,tv,loc) ->
+  | `Typer_unbound_type_variable (tv,loc) ->
     let message = `String "unbound type variable" in
     let loc = Format.asprintf "%a" Location.pp loc in
     let value = Format.asprintf "%a" Ast_typed.PP.type_variable tv in
-    let env = Format.asprintf "%a" Ast_typed.Environment.PP.environment env in
     let content = `Assoc [
       ("message", message);
       ("location", `String loc);
       ("value", `String value);
-      ("env", `String env);
     ] in
     json_error ~stage ~content
-  | `Typer_unbound_variable (env,v,loc) ->
+  | `Typer_unbound_variable (v,loc) ->
     let message = `String "unbound type variable" in
     let loc = Format.asprintf "%a" Location.pp loc in
     let value = Format.asprintf "%a" Ast_typed.PP.expression_variable v in
-    let env = Format.asprintf "%a" Ast_typed.Environment.PP.environment env in
     let content = `Assoc [
       ("message", message);
       ("location", `String loc);
       ("value", `String value);
-      ("env", `String env);
     ] in
     json_error ~stage ~content
   | `Typer_match_missing_case (m, v, loc) ->
     let missing = List.fold_left ~f:(fun all o ->
-      match List.find ~f:(fun f -> f = o) v with
+      match List.find ~f:(fun f -> Ast_typed.Compare.label f o = 0) v with
       | Some _ -> all
       | None ->
         let (Label o) = o in
@@ -732,9 +636,9 @@ let rec error_jsonformat : typer_error -> Yojson.Safe.t = fun a ->
     let open Ast_core in
     let rec extra processed redundant unknown = function
     | Label l :: remaining -> (
-      match (List.find ~f:(fun f -> f = Label l) m)  with
+      match (List.find ~f:(fun f -> Ast_typed.Compare.label (Label l) f = 0) m)  with
       | Some _ -> (
-        match (List.find ~f:(fun f -> f = l) processed) with
+        match (List.find ~f:(fun f -> String.equal f l) processed) with
         | Some _ -> extra processed (`String l :: redundant) unknown remaining
         | None -> extra (l :: processed) redundant unknown remaining
       )
@@ -751,34 +655,30 @@ let rec error_jsonformat : typer_error -> Yojson.Safe.t = fun a ->
       ("unknown", `List unknown)
     ] in
     json_error ~stage ~content
-  | `Typer_unbound_constructor (env,c,loc) ->
+  | `Typer_unbound_constructor (c,loc) ->
     let message = `String "unbound type variable" in
     let loc = Format.asprintf "%a" Location.pp loc in
     let value = Format.asprintf "%a" Ast_core.PP.label c in
-    let env = Format.asprintf "%a" Ast_typed.Environment.PP.environment env in
     let content = `Assoc [
       ("message", message);
       ("location", `String loc);
       ("value", `String value);
-      ("env", `String env);
     ] in
     json_error ~stage ~content
-  | `Typer_redundant_constructor (env,c,loc) ->
+  | `Typer_redundant_constructor (c,loc) ->
     let message = `String "redundant constructor" in
     let loc = Format.asprintf "%a" Location.pp loc in
     let value = Format.asprintf "%a" Ast_core.PP.label c in
-    let env = Format.asprintf "%a" Ast_typed.Environment.PP.environment env in
     let content = `Assoc [
       ("message", message);
       ("location", `String loc);
       ("value", `String value);
-      ("env", `String env);
     ] in
     json_error ~stage ~content
   | `Typer_type_constant_wrong_number_of_arguments (op, e, a, loc) ->
     let message = `String "Wrong number of arguments for type constant" in
     let loc = Format.asprintf "%a" Location.pp loc in
-    let op = Ast_core.Yojson.option Var.to_yojson op in
+    let op = Ast_core.Yojson.option Ast_core.Var.to_yojson op in
     let content = `Assoc [
       ("message", message);
       ("location", `String loc);
@@ -799,7 +699,7 @@ let rec error_jsonformat : typer_error -> Yojson.Safe.t = fun a ->
     json_error ~stage ~content
   | `Typer_module_tracer (p,err) ->
     let message = `String "Typing module" in
-    let over = List.fold_left ~f:(fun a (p:Ast_core.declaration Location.wrap) -> match p.location with File reg -> Region.cover a reg | Virtual _ -> a) ~init:Region.ghost p in
+    let over = List.fold_left ~f:(fun a (p:Ast_core.declaration Location.wrap) -> match p.location with File reg -> Simple_utils.Region.cover a reg | Virtual _ -> a) ~init:Simple_utils.Region.ghost p in
     let loc = `String (Format.asprintf "%a" Location.pp_lift over) in
     let content = `Assoc [
       ("message", message);
@@ -807,10 +707,10 @@ let rec error_jsonformat : typer_error -> Yojson.Safe.t = fun a ->
       ("children", error_jsonformat err);
     ] in
     json_error ~stage ~content
-  | `Typer_constant_declaration_tracer (name,ae,Some t,err) ->
+  | `Typer_constant_declaration_tracer (loc,name,ae,Some t,err) ->
     let message = `String "Typing constant declaration" in
     let value = `String (Format.asprintf "%a" Ast_core.PP.expression ae) in
-    let loc = `String (Format.asprintf "%a" Location.pp name.location) in
+    let loc = Location.to_yojson loc in
     let name = `String (Format.asprintf "%a" Ast_core.PP.expression_variable name) in
     let expected = `String (Format.asprintf "%a" Ast_typed.PP.type_expression t) in
     let content = `Assoc [
@@ -822,9 +722,9 @@ let rec error_jsonformat : typer_error -> Yojson.Safe.t = fun a ->
       ("children", error_jsonformat err);
     ] in
     json_error ~stage ~content
-  | `Typer_constant_declaration_tracer (name,ae,None,err) ->
+  | `Typer_constant_declaration_tracer (loc,name,_,None,err) ->
     let message = `String "Typing constant declaration" in
-    let loc = Location.to_yojson ae.location in
+    let loc = Location.to_yojson loc in
     let name = `String (Format.asprintf "%a" Ast_core.PP.expression_variable name) in
     let content = `Assoc [
       ("message", message);
@@ -890,15 +790,14 @@ let rec error_jsonformat : typer_error -> Yojson.Safe.t = fun a ->
       ("actual", actual);
     ] in
     json_error ~stage ~content
-  | `Typer_bad_record_access (field,ae,t,loc) ->
+  | `Typer_bad_record_access (field,e,loc) ->
     let message = `String "invalid record field" in
-    let field = `String (Format.asprintf "%a" Ast_core.PP.label field) in
-    let value = `String (Format.asprintf "%a" Ast_core.PP.expression ae) in
-    let value_type = `String (Format.asprintf "%a" Ast_typed.PP.type_expression t) in
+    let field = Ast_typed.Yojson.label field in
+    let value = Ast_typed.Yojson.expression e in
     let loc = `String (Format.asprintf "%a" Location.pp loc) in
     let content = `Assoc [
       ("message", message); ("location", loc);
-      ("value", value); ("value_type", value_type);
+      ("value", value);
       ("field", field);
     ] in
     json_error ~stage ~content
@@ -924,8 +823,8 @@ let rec error_jsonformat : typer_error -> Yojson.Safe.t = fun a ->
     json_error ~stage ~content
   | `Typer_assert_equal (loc,expected,actual) ->
     let message = `String "bad types" in
-    let expected = `String (Format.asprintf "%a" Ast_typed.PP.type_expression expected) in
-    let actual = `String (Format.asprintf "%a" Ast_typed.PP.type_expression actual) in
+    let expected = Ast_typed.Yojson.type_expression expected in
+    let actual = Ast_typed.Yojson.type_expression actual in
     let content = `Assoc [
       ("location", Location.to_yojson loc);
       ("message" , message);
@@ -1369,26 +1268,6 @@ let rec error_jsonformat : typer_error -> Yojson.Safe.t = fun a ->
       ("location", Location.to_yojson loc)
     ] in
     json_error ~stage ~content
-  | `Typer_constant_tag_number_of_arguments (loc, opa, opb, lena, lenb) ->
-    let message = `String "different number of arguments to type constructors.\
-      Expected these two n-ary type constructors to be the same, but they have different number\
-      of arguments" in
-    let a = `String (Format.asprintf "%a" Ast_typed.PP.constant_tag opa) in
-    let b = `String (Format.asprintf "%a" Ast_typed.PP.constant_tag opb) in
-    let op = `String (Format.asprintf "%a" Ast_typed.PP.constant_tag opa) in
-    let len_a = `Int lena in
-    let len_b = `Int lenb in
-    let loc = `String loc in
-    let content = `Assoc [
-      ("message", message) ;
-      ("a", a) ;
-      ("b", b) ;
-      ("op", op) ;
-      ("len_a", len_a) ;
-      ("len_b", len_b) ;
-      ("thrown by compiler at", loc) ;
-    ] in
-    json_error ~stage ~content
   | `Typer_typeclass_not_a_rectangular_matrix ->
     let message = `String "internal error: typeclass is not represented as a rectangular matrix with one column per argument" in
     let content = `Assoc [
@@ -1402,7 +1281,7 @@ let rec error_jsonformat : typer_error -> Yojson.Safe.t = fun a ->
     ] in
     json_error ~stage ~content
   | `Typer_pattern_do_not_conform_type (p,t) ->
-    let message = `String "pattern do not conform type" in
+    let message = `String "pattern not of the expected type" in
     let pattern = (Stage_common.To_yojson.pattern Ast_core.Yojson.type_expression) p in
     let t = Ast_typed.Yojson.type_expression t in
     let content = `Assoc [
@@ -1410,5 +1289,19 @@ let rec error_jsonformat : typer_error -> Yojson.Safe.t = fun a ->
       ("type", t);
       ("pattern", pattern);
       ("location", Location.to_yojson p.location);
+    ] in
+    json_error ~stage ~content
+  | `Typer_poly_not_applied (loc) ->
+    let message = `String "polymorphic value is not applied enough" in
+    let content = `Assoc [
+      ("message", message);
+      ("location", Location.to_yojson loc);
+    ] in
+    json_error ~stage ~content
+  | `Typer_wrong_generalizable (loc, t) ->
+    let message = `String (Format.asprintf "invalid type name: generalizable variable %a" Ast_core.PP.type_variable t) in
+    let content = `Assoc [
+      ("message", message);
+      ("location", Location.to_yojson loc);
     ] in
     json_error ~stage ~content

@@ -33,6 +33,8 @@ module Parser =
       struct
         let main = Incremental.contract
       end
+
+    module Recovery = Parsing_pascaligo.RecoverParser
   end
 
 module Pretty =
@@ -41,9 +43,9 @@ module Pretty =
     type tree = CST.t
   end
 
-module Printer =
+module Print =
   struct
-    include Cst_pascaligo.Printer
+    include Cst_pascaligo.Print
     type tree = CST.t
   end
 
@@ -57,7 +59,7 @@ module Main = ParserMainGen.Make
                 (Self_tokens)
                 (CST)
                 (Parser)
-                (Printer)
+                (Print)
                 (Pretty)
                 (Parser_CLI)
 

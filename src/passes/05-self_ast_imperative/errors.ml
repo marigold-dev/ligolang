@@ -1,3 +1,5 @@
+module Snippet = Simple_utils.Snippet
+module PP_helpers = Simple_utils.PP_helpers
 open Simple_utils.Display
 open Ast_imperative
 
@@ -11,23 +13,18 @@ type self_ast_imperative_error = [
   | `Self_ast_imperative_bad_single_arity of (constant' * expression)
   | `Self_ast_imperative_bad_map_param_type of (constant' * expression)
   | `Self_ast_imperative_bad_set_param_type of (constant' * expression)
-  | `Self_ast_imperative_bad_convertion_bytes of expression
+  | `Self_ast_imperative_bad_conversion_bytes of expression
   | `Self_ast_imperative_vars_captured of (location * expression_variable) list
   | `Self_ast_imperative_const_assigned of (location * expression_variable)
   | `Self_ast_imperative_no_shadowing of location
-]
+  | `Self_ast_imperative_non_linear_pattern of type_expression pattern
+  | `Self_ast_imperative_non_linear_record of expression
+  | `Self_ast_imperative_non_linear_type_decl of type_expression
+  | `Self_ast_imperative_non_linear_row of type_expression
+  | `Self_ast_imperative_duplicate_parameter of expression
+  | `Self_ast_imperative_reserved_name of (string * location)
 
-let too_long_constructor c e = `Self_ast_imperative_long_constructor (c,e)
-let bad_timestamp t e = `Self_ast_imperative_bad_timestamp (t,e)
-let bad_format e = `Self_ast_imperative_bad_format_literal e
-let bad_empty_arity c e = `Self_ast_imperative_bad_empty_arity (c,e)
-let bad_single_arity c e = `Self_ast_imperative_bad_single_arity (c,e)
-let bad_map_param_type c e = `Self_ast_imperative_bad_map_param_type (c,e)
-let bad_set_param_type c e = `Self_ast_imperative_bad_set_param_type (c,e)
-let bad_conversion_bytes e = `Self_ast_imperative_bad_convertion_bytes e
-let vars_captured vars = `Self_ast_imperative_vars_captured vars
-let const_rebound decl_loc var = `Self_ast_imperative_const_assigned (decl_loc, var)
-let no_shadowing l = `Self_ast_imperative_no_shadowing l
+] [@@deriving poly_constructor { prefix = "self_ast_imperative_" }]
 
 let error_ppformat : display_format:string display_format ->
   Format.formatter -> self_ast_imperative_error -> unit =
@@ -35,6 +32,31 @@ let error_ppformat : display_format:string display_format ->
   match display_format with
   | Human_readable | Dev -> (
     match a with
+    | `Self_ast_imperative_non_linear_record e ->
+      Format.fprintf f
+        "@[<v>%a@.Duplicated record field@.Hint: Change the name.@]"
+        Snippet.pp e.location
+    | `Self_ast_imperative_reserved_name (str,loc) ->
+      Format.fprintf f
+        "@[<v>%a@.Reserved name %S.@.Hint: Change the name.@]"
+        Snippet.pp loc
+        str
+    | `Self_ast_imperative_non_linear_pattern t ->
+      Format.fprintf f
+        "@[<v>%a@.Repeated variable in pattern.@.Hint: Change the name.@]"
+        Snippet.pp t.location
+    | `Self_ast_imperative_non_linear_type_decl t ->
+      Format.fprintf f
+        "@[<v>%a@.Repeated type variable in type.@.Hint: Change the name.@]"
+        Snippet.pp t.location
+    | `Self_ast_imperative_non_linear_row t ->
+      Format.fprintf f
+        "@[<v>%a@.Duplicated field or variant name.@.Hint: Change the name.@]"
+        Snippet.pp t.location
+    | `Self_ast_imperative_duplicate_parameter exp ->
+      Format.fprintf f
+        "@[<v>%a@.Duplicated variable name in function parameter.@.Hint: Change the name.@]"
+        Snippet.pp exp.location
     | `Self_ast_imperative_long_constructor (c,e) ->
       Format.fprintf f
         "@[<hv>%a@ Ill-formed data constructor \"%s\".@.Data constructors have a maximum length of 32 characters, which is a limitation imposed by annotations in Tezos. @]"
@@ -66,7 +88,7 @@ let error_ppformat : display_format:string display_format ->
       Format.fprintf f
         "@[<hv>%a@ Ill-formed \"%a\" expression.@.A list of pair parameters is expected.@]"
         Snippet.pp e.location PP.constant' c
-    | `Self_ast_imperative_bad_convertion_bytes e ->
+    | `Self_ast_imperative_bad_conversion_bytes e ->
       Format.fprintf f
         "@[<hv>%a@ Ill-formed bytes literal.@.Example of a valid bytes literal: \"ff7a7aff\". @]"
         Snippet.pp e.location
@@ -74,12 +96,12 @@ let error_ppformat : display_format:string display_format ->
        let pp_var ppf ((decl_loc, var) : location * expression_variable) =
          Format.fprintf ppf
            "@[<hv>%a@ Invalid capture of non-constant variable \"%a\", declared at@.%a@]"
-           Snippet.pp var.location PP.expression_variable var Snippet.pp decl_loc in
+           Snippet.pp (Var.get_location var) PP.expression_variable var Snippet.pp decl_loc in
        Format.fprintf f "%a" (PP_helpers.list_sep pp_var (PP_helpers.tag "@.")) vars
-    | `Self_ast_imperative_const_assigned (decl_loc, var) ->
+    | `Self_ast_imperative_const_assigned (loc, var) ->
        Format.fprintf f
          "@[<hv>%a@ Invalid assignment to constant variable \"%a\", declared at@.%a@]"
-         Snippet.pp var.location PP.expression_variable var Snippet.pp decl_loc
+         Snippet.pp loc PP.expression_variable var Snippet.pp (Var.get_location var)
     | `Self_ast_imperative_no_shadowing l ->
         Format.fprintf f
             "@[<hv>%a@ Cannot redeclare block-scoped variable. @]"
@@ -94,6 +116,54 @@ let error_jsonformat : self_ast_imperative_error -> json = fun a ->
       ("content",  content )]
   in
   match a with
+  | `Self_ast_imperative_non_linear_record e ->
+    let message = `String (Format.asprintf "Duplicated record field") in
+    let loc = Location.to_yojson e.location in
+    let content = `Assoc [
+      ("message", message);
+      ("location", loc);
+    ] in
+    json_error ~stage ~content
+  | `Self_ast_imperative_reserved_name (str,loc) ->
+    let message = `String (Format.asprintf "reserved name %s" str) in
+    let loc = Location.to_yojson loc in
+    let content = `Assoc [
+      ("message", message);
+      ("location", loc);
+    ] in
+    json_error ~stage ~content
+  | `Self_ast_imperative_non_linear_pattern t ->
+    let message = `String "Repeated variable in pattern" in
+    let loc = Location.to_yojson t.location in
+    let content = `Assoc [
+      ("message", message);
+      ("location", loc);
+    ] in
+    json_error ~stage ~content
+  | `Self_ast_imperative_non_linear_type_decl t ->
+    let message = `String "Repeated type variable in type" in
+    let loc = Location.to_yojson t.location in
+    let content = `Assoc [
+      ("message", message);
+      ("location", loc);
+    ] in
+    json_error ~stage ~content
+  | `Self_ast_imperative_non_linear_row t ->
+    let message = `String "Duplicated field or variant name" in
+    let loc = Location.to_yojson t.location in
+    let content = `Assoc [
+      ("message", message);
+      ("location", loc);
+    ] in
+    json_error ~stage ~content
+  | `Self_ast_imperative_duplicate_parameter exp ->
+    let message = `String "Duplicated variable name in function parameter" in
+    let loc = Location.to_yojson exp.location in
+    let content = `Assoc [
+      ("message", message);
+      ("location", loc);
+    ] in
+    json_error ~stage ~content
   | `Self_ast_imperative_long_constructor (c,e) ->
     let message = `String "too long constructor (limited to 32)" in
     let loc = `String (Format.asprintf "%a" Location.pp e.location) in
@@ -160,7 +230,7 @@ let error_jsonformat : self_ast_imperative_error -> json = fun a ->
       ("value", value);
     ] in
     json_error ~stage ~content
-  | `Self_ast_imperative_bad_convertion_bytes e ->
+  | `Self_ast_imperative_bad_conversion_bytes e ->
     let message = `String "Bad bytes literal (conversion went wrong)" in
     let loc = `String (Format.asprintf "%a" Location.pp e.location) in
     let content = `Assoc [
@@ -170,17 +240,17 @@ let error_jsonformat : self_ast_imperative_error -> json = fun a ->
     json_error ~stage ~content
   | `Self_ast_imperative_vars_captured vars ->
      let message = `String "Invalid capture: declared as a non-constant variable" in
-     let loc ((_, v) : location * expression_variable) =
-       `String (Format.asprintf "%a" Location.pp v.location) in
+     let loc ((loc, _v) : location * expression_variable) =
+       `String (Format.asprintf "%a" Location.pp loc) in
      let locs = `List (List.map ~f:loc vars) in
      let content = `Assoc [
                        ("message", message);
                        ("locations", locs);
                      ] in
      json_error ~stage ~content
-  | `Self_ast_imperative_const_assigned (_, var) ->
+  | `Self_ast_imperative_const_assigned (loc, _var) ->
      let message = `String "Invalid assignment: declared as a constant variable" in
-     let loc = `String (Format.asprintf "%a" Location.pp var.location) in
+     let loc = `String (Format.asprintf "%a" Location.pp loc) in
      let content = `Assoc [
                        ("message", message);
                        ("location", loc);

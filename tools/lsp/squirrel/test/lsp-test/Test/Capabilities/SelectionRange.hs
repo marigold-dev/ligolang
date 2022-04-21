@@ -4,6 +4,7 @@ module Test.Capabilities.SelectionRange
 
 import Control.Lens ((^.))
 import Data.Function ((&))
+import Data.Word (Word32)
 import System.FilePath ((</>))
 import Test.HUnit (Assertion)
 
@@ -18,7 +19,7 @@ import Test.Common.Util (readContract)
 contractsDir :: FilePath
 contractsDir = Common.contractsDir </> "selection-range"
 
-data SimpleRange = SimpleRange (Int, Int) (Int, Int) FilePath
+data SimpleRange = SimpleRange (Word32, Word32) (Word32, Word32) FilePath
   deriving stock (Eq, Show)
 
 simplify :: Range -> SimpleRange
@@ -28,7 +29,7 @@ unit_selectionRangeInsideCase :: Assertion
 unit_selectionRangeInsideCase = do
   let filepath = contractsDir </> "heap.ligo"
   tree <- readContract filepath
-  let position = (point 16 8){rFile = filepath}
+  let position = (point 16 8){_rFile = filepath}
       results = findCoveringRanges (tree ^. nestedLIGO) position
               & map simplify
   results `shouldBe` [ SimpleRange (16, 8) ( 16, 12) filepath

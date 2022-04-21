@@ -1,6 +1,6 @@
 open Ast_typed
 open Errors
-open Trace
+open Simple_utils.Trace
 
 let assert_type_expression_eq ~raise (loc:Location.t) ((tv',tv):type_expression * type_expression) : unit = 
   trace_option ~raise (assert_equal loc tv' tv) @@
@@ -36,6 +36,11 @@ let typer_2_opt ~raise : Location.t -> string -> (type_expression -> type_expres
 let typer_3 ~raise : Location.t -> string -> (type_expression -> type_expression -> type_expression -> type_expression) -> typer = fun l s f lst _ ->
   match lst with
   | [ a ; b ; c ] -> f a b c
+  | _ -> raise.raise @@ wrong_param_number l s 3 lst
+
+let typer_3_opt ~raise : Location.t -> string -> (type_expression -> type_expression -> type_expression -> type_expression option -> type_expression) -> typer = fun l s f lst tv_opt ->
+  match lst with
+  | [ a ; b ; c ] -> f a b c tv_opt
   | _ -> raise.raise @@ wrong_param_number l s 3 lst
 
 let typer_4 ~raise : Location.t -> string -> (type_expression -> type_expression -> type_expression -> type_expression -> type_expression) -> typer = fun l s f lst _ ->

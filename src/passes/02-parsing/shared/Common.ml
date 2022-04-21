@@ -25,11 +25,12 @@ module CLI (File : FILE) (Comments : COMMENTS) =
       struct
         include Comments
 
-        let input     = File.input
-        let extension = Some File.extension
-        let dirs      = File.dirs
-        let show_pp   = false
-        let offsets   = true
+        let input        = File.input
+        let extension    = Some File.extension
+        let dirs         = File.dirs
+        let project_root = File.project_root
+        let show_pp      = false
+        let offsets      = true
 
         type status = [
           `Done
@@ -57,6 +58,16 @@ module CLI (File : FILE) (Comments : COMMENTS) =
         ]
 
         let status = `Done
+      end
+
+    module ParserConfig : ParserLib.API.CONFIG =
+      struct
+        let mode = Lexer_CLI.mode
+
+        (* Disable all debug options for the parser *)
+
+        let error_recovery_tracing = false
+        let tracing_output         = None
       end
   end
 
@@ -125,16 +136,17 @@ module MakeParser
     let from_file ~raise buffer file_path : CST.tree =
       let module File =
         struct
-          let input     = Some file_path
-          let extension = File.extension
-          let dirs      = []
+          let input        = Some file_path
+          let extension    = File.extension
+          let dirs         = []
+          let project_root = None
         end in
       let module CLI = CLI (File) (Comments) in
       let module MainLexer =
         LexerMainGen.Make
           (File) (Token) (CLI.Lexer_CLI) (Self_tokens) in
       let module MainParser =
-        ParserLib.API.Make (MainLexer) (Parser) in
+        ParserLib.API.Make (MainLexer) (Parser) (CLI.ParserConfig) in
       let tree =
         let string = Buffer.contents buffer in
         if CLI.Preprocessor_CLI.show_pp then
@@ -153,16 +165,17 @@ module MakeParser
     let from_string ~raise buffer : CST.tree =
       let module File =
         struct
-          let input     = None
-          let extension = File.extension
-          let dirs      = []
+          let input        = None
+          let extension    = File.extension
+          let dirs         = []
+          let project_root = None
         end in
       let module CLI = CLI (File) (Comments) in
       let module MainLexer =
         LexerMainGen.Make
           (File) (Token) (CLI.Lexer_CLI) (Self_tokens) in
       let module MainParser =
-        ParserLib.API.Make (MainLexer) (Parser) in
+        ParserLib.API.Make (MainLexer) (Parser) (CLI.ParserConfig) in
       let tree =
         let string = Buffer.contents buffer in
         if CLI.Preprocessor_CLI.show_pp then
@@ -204,11 +217,8 @@ module type LIGO_PARSER =
 
     (* The monolithic API. *)
 
-    module MenhirInterpreter :
-      sig
-        include MenhirLib.IncrementalEngine.INCREMENTAL_ENGINE
-                with type token = token
-      end
+    module MenhirInterpreter : MenhirLib.IncrementalEngine.EVERYTHING
+           with type token = token
 
     (* The entry point(s) to the incremental API. *)
 
@@ -219,6 +229,16 @@ module type LIGO_PARSER =
 
         val contract :
           Lexing.position -> CST.t MenhirInterpreter.checkpoint
+      end
+
+    (* The recovery API. *)
+
+    module Recovery :
+      sig
+        include Merlin_recovery.RECOVERY_GENERATED
+                with module I := MenhirInterpreter
+
+        val default_value : Region.t -> 'a MenhirInterpreter.symbol -> 'a
       end
   end
 
@@ -266,7 +286,8 @@ module MakeTwoParsers
           end
       end
 
-    module ContractParser = Partial (ContractCST) (ContractParser_Menhir)
+    module ContractParser =
+      Partial (ContractCST) (ContractParser_Menhir)
 
     let from_file  = ContractParser.parse_file
     let parse_file = from_file

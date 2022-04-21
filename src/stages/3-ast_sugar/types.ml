@@ -1,7 +1,4 @@
 [@@@warning "-30"]
-
-module Location = Simple_utils.Location
-
 include Stage_common.Types
 
 type type_content =
@@ -13,7 +10,8 @@ type type_content =
   | T_app             of ty_expr type_app
   | T_module_accessor of ty_expr module_access
   | T_singleton       of literal
-  | T_abstraction         of ty_expr abstraction
+  | T_abstraction     of ty_expr abstraction
+  | T_for_all         of ty_expr abstraction
 
 and type_expression = {type_content: type_content; location: Location.t}
 and ty_expr = type_expression
@@ -34,6 +32,7 @@ and expression_content =
   | E_variable of expression_variable
   | E_application of expr application
   | E_lambda of (expr, ty_expr) lambda
+  | E_type_abstraction of expr type_abs
   | E_recursive of (expr, ty_expr) recursive
   | E_let_in of let_in
   | E_type_in of (expr, ty_expr) type_in
@@ -68,6 +67,6 @@ and let_in = {
   let_result: expression ;
   attributes : attributes ;
   mut: bool;
-  }
+}
 
 and matching = (expression , type_expression) match_exp

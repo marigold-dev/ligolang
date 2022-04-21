@@ -71,6 +71,11 @@ let lambda : ('acc -> 'a -> 'acc * 'b) -> ('acc -> 'c -> 'acc * 'd) -> 'acc -> (
   let acc,result = f acc result in
   (acc,{binder;output_type;result})
 
+let type_abs : ('acc -> 'a -> 'acc * 'b) -> 'acc -> 'a type_abs -> 'acc * 'b type_abs
+= fun f acc {type_binder;result}->
+  let acc,result = f acc result in
+  acc,{type_binder;result}
+
 let path : ('acc -> 'a -> 'acc * 'b) -> 'acc -> 'a access list -> 'acc * 'b access list
 = fun f acc path ->
   let aux acc a = match a with
@@ -154,10 +159,10 @@ let for_
   (acc, {binder; start; final; incr; f_body})
 
 let for_each
-= fun f acc {fe_binder; collection; collection_type; fe_body} ->
+= fun f acc {fe_binder; collection; fe_body ;  collection_type} ->
   let acc,collection = f acc collection in
   let acc,fe_body    = f acc fe_body in
-  (acc, {fe_binder; collection; collection_type; fe_body})
+  (acc, {fe_binder; collection; fe_body ; collection_type})
 
 let while_loop
 = fun f acc {cond; body} ->
@@ -167,20 +172,20 @@ let while_loop
 
 (* Declaration *)
 let declaration_type : ('acc -> 'a -> 'acc * 'b) -> 'acc -> 'a declaration_type -> 'acc * 'b declaration_type
-= fun g acc {type_binder; type_expr} ->
+= fun g acc {type_binder; type_expr; type_attr} ->
   let acc,type_expr = g acc type_expr in
-  (acc,{type_binder; type_expr})
+  (acc,{type_binder; type_expr; type_attr})
 
 let declaration_constant : ('acc -> 'a -> 'acc * 'b) -> ('acc -> 'c -> 'acc * 'd) -> 'acc -> ('a,'c) declaration_constant -> 'acc * ('b,'d) declaration_constant
-= fun f g acc {name; binder=b; attr; expr} ->
+= fun f g acc {binder=b; attr; expr} ->
   let acc,binder = binder g acc b in
   let acc,expr   = f acc expr     in
-  (acc,{name;binder;attr;expr})
+  (acc,{binder;attr;expr})
 
 let rec declaration_module : ('acc -> 'a -> 'acc * 'b) -> ('acc -> 'c -> 'acc * 'd) -> 'acc -> ('a,'c) declaration_module -> 'acc * ('b,'d) declaration_module
-= fun f g acc {module_binder; module_} ->
+= fun f g acc {module_binder; module_;module_attr} ->
   let acc,module_ = module' f g acc module_ in
-  (acc, {module_binder;module_})
+  (acc, {module_binder;module_;module_attr})
 
 and module_alias
 = fun acc ma ->  (acc, ma)
